@@ -5,15 +5,16 @@
 #
 # Prerequisites:
 #   1. Before archinstall: partition the disk manually with cfdisk/gdisk:
-#        p1 — 512M   FAT32  → EFI
-#        p2 — 300G   (raw)  → archinstall will format as BTRFS + install here
-#        p3 — 700G   (raw)  → fast data (this script formats it)
-#   2. In archinstall: select p2 as root, BTRFS filesystem, no DE
+#        p1 — 4G    FAT32  → ESP (4 GB required for limine-snapper-sync)
+#        p2 — 296G  (raw)  → archinstall will format as BTRFS + install here
+#        p3 — 700G  (raw)  → fast data (this script formats it)
+#   2. In archinstall: select p2 as root, BTRFS filesystem, Limine bootloader, no DE
 #   3. After archinstall completes: arch-chroot /mnt → run this script
 #
 # What this script does:
 #   • Detects system disk and root BTRFS partition automatically
-#   • Adds missing subvolumes: @snapshots @var_log @var_cache @var_tmp
+#   • Verifies root subvolume is named '@' (required for fstab)
+#   • Adds missing subvolumes: @home @snapshots @var_log @var_cache @var_tmp
 #   • Asks for fast-data partition path → formats BTRFS + adds to fstab
 #   • Regenerates /etc/fstab with all subvolumes and correct mount options
 #   • Configures zram with RAM-aware sizing
@@ -69,13 +70,28 @@ ROOT_PART=$(findmnt -n -o SOURCE / | sed 's/\[.*//')
 [[ -b "$ROOT_PART" ]] \
     || die "Cannot detect root partition. Are you inside arch-chroot /mnt?"
 
+# Verify root partition is actually BTRFS
+ROOT_FSTYPE=$(lsblk -no FSTYPE "$ROOT_PART")
+[[ "$ROOT_FSTYPE" == "btrfs" ]] \
+    || die "Root partition $ROOT_PART is not BTRFS (got: $ROOT_FSTYPE). Wrong partition?"
+
 ROOT_DISK_NAME=$(lsblk -no PKNAME "$ROOT_PART" | head -1)
 ROOT_DISK="/dev/${ROOT_DISK_NAME}"
 [[ -b "$ROOT_DISK" ]] || die "Cannot find parent disk for $ROOT_PART"
 
+# Detect ESP via findmnt (reliable — archinstall already mounted it)
+EFI_PART=$(findmnt -n -o SOURCE /boot 2>/dev/null || true)
+EFI_UUID=""
+if [[ -b "$EFI_PART" ]]; then
+    EFI_UUID=$(blkid -s UUID -o value "$EFI_PART")
+    info "ESP detected:   ${BOLD}${EFI_PART}${NC} → /boot"
+else
+    warn "ESP not detected at /boot — will skip ESP entry in fstab"
+fi
+
 echo ""
 info "System disk:    ${BOLD}${ROOT_DISK}${NC}"
-info "Root partition: ${BOLD}${ROOT_PART}${NC}"
+info "Root partition: ${BOLD}${ROOT_PART}${NC} [btrfs]"
 echo ""
 lsblk -o NAME,SIZE,FSTYPE,LABEL,MOUNTPOINT "$ROOT_DISK"
 echo ""
@@ -83,13 +99,21 @@ echo ""
 confirm "Is this correct?" "y" || die "Aborted."
 
 # =============================================================================
-# STEP 2 — Add missing BTRFS subvolumes
+# STEP 2 — Verify and create BTRFS subvolumes
 # =============================================================================
 header "Step 2 — Creating missing BTRFS subvolumes"
 
 MOUNT_OPTS="defaults,noatime,compress=zstd:3,space_cache=v2"
 
 BTRFS_TOP=$(mktemp -d)
+
+# Trap to ensure cleanup on any exit
+cleanup_btrfs_top() {
+    umount "$BTRFS_TOP" 2>/dev/null || true
+    rmdir "$BTRFS_TOP" 2>/dev/null || true
+}
+trap cleanup_btrfs_top EXIT
+
 mount -o "noatime,compress=zstd:3,space_cache=v2" "$ROOT_PART" "$BTRFS_TOP"
 
 echo ""
@@ -97,7 +121,15 @@ info "Existing subvolumes:"
 btrfs subvolume list "$BTRFS_TOP"
 echo ""
 
-NEEDED=( @snapshots @var_log @var_cache @var_tmp )
+# Verify '@' subvolume exists — mandatory for fstab
+if ! btrfs subvolume list "$BTRFS_TOP" | awk '{print $NF}' | grep -qx "@"; then
+    die "Root subvolume '@' not found. Did archinstall use a different name?\n" \
+        "       Check subvolume names above and update fstab manually."
+fi
+log "Root subvolume '@' confirmed."
+
+# Create missing subvolumes
+NEEDED=( @home @snapshots @var_log @var_cache @var_tmp )
 
 for sv in "${NEEDED[@]}"; do
     if btrfs subvolume list "$BTRFS_TOP" | awk '{print $NF}' | grep -qx "$sv"; then
@@ -110,6 +142,7 @@ done
 
 umount "$BTRFS_TOP"
 rmdir "$BTRFS_TOP"
+trap - EXIT
 
 # =============================================================================
 # STEP 3 — Fast-data partition
@@ -138,6 +171,8 @@ elif [[ ! -b "$FAST_PART" ]]; then
     SKIP_FAST=true
 elif [[ "$FAST_PART" == "$ROOT_PART" ]]; then
     die "Fast partition cannot be the same as root partition!"
+elif [[ -n "$EFI_PART" && "$FAST_PART" == "$EFI_PART" ]]; then
+    die "Fast partition cannot be the same as ESP!"
 else
     FAST_FSTYPE=$(lsblk -no FSTYPE "$FAST_PART" 2>/dev/null || true)
     FAST_SIZE=$(lsblk -no SIZE "$FAST_PART")
@@ -160,10 +195,12 @@ else
         log "Formatted: ${FAST_PART} → BTRFS [dimarch-fast]"
 
         FAST_TMP=$(mktemp -d)
+        trap "umount '$FAST_TMP' 2>/dev/null; rmdir '$FAST_TMP' 2>/dev/null" EXIT
         mount "$FAST_PART" "$FAST_TMP"
         mkdir -p "${FAST_TMP}"/{winapps,models,comfyui}
         umount "$FAST_TMP"
         rmdir "$FAST_TMP"
+        trap - EXIT
         log "Created directories: winapps/ models/ comfyui/"
     fi
 fi
@@ -174,11 +211,6 @@ fi
 header "Step 4 — Regenerating /etc/fstab"
 
 OS_UUID=$(blkid -s UUID -o value "$ROOT_PART")
-
-EFI_PART=$(lsblk -lno NAME,FSTYPE "$ROOT_DISK" \
-    | awk '$2 == "vfat" {print "/dev/"$1}' | head -1)
-EFI_UUID=""
-[[ -n "$EFI_PART" ]] && EFI_UUID=$(blkid -s UUID -o value "$EFI_PART")
 
 cp /etc/fstab /etc/fstab.archinstall.bak
 info "Original fstab saved → /etc/fstab.archinstall.bak"
@@ -191,8 +223,8 @@ EOF
 
 if [[ -n "$EFI_UUID" ]]; then
     cat >> /etc/fstab << EOF
-# EFI System Partition
-UUID=${EFI_UUID}  /boot/efi  vfat  defaults,umask=0077  0 2
+# ESP — Limine bootloader (kernels + initramfs + snapshot entries)
+UUID=${EFI_UUID}  /boot  vfat  defaults,umask=0077  0 2
 
 EOF
 fi
@@ -230,14 +262,14 @@ header "Step 5 — Configuring zram"
 
 if ! pacman -Qq zram-generator &>/dev/null; then
     info "Installing zram-generator..."
-    pacman -S --noconfirm --needed zram-generator
+    pacman -Sy --noconfirm --needed zram-generator
 fi
 
 TOTAL_RAM_GB=$(awk '/MemTotal/ {printf "%d", $2/1024/1024}' /proc/meminfo)
 
-#   ≤  8G → zram = RAM        (small RAM, need real swap)
-#   ≤ 16G → zram = RAM / 2   (8G → ~16G effective with zstd)
-#   > 16G → zram = RAM / 4   (OOM protection only)
+#   ≤  8G → zram = RAM        (small RAM, needs maximum swap capacity)
+#   ≤ 16G → zram = RAM / 2   (reasonable balance)
+#   > 16G → zram = RAM / 4   (OOM protection only, RAM is sufficient)
 if (( TOTAL_RAM_GB <= 8 )); then
     ZRAM_SIZE="ram"
     ZRAM_NOTE="${TOTAL_RAM_GB}G RAM → zram = ${TOTAL_RAM_GB}G (~$(( TOTAL_RAM_GB * 2 ))G effective)"
@@ -249,7 +281,6 @@ else
     ZRAM_NOTE="${TOTAL_RAM_GB}G RAM → zram = $(( TOTAL_RAM_GB / 4 ))G (OOM protection)"
 fi
 
-mkdir -p /etc/systemd
 cat > /etc/systemd/zram-generator.conf << EOF
 # zram swap — configured by 01-btrfs-setup.sh
 # ${ZRAM_NOTE}
@@ -283,6 +314,8 @@ echo -e "${GREEN}${BOLD}Setup complete.${NC}"
 echo ""
 echo -e "  ${CYAN}Root partition:${NC}  $ROOT_PART"
 echo -e "  ${CYAN}Subvolumes:${NC}      @ @home @snapshots @var_log @var_cache @var_tmp"
+[[ -n "$EFI_PART" ]] && \
+    echo -e "  ${CYAN}ESP:${NC}             $EFI_PART → /boot"
 [[ "$SKIP_FAST" == false ]] && \
     echo -e "  ${CYAN}Fast partition:${NC}  $FAST_PART → /mnt/fast"
 echo -e "  ${CYAN}zram:${NC}            ${ZRAM_NOTE}"
