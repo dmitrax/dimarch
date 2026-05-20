@@ -17,6 +17,12 @@ pacman -Sy --needed \
     ffmpegthumbs \
     kio-admin \
     ttf-jetbrains-mono-nerd \
-    nerd-fonts-inter
+    nerd-fonts-inter \
+    grim \
+    slurp \
+    wl-clipboard \
+    libnotify \
+    satty \
+    gnome-keyring
 
 dimarch::done "Hyprland stack installed"
