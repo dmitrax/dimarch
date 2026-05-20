@@ -106,3 +106,12 @@ hl.window_rule({
     size = { 480, 270 },
     move = { "monitor_w-window_w-24", "monitor_h-window_h-64" },
 })
+
+-- Satty screenshot annotation window
+hl.window_rule({
+    match = { class = "^(satty)$" },
+    float = true,
+    persistent_size = true,
+    center = true,
+})
+

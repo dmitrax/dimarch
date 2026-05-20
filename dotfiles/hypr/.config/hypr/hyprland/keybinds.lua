@@ -22,3 +22,45 @@ end
 
 -- Reload config
 hl.bind("CTRL + SUPER + R", hl.dsp.exec_cmd("hyprctl reload"))
+
+-- =========================================================
+-- Screenshots
+-- grim + slurp + wl-copy + satty
+-- =========================================================
+
+-- Print
+-- Select area, save PNG to ~/Pictures/Screenshots and copy to clipboard.
+hl.bind("Print", hl.dsp.exec_cmd(
+    "~/.config/hypr/scripts/screenshot.sh area"
+))
+
+-- Super + Shift + S
+-- Select area, save PNG and copy to clipboard.
+-- Familiar macOS/Windows-style shortcut.
+hl.bind("SUPER + SHIFT + S", hl.dsp.exec_cmd(
+    "~/.config/hypr/scripts/screenshot.sh area"
+))
+
+-- Super + Shift + E
+-- Select area and open it in Satty for annotation.
+-- Does NOT auto-save. In Satty:
+-- Enter / Ctrl+C = copy result to clipboard
+-- Ctrl+S         = save manually, if needed
+-- Esc            = exit
+hl.bind("SUPER + SHIFT + E", hl.dsp.exec_cmd(
+    "~/.config/hypr/scripts/screenshot.sh area-edit"
+))
+
+-- Super + Print
+-- Full screen, save PNG and copy to clipboard.
+hl.bind("SUPER + Print", hl.dsp.exec_cmd(
+    "~/.config/hypr/scripts/screenshot.sh screen"
+))
+
+-- Super + Shift + Print
+-- Full screen and open it in Satty for annotation.
+-- Does NOT auto-save.
+hl.bind("SUPER + SHIFT + Print", hl.dsp.exec_cmd(
+    "~/.config/hypr/scripts/screenshot.sh screen-edit"
+))
+
