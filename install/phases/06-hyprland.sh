@@ -23,6 +23,7 @@ pacman -Sy --needed \
     wl-clipboard \
     libnotify \
     satty \
-    gnome-keyring
+    gnome-keyring \
+    swayosd
 
 dimarch::done "Hyprland stack installed"
