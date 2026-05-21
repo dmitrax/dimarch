@@ -26,4 +26,8 @@ pacman -Sy --needed \
     gnome-keyring \
     swayosd
 
+# AUR packages
+paru -S --needed \
+    hyprland-per-window-layout
+
 dimarch::done "Hyprland stack installed"
