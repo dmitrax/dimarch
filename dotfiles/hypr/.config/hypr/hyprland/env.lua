@@ -14,7 +14,10 @@ hl.config({
         {"XDG_SESSION_TYPE", "wayland"},
 
         -- Cursor
+	{"XCURSOR_THEME", "Bibata-Modern-Classic"},
         {"XCURSOR_SIZE", "24"},
+	{"HYPRCURSOR_THEME", "Bibata-Modern-Classic"},
+        {"HYPRCURSOR_SIZE", "24"},
 
         -- Qt / GTK / Mozilla Wayland
         {"QT_QPA_PLATFORM", "wayland;xcb"},
