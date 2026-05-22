@@ -71,13 +71,15 @@ hl.window_rule({
 -- Terminal
 -- ---------------------------------------------------------
 
--- Terminal should not open tiny after reboot.
--- 56% x 58% feels like a classic desktop terminal window.
+-- Ghostty defines its own initial size through:
+-- ~/.config/ghostty/config.ghostty
+--
+-- Do not force size here, otherwise Hyprland overrides
+-- Ghostty's window-width/window-height.
 hl.window_rule({
     match = { class = "^(foot|com.mitchellh.ghostty|ghostty)$" },
     float = true,
     persistent_size = true,
-    size = { "monitor_w * 0.56", "monitor_h * 0.58" },
     center = true,
 })
 

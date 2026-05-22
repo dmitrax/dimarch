@@ -69,3 +69,14 @@ hl.bind("XF86AudioRaiseVolume", hl.dsp.exec_cmd("swayosd-client --output-volume 
 hl.bind("XF86AudioLowerVolume", hl.dsp.exec_cmd("swayosd-client --output-volume lower"), { locked = true })
 hl.bind("XF86AudioMute",        hl.dsp.exec_cmd("swayosd-client --output-volume mute-toggle"), { locked = true })
 hl.bind("XF86AudioMicMute",     hl.dsp.exec_cmd("swayosd-client --input-volume mute-toggle"), { locked = true })
+
+-- =========================================================
+-- Lock screen
+-- =========================================================
+
+-- Trigger a system lock event.
+-- hypridle receives it and runs lock_cmd:
+-- switch layout to EN, then start hyprlock.
+hl.bind("SUPER + L", hl.dsp.exec_cmd(
+    "loginctl lock-session"
+))
