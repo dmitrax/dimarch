@@ -1,0 +1,11 @@
+#!/bin/sh
+# Xsetup - run as root before the login dialog appears
+
+# DisplayPort-0 = LG 4K — primary monitor
+xrandr --output DisplayPort-0 --mode 3840x2160 --primary --pos 0x0
+
+# DisplayPort-1 = Dell FullHD — secondary monitor (disabled in SDDM)
+# Uncomment to enable Dell on the left:
+# xrandr --output DisplayPort-1 --mode 1920x1080 --pos -1920x0
+
+xrandr --output DisplayPort-1 --off
