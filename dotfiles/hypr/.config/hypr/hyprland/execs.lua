@@ -18,6 +18,7 @@ hl.on("hyprland.start", function()
     hl.exec_cmd("hypridle")
     hl.exec_cmd("swayosd-server")
     hl.exec_cmd("hyprland-per-window-layout")
+  -- hl.exec_cmd("hyprswitch init --show-title &")
 
     hl.exec_cmd("hyprctl setcursor Bibata-Modern-Classic 24")
 end)

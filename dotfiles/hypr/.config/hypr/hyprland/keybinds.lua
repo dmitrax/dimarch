@@ -10,6 +10,14 @@ hl.bind(mod .. " + Q",      hl.dsp.window.close())
 hl.bind(mod .. " + F",      hl.dsp.window.fullscreen({ fullscreen = true }))
 hl.bind(mod .. " + L",      hl.dsp.exec_cmd("hyprlock"))
 
+-- Window switcher via hyprswitch
+-- hl.bind("ALT + Tab", hl.dsp.exec_cmd(
+--    "hyprswitch gui --mod-key alt --key tab --close mod-key-release --reverse-key=mod=shift"
+-- ))
+
+-- Window switcher via rofi
+hl.bind("ALT + Tab", hl.dsp.exec_cmd("rofi -show window"))
+
 -- Move & resize with mouse
 hl.bind(mod .. " + mouse:272", hl.dsp.window.drag(),   { mouse = true })
 hl.bind(mod .. " + mouse:273", hl.dsp.window.resize(), { mouse = true })
