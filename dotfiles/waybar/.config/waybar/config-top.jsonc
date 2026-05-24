@@ -1,0 +1,123 @@
+// =========================================================
+// DimArch OS — Waybar Top Panel
+// System bar: logo / workspaces / title / stats / clock / power
+// =========================================================
+{
+    "layer": "top",
+    "position": "top",
+    "height": 32,
+    "margin-top": 0,
+    "margin-left": 0,
+    "margin-right": 0,
+    "exclusive": true,
+    "passthrough": false,
+    "output": ["DP-1", "DP-2"],
+
+    "modules-left": [
+        "custom/logo",
+        "hyprland/workspaces"
+    ],
+
+    "modules-center": [
+        "hyprland/window"
+    ],
+
+    "modules-right": [
+        "cpu",
+        "memory",
+        "temperature",
+        "pulseaudio",
+        "hyprland/language",
+        "tray",
+        "clock",
+        "custom/power"
+    ],
+
+    // ── Logo ───────────────────────────────────────────────
+    "custom/logo": {
+        "format": "Arch",
+        "tooltip": false,
+        "on-click": "rofi -show drun"
+    },
+
+    // ── Workspaces ─────────────────────────────────────────
+    "hyprland/workspaces": {
+        "format": "{id}",
+        "sort-by": "number",
+        "disable-scroll": true,
+        "on-click": "~/.config/hypr/scripts/workspace-switch.sh {}",
+        "persistent-workspaces": {
+           "DP-1": [1, 2, 3, 4, 5],
+           "DP-2": [6, 7]
+        } 
+    },
+    // ── Active window title ────────────────────────────────
+    "hyprland/window": {
+        "format": "{title}",
+        "max-length": 60,
+        "separate-outputs": true
+    },
+
+    // ── CPU ────────────────────────────────────────────────
+    "cpu": {
+        "interval": 2,
+        "format": " {usage}%",
+        "tooltip": false
+    },
+
+    // ── Memory ────────────────────────────────────────────
+    "memory": {
+        "interval": 5,
+        "format": " {used:0.1f}G",
+        "tooltip-format": "{used:0.1f}G / {total:0.1f}G"
+    },
+
+    // ── GPU temperature (RX 580 — hwmon3) ─────────────────
+    "temperature": {
+        "hwmon-path": "/sys/class/hwmon/hwmon3/temp1_input",
+        "critical-threshold": 85,
+        "format": "󰢮 {temperatureC}°",
+        "format-critical": "󰢮 {temperatureC}°",
+        "tooltip": false
+    },
+
+    // ── Volume ────────────────────────────────────────────
+    "pulseaudio": {
+        "format": "{icon} {volume}%",
+        "format-muted": "󰝟",
+        "format-icons": {
+            "default": ["󰕿", "󰖀", "󰕾"]
+        },
+        "on-click": "pavucontrol",
+        "tooltip-format": "{desc}\n{volume}%"
+    },
+
+    // ── Keyboard layout ───────────────────────────────────
+    "hyprland/language": {
+        "format": "  {}",
+        "format-en": "EN",
+        "format-ru": "RU"
+    },
+
+    // ── System tray ───────────────────────────────────────
+    "tray": {
+        "spacing": 8,
+        "icon-size": 16
+    },
+
+    // ── Clock ─────────────────────────────────────────────
+    "clock": {
+        "interval": 60,
+        "format": "{:%H:%M}",
+        "format-alt": "{:%A, %d %B}",
+        "tooltip-format": "<big>{:%Y %B}</big>\n<tt>{calendar}</tt>",
+        "on-click": "mode"
+    },
+
+    // ── Power menu ────────────────────────────────────────
+    "custom/power": {
+        "format": "⏻",
+        "tooltip": false,
+        "on-click": "~/.config/hypr/scripts/powermenu.sh"
+    }
+}

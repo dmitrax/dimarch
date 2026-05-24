@@ -1,0 +1,254 @@
+/* =========================================================
+   DimArch OS — Waybar Style
+   Dark translucent — MATE-like panel
+   ========================================================= */
+
+/* ── CSS Variables ──────────────────────────────────────── */
+@define-color bg_panel        rgba(22, 22, 28, 0.72);
+@define-color bg_panel_bottom rgba(18, 18, 24, 0.75);
+@define-color bg_module       rgba(255, 255, 255, 0.05);
+@define-color bg_hover        rgba(255, 255, 255, 0.08);
+@define-color bg_active       rgba(127, 184, 158, 0.20);
+
+@define-color text_main       #edeae4;
+@define-color text_soft       #c0bdb6;
+@define-color text_muted      #7a7770;
+@define-color text_faded      #4a4740;
+
+@define-color accent          #7fb89e;
+@define-color accent_dark     #5e9f82;
+@define-color urgent          #d96c6c;
+@define-color warning         #d97706;
+
+@define-color border_soft     rgba(255, 255, 255, 0.07);
+@define-color border_module   rgba(255, 255, 255, 0.05);
+
+/* ── Global reset ───────────────────────────────────────── */
+* {
+    font-family: "Inter Variable", "Inter", sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    border: none;
+    border-radius: 0;
+    min-height: 0;
+    margin: 0;
+    padding: 0;
+}
+
+/* ── Panels ─────────────────────────────────────────────── */
+window#waybar.top {
+    background: @bg_panel;
+    border-bottom: 1px solid @border_soft;
+    color: @text_main;
+}
+
+window#waybar.bottom {
+    background: @bg_panel_bottom;
+    border-top: 1px solid @border_soft;
+    color: @text_main;
+}
+
+window#waybar.hidden {
+    opacity: 0.15;
+}
+
+/* ── Tooltip ────────────────────────────────────────────── */
+tooltip {
+    background: rgba(22, 22, 28, 0.96);
+    border: 1px solid @border_soft;
+    border-radius: 8px;
+    color: @text_main;
+    padding: 6px 10px;
+}
+
+/* ── Logo button ────────────────────────────────────────── */
+#custom-logo {
+    background: @accent;
+    color: #0d1a14;
+    font-weight: 700;
+    font-size: 14px;
+    padding: 0 12px;
+    margin: 3px 6px 3px 4px;
+    border-radius: 6px;
+    letter-spacing: 0.4px;
+    transition: background 150ms ease;
+}
+
+#custom-logo:hover {
+    background: @accent_dark;
+}
+
+/* ── Workspaces ─────────────────────────────────────────── */
+#workspaces {
+    margin: 0 4px;
+    padding: 0;
+}
+
+#workspaces button {
+    background: rgba(255, 255, 255, 0.025);
+    color: @text_muted;
+    font-size: 13px;
+    font-weight: 600;
+    padding: 0 10px;
+    margin: 3px 1px;
+    border-radius: 6px;
+    min-width: 26px;
+    border: 1px solid transparent;
+    box-shadow: inset 0 1px rgba(255, 255, 255, 0.035);
+    transition: background 150ms ease, color 150ms ease, border-color 150ms ease;
+}
+
+#workspaces button:hover {
+    background: @bg_hover;
+    color: @text_main;
+    border-color: @border_module;
+}
+
+#workspaces button.active {
+    background: @bg_active;
+    color: @accent;
+    font-weight: 700;
+    border-color: rgba(127, 184, 158, 0.35);
+}
+
+#workspaces button.urgent {
+    background: rgba(217, 108, 108, 0.20);
+    color: @urgent;
+}
+
+/* ── Window title ───────────────────────────────────────── */
+#window {
+    color: @text_soft;
+    font-size: 13px;
+    padding: 0 12px;
+}
+
+#window.empty {
+    color: @text_faded;
+}
+
+/* ── System modules ─────────────────────────────────────── */
+#cpu,
+#memory,
+#temperature,
+#pulseaudio,
+#clock {
+    padding: 0 8px;
+    margin: 3px 0;
+    color: @text_soft;
+}
+
+#cpu { margin-left: 8px; }
+
+#cpu.warning,
+#memory.warning  { color: @warning; }
+#cpu.critical,
+#memory.critical { color: @urgent;  }
+
+#temperature.critical {
+    color: @urgent;
+    font-weight: 600;
+}
+
+/* ── Volume — highlighted module ────────────────────────── */
+#pulseaudio {
+    background: @bg_module;
+    border: 1px solid @border_module;
+    border-radius: 5px;
+}
+
+#pulseaudio.muted {
+    color: @text_faded;
+}
+
+/* ── Language ───────────────────────────────────────────── */
+#language {
+    background: @bg_module;
+    color: @text_soft;
+    font-size: 15px;
+    font-weight: 600;
+    padding: 0 9px;
+    margin: 3px 3px;
+    border-radius: 5px;
+    border: 1px solid @border_module;
+    letter-spacing: 0.4px;
+}
+
+/* ── Tray — grouped module ──────────────────────────────── */
+#tray {
+    background: @bg_module;
+    padding: 0 7px;
+    margin: 3px 3px;
+    border-radius: 5px;
+    border: 1px solid @border_module;
+}
+
+#tray > .passive {
+    -gtk-icon-effect: dim;
+}
+
+#tray > .needs-attention {
+    -gtk-icon-effect: highlight;
+}
+
+/* ── Clock — anchor module ──────────────────────────────── */
+#clock {
+    background: @bg_module;
+    border: 1px solid @border_module;
+    border-radius: 5px;
+    font-weight: 500;
+    color: @text_main;
+    padding: 0 10px;
+    margin: 3px 2px;
+}
+
+/* ── Power button ───────────────────────────────────────── */
+#custom-power {
+    color: @text_muted;
+    font-size: 14px;
+    padding: 0 10px;
+    margin: 3px 3px 3px 0;
+    border-radius: 6px;
+    transition: background 150ms ease, color 150ms ease;
+}
+
+#custom-power:hover {
+    color: @urgent;
+    background: rgba(217, 108, 108, 0.12);
+}
+
+/* ── Bottom taskbar ─────────────────────────────────────── */
+#custom-taskbar {
+    color: @text_soft;
+    font-size: 12px;
+    padding: 0 10px;
+    margin: 3px 4px;
+    border-radius: 6px;
+    background: rgba(255, 255, 255, 0.035);
+    border: 1px solid @border_module;
+}
+
+#custom-taskbar.empty {
+    color: @text_faded;
+    background: transparent;
+    border-color: transparent;
+}
+
+#custom-taskbar.active {
+    color: @accent;
+    background: @bg_active;
+    border-color: rgba(127, 184, 158, 0.25);
+}
+
+#custom-taskbar.minimized {
+    color: @text_muted;
+    font-style: italic;
+}
+
+/* ── Workspace indicator ────────────────────────────────── */
+#custom-workspace-indicator {
+    color: @text_faded;
+    font-size: 11px;
+    padding: 0 10px;
+    margin: 3px 2px;
+}

@@ -7,3 +7,7 @@ hl.config({
         animate_manual_resizes   = false,
     },
 })
+
+-- Blur for Waybar panels
+hl.layer_rule({ match = { namespace = "waybar" }, blur = true })
+hl.layer_rule({ match = { namespace = "waybar" }, ignore_alpha = 0.3 })

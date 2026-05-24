@@ -22,7 +22,7 @@ require("hyprland/rules")
 
 -- Workspace rules
 -- Temporarily disabled while testing resume behavior.
--- require("hyprland/workspaces")
+require("hyprland/workspaces")
 
 -- Binds / autostart
 require("hyprland/keybinds")
