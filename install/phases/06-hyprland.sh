@@ -24,6 +24,10 @@ pacman -Sy --needed \
     libnotify \
     satty \
     gnome-keyring \
+    mako \
+    socat \
+    python \
+    waybar-git \
     swayosd
 
 # AUR packages
