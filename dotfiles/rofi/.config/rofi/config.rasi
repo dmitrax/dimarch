@@ -1,0 +1,16 @@
+configuration {
+    modi:           "drun,window,run";
+    show-icons:     true;
+    icon-theme:     "Papirus-Dark";
+    drun-display-format: "{name}";
+    window-display-format: "{workspace}: {title}";
+    display-drun:   " Apps";
+    display-window: " Windows";
+    display-run:    " Run";
+    font:           "Inter Variable 13";
+    hover-select:   true;
+    me-select-entry: "";
+    me-accept-entry: "MousePrimary";
+}
+
+@theme "~/.config/rofi/theme.rasi"

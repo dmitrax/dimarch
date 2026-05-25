@@ -1,0 +1,219 @@
+/* =========================================================
+   DimArch Rofi Theme — Dark Glass
+   For: rofi -show drun
+   Style: DimArch / dark system UI
+   ========================================================= */
+
+* {
+    font:                       "Inter 12";
+
+    bg:                         rgba ( 18, 20, 26, 72 % );
+    bg-input:                   rgba ( 28, 30, 38, 82 % );
+
+    text:                       rgba ( 237, 234, 228, 100 % );
+    text-secondary:             rgba ( 192, 189, 182, 100 % );
+    text-muted:                 rgba ( 122, 119, 112, 100 % );
+
+    accent:                     rgba ( 127, 184, 158, 100 % );
+    accent-soft:                rgba ( 127, 184, 158, 18 % );
+    accent-border:              rgba ( 127, 184, 158, 40 % );
+
+    danger:                     rgba ( 217, 108, 108, 100 % );
+    danger-soft:                rgba ( 217, 108, 108, 18 % );
+
+    border:                     rgba ( 255, 255, 255, 10 % );
+    border-outer:               rgba ( 0, 0, 0, 42 % );
+    transparent:                rgba ( 0, 0, 0, 0 % );
+}
+
+/* ─────────────────────────────────────────────
+   Window
+   ───────────────────────────────────────────── */
+
+window {
+    width:                      530px;
+    border-radius:              22px;
+    background-color:           @bg;
+    border:                     2px;
+    border-color:               @border-outer;
+    padding:                    0;
+}
+
+mainbox {
+    background-color:           @transparent;
+    padding:                    12px;
+    spacing:                    8px;
+}
+
+/* ─────────────────────────────────────────────
+   Search
+   ───────────────────────────────────────────── */
+
+inputbar {
+    background-color:           @bg-input;
+    border:                     1px;
+    border-color:               rgba ( 127, 184, 158, 20 % );
+    border-radius:              14px;
+    padding:                    7px 12px;
+    spacing:                    8px;
+    children:                   [ prompt, entry ];
+}
+
+prompt {
+    background-color:           @transparent;
+    text-color:                 @accent;
+    font:                       "Inter Medium 12";
+}
+
+entry {
+    background-color:           @transparent;
+    text-color:                 @text;
+    placeholder:                "Search…";
+    placeholder-color:          @text-muted;
+    font:                       "Inter 12";
+}
+
+/* ─────────────────────────────────────────────
+   List
+   ───────────────────────────────────────────── */
+
+listview {
+    background-color:           @transparent;
+    padding:                    0;
+    margin:                     0;
+    spacing:                    0px;
+    lines:                      9;
+    fixed-height:               false;
+    scrollbar:                  false;
+}
+
+element {
+    background-color:           @transparent;
+    border:                     1px;
+    border-color:               @transparent;
+    border-radius:              11px;
+    padding:                    4px 9px;
+    spacing:                    9px;
+    margin:                     0px;
+}
+
+element normal normal,
+element alternate normal {
+    background-color:           @transparent;
+    text-color:                 @text-secondary;
+}
+
+element selected normal {
+    background-color:           @accent-soft;
+    border-color:               @accent-border;
+    text-color:                 @text;
+}
+
+element normal active,
+element alternate active {
+    background-color:           rgba ( 127, 184, 158, 10 % );
+    text-color:                 @accent;
+}
+
+element selected active {
+    background-color:           rgba ( 127, 184, 158, 22 % );
+    border-color:               rgba ( 127, 184, 158, 46 % );
+    text-color:                 @text;
+}
+
+element normal urgent,
+element alternate urgent {
+    background-color:           @danger-soft;
+    text-color:                 @danger;
+}
+
+element selected urgent {
+    background-color:           rgba ( 217, 108, 108, 24 % );
+    border-color:               rgba ( 217, 108, 108, 44 % );
+    text-color:                 @danger;
+}
+
+/* Transparent icon widget.
+   If a white plate remains, it is part of the icon theme image itself. */
+element-icon {
+    size:                       26px;
+    background-color:           @transparent;
+    border:                     0px;
+    border-radius:              0px;
+    padding:                    0px;
+    margin:                     0px;
+}
+
+element normal normal element-icon,
+element alternate normal element-icon,
+element selected normal element-icon,
+element normal active element-icon,
+element alternate active element-icon,
+element selected active element-icon,
+element normal urgent element-icon,
+element alternate urgent element-icon,
+element selected urgent element-icon {
+    background-color:           @transparent;
+    border:                     0px;
+    padding:                    0px;
+    margin:                     0px;
+}
+
+element-text {
+    background-color:           @transparent;
+    text-color:                 inherit;
+    font:                       "Inter 12";
+    vertical-align:             0.5;
+    padding:                    0px;
+    margin:                     0px;
+}
+
+/* ─────────────────────────────────────────────
+   Mode switcher
+   ───────────────────────────────────────────── */
+
+mode-switcher {
+    background-color:           @transparent;
+    spacing:                    6px;
+    padding:                    0;
+}
+
+button {
+    background-color:           @transparent;
+    text-color:                 @text-muted;
+    border:                     0px;
+    border-radius:              10px;
+    padding:                    5px 10px;
+    font:                       "Inter Medium 11";
+}
+
+button selected {
+    background-color:           @accent-soft;
+    text-color:                 @accent;
+}
+
+/* ─────────────────────────────────────────────
+   Messages
+   ───────────────────────────────────────────── */
+
+message {
+    background-color:           rgba ( 28, 30, 38, 46 % );
+    border:                     1px;
+    border-color:               @border;
+    border-radius:              12px;
+    padding:                    8px 10px;
+}
+
+textbox {
+    text-color:                 @text-muted;
+    font:                       "Inter 11";
+}
+
+error-message {
+    background-color:           rgba ( 44, 24, 28, 78 % );
+    border:                     1px;
+    border-color:               rgba ( 217, 108, 108, 42 % );
+    border-radius:              12px;
+    padding:                    9px;
+    text-color:                 @danger;
+}

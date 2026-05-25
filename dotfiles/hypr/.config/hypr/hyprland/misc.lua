@@ -11,3 +11,10 @@ hl.config({
 -- Blur for Waybar panels
 hl.layer_rule({ match = { namespace = "waybar" }, blur = true })
 hl.layer_rule({ match = { namespace = "waybar" }, ignore_alpha = 0.3 })
+
+-- Blur for rofi
+hl.layer_rule({ match = { namespace = "rofi" }, blur = true })
+hl.layer_rule({ match = { namespace = "rofi" }, ignore_alpha = 0.3 })
+
+-- Shadow for rofi
+hl.layer_rule({ match = { namespace = "rofi" }, blur = true, ignore_alpha = 0.5 })
