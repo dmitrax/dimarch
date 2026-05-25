@@ -28,6 +28,10 @@ for i = 1, 4 do
     hl.bind(mod .. " + SHIFT + " .. i, hl.dsp.window.move({ workspace = tostring(i) }))
 end
 
+-- Cycle workspaces
+hl.bind(mod .. " + Left",  hl.dsp.exec_cmd("~/.config/hypr/scripts/workspace-switch.sh prev"))
+hl.bind(mod .. " + Right", hl.dsp.exec_cmd("~/.config/hypr/scripts/workspace-switch.sh next"))
+
 -- Reload config
 hl.bind("CTRL + SUPER + R", hl.dsp.exec_cmd("hyprctl reload"))
 
