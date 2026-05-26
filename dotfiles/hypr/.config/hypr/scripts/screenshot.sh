@@ -10,10 +10,12 @@ FILE="$SCREENSHOT_DIR/Screenshot_${TIMESTAMP}.png"
 
 MODE="${1:-area}"
 
+# Satty toolbar height in pixels
+SATTY_TOOLBAR=50
+
 notify_saved() {
-    if command -v notify-send >/dev/null 2>&1; then
+    command -v notify-send >/dev/null 2>&1 && \
         notify-send "Screenshot saved" "$FILE"
-    fi
 }
 
 copy_file_to_clipboard() {
@@ -28,12 +30,41 @@ select_region() {
         -w 2
 }
 
+# Parse "x,y WxH" → sets W and H variables
+parse_geo() {
+    local geo="$1"
+    local dims="${geo##* }"
+    W="${dims%x*}"
+    H="${dims#*x}"
+}
+
+# Open pipe in satty and resize window to match screenshot dimensions
+open_satty() {
+    local w="$1"
+    local h="$2"
+    local win_h=$((h + SATTY_TOOLBAR))
+
+    (
+        for _ in $(seq 20); do
+            sleep 0.1
+            addr=$(hyprctl clients -j 2>/dev/null | \
+                jq -r '[.[] | select(.class == "com.gabm.satty")] | last | .address // empty')
+            [ -n "$addr" ] && {
+                hyprctl dispatch resizewindowpixel \
+                    "exact $w $win_h,address:$addr" 2>/dev/null
+                break
+            }
+        done
+    ) &
+
+    cat | satty --filename -
+}
+
 case "$MODE" in
     area)
         GEO="$(select_region)"
         [ -z "$GEO" ] && exit 0
-
-	sleep 0.20
+        sleep 0.20
         grim -g "$GEO" "$FILE"
         copy_file_to_clipboard
         notify_saved
@@ -42,11 +73,9 @@ case "$MODE" in
     area-edit)
         GEO="$(select_region)"
         [ -z "$GEO" ] && exit 0
-
+        parse_geo "$GEO"
         sleep 0.20
-	# Edit mode: do NOT auto-save.
-        # Satty opens the screenshot as a floating editor window.
-        grim -g "$GEO" -t ppm - | satty --filename -
+        grim -g "$GEO" -t ppm - | open_satty "$W" "$H"
         ;;
 
     screen)
@@ -56,12 +85,35 @@ case "$MODE" in
         ;;
 
     screen-edit)
-        # Edit mode: do NOT auto-save.
         grim -t ppm - | satty --filename -
         ;;
 
+    window)
+        GEO="$(hyprctl activewindow -j | \
+            jq -r '"\(.at[0]),\(.at[1]) \(.size[0])x\(.size[1])"')"
+        if [ -z "$GEO" ] || [ "$GEO" = "null,null nullxnull" ]; then
+            notify-send "Screenshot" "No active window" -u low
+            exit 1
+        fi
+        sleep 0.20
+        grim -g "$GEO" "$FILE"
+        copy_file_to_clipboard
+        notify_saved
+        ;;
+
+    window-edit)
+        GEO="$(hyprctl activewindow -j | \
+            jq -r '"\(.at[0]),\(.at[1]) \(.size[0])x\(.size[1])"')"
+        if [ -z "$GEO" ] || [ "$GEO" = "null,null nullxnull" ]; then
+            notify-send "Screenshot" "No active window" -u low
+            exit 1
+        fi
+        parse_geo "$GEO"
+        grim -g "$GEO" -t ppm - | open_satty "$W" "$H"
+        ;;
+
     *)
-        echo "Usage: $0 {area|area-edit|screen|screen-edit}" >&2
+        echo "Usage: $0 {area|area-edit|screen|screen-edit|window|window-edit}" >&2
         exit 1
         ;;
 esac

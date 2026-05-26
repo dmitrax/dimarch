@@ -76,6 +76,18 @@ hl.bind("SUPER + SHIFT + Print", hl.dsp.exec_cmd(
     "~/.config/hypr/scripts/screenshot.sh screen-edit"
 ))
 
+-- ALT + Print
+-- Capture active window, save PNG and copy to clipboard.
+hl.bind("ALT + Print", hl.dsp.exec_cmd(
+    "~/.config/hypr/scripts/screenshot.sh window"
+))
+
+-- ALT + SHIFT + Print
+-- Capture active window and open in Satty for annotation.
+hl.bind("ALT + SHIFT + Print", hl.dsp.exec_cmd(
+    "~/.config/hypr/scripts/screenshot.sh window-edit"
+))
+
 -- Volume
 hl.bind("XF86AudioRaiseVolume", hl.dsp.exec_cmd("swayosd-client --output-volume raise"), { locked = true })
 hl.bind("XF86AudioLowerVolume", hl.dsp.exec_cmd("swayosd-client --output-volume lower"), { locked = true })

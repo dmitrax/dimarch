@@ -111,9 +111,8 @@ hl.window_rule({
 
 -- Satty screenshot annotation window
 hl.window_rule({
-    match = { class = "^(satty)$" },
+    match = { class = "^(com.gabm.satty)$" },
     float = true,
-    persistent_size = true,
+    persistent_size = false,   -- override global rule
     center = true,
 })
-
