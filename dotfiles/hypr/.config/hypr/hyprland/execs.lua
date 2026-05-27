@@ -14,7 +14,7 @@ hl.on("hyprland.start", function()
 
     -- Desktop services
     hl.exec_cmd("hyprpaper")
-    hl.exec_cmd("waybar -c ~/.config/waybar/config-top.jsonc")
+    hl.exec_cmd("waybar -c ~/.config/waybar/config-top.jsonc -s ~/.config/waybar/style.css")
     hl.exec_cmd("hypridle")
     hl.exec_cmd("swayosd-server")
     hl.exec_cmd("hyprland-per-window-layout")
