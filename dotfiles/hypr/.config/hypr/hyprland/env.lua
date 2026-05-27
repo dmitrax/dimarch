@@ -22,6 +22,7 @@ hl.config({
         -- Qt / GTK / Mozilla Wayland
         {"QT_QPA_PLATFORM", "wayland;xcb"},
         {"QT_QPA_PLATFORMTHEME", "qt6ct"},
+	{"GDK_BACKEND", "wayland,x11,*"},
         {"GDK_SCALE", "1"},
         {"GDK_DPI_SCALE", "1"},
         {"MOZ_ENABLE_WAYLAND", "1"},
