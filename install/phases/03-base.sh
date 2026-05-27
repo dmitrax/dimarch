@@ -19,8 +19,9 @@
 #    12. Documentation — man-db, man-pages
 #    13. Audio — pipewire, pipewire-pulse, wireplumber, pavucontrol
 #    14. Base fonts — noto-fonts, noto-fonts-emoji, ttf-liberation
-#    15. Plymouth — boot splash animation + theme
-#    16. Dual boot — optional RTC sync for Windows coexistence
+#    15. Desktop utils — cliphist, wl-clipboard, udiskie
+#    16. Plymouth — boot splash animation + theme (Limine + amdgpu early KMS)
+#    17. Dual boot — optional RTC sync for Windows coexistence
 # =============================================================================
 
 set -euo pipefail
@@ -304,36 +305,101 @@ dimarch::pacman_install \
 ok "Base fonts installed"
 
 # =============================================================================
-#  STEP 15 — Plymouth (boot splash)
+#  STEP 15 — Desktop utilities
+# =============================================================================
+dimarch::section "Desktop utilities"
+
+# Clipboard history manager.
+# wl-clipboard provides wl-paste/wl-copy — required by cliphist.
+# cliphist watches clipboard and stores history in ~/.cache/cliphist/db.
+# History is persistent across reboots (SQLite, up to 750 entries by default).
+# Keybind Super+V opens rofi picker — configured in dotfiles/hypr/keybinds.lua.
+dimarch::pacman_install \
+    cliphist \
+    wl-clipboard
+
+ok "Clipboard manager installed (cliphist + wl-clipboard)"
+
+# Auto-mount daemon for removable media (USB drives, SD cards).
+# Replaces the automounting that GNOME/KDE/XFCE handle out of the box.
+# Runs as user service, integrates with Dolphin via udisks2.
+# Tray icon shows mounted volumes — enabled via execs.lua.
+dimarch::pacman_install udiskie
+
+ok "Auto-mount daemon installed (udiskie)"
+
+# Polkit authentication agent.
+# Required for GUI privilege escalation dialogs (Dolphin, Flatpak, etc.).
+# Without this, GUI apps silently fail when requesting root permissions.
+dimarch::pacman_install polkit-gnome
+
+ok "Polkit agent installed (polkit-gnome)"
+
+# XDG desktop portals — required for:
+#   - Screen sharing in Firefox/Chromium
+#   - File picker dialogs in sandboxed apps
+#   - Screenshot portal (used by some apps)
+# xdg-desktop-portal-hyprland: Hyprland-specific portal backend
+# xdg-desktop-portal-gtk: fallback for GTK file pickers
+dimarch::pacman_install \
+    xdg-desktop-portal-hyprland \
+    xdg-desktop-portal-gtk
+
+ok "XDG desktop portals installed"
+
+# =============================================================================
+#  STEP 16 — Plymouth (boot splash)
 # =============================================================================
 dimarch::section "Plymouth boot splash"
 
+# Install Plymouth
 dimarch::pacman_install plymouth
 
-# Add plymouth hook to mkinitcpio (after udev)
 MKINITCPIO_CONF="/etc/mkinitcpio.conf"
 
+# Add amdgpu to MODULES for early KMS (required for Plymouth on RX 580 / Polaris).
+# Early KMS initializes the GPU before the display manager starts,
+# allowing Plymouth to render the splash on the GPU framebuffer.
+if grep -qE "^MODULES=.*amdgpu" "$MKINITCPIO_CONF"; then
+    info "amdgpu already in mkinitcpio MODULES — skipping"
+else
+    info "Adding amdgpu to mkinitcpio MODULES (early KMS for Plymouth)..."
+    sed -i 's/^MODULES=(\(.*\))/MODULES=(\1 amdgpu)/' "$MKINITCPIO_CONF"
+    # Handle empty MODULES=() case
+    sed -i 's/^MODULES=( amdgpu)/MODULES=(amdgpu)/' "$MKINITCPIO_CONF"
+    ok "amdgpu added to MODULES"
+fi
+
+# Add plymouth hook to mkinitcpio HOOKS (must come after udev).
+# This embeds Plymouth into the initramfs so it shows during boot.
 if grep -q "plymouth" "$MKINITCPIO_CONF"; then
     info "Plymouth hook already in mkinitcpio.conf — skipping"
 else
-    info "Adding plymouth hook to mkinitcpio.conf..."
+    info "Adding plymouth hook after udev in mkinitcpio.conf..."
     sed -i 's/\(HOOKS=.*udev\)/\1 plymouth/' "$MKINITCPIO_CONF"
     ok "Plymouth hook added after udev"
 fi
 
-# Add quiet splash to GRUB cmdline
-GRUB_DEFAULT_CONF="/etc/default/grub"
+# Add quiet splash to Limine kernel cmdline.
+# Limine config lives at /boot/limine.conf.
+# We patch every CMDLINE= line that doesn't already contain 'splash'.
+LIMINE_CONF="/boot/limine.conf"
 
-if grep -q "quiet splash" "$GRUB_DEFAULT_CONF"; then
-    info "quiet splash already in GRUB cmdline — skipping"
+if [[ ! -f "$LIMINE_CONF" ]]; then
+    warn "Limine config not found at ${LIMINE_CONF} — skipping cmdline patch"
+    warn "Add 'quiet splash' to CMDLINE manually in ${LIMINE_CONF}"
 else
-    info "Adding quiet splash to GRUB_CMDLINE_LINUX_DEFAULT..."
-    sed -i 's/\(GRUB_CMDLINE_LINUX_DEFAULT="[^"]*\)"/\1 quiet splash"/' \
-        "$GRUB_DEFAULT_CONF"
-    ok "quiet splash added to GRUB cmdline"
+    if grep -q "splash" "$LIMINE_CONF"; then
+        info "quiet splash already in Limine cmdline — skipping"
+    else
+        info "Adding quiet splash to Limine CMDLINE entries..."
+        sed -i '/^[[:space:]]*CMDLINE=/ s/$/ quiet splash/' "$LIMINE_CONF"
+        ok "quiet splash added to Limine CMDLINE"
+    fi
 fi
 
-# Install Plymouth theme
+# Install Plymouth theme (placeholder until dimarch-theme provides one).
+# dimarch-theme will ship a custom Sage-branded Plymouth theme in the future.
 info "Installing Plymouth theme: monoarch-refined..."
 dimarch::paru_install plymouth-theme-monoarch-refined
 
@@ -341,17 +407,13 @@ info "Setting Plymouth theme..."
 plymouth-set-default-theme -R monoarch-refined
 ok "Plymouth theme set: monoarch-refined"
 
-# Rebuild initramfs and GRUB
+# Rebuild initramfs to include Plymouth + amdgpu early KMS
 info "Rebuilding initramfs (mkinitcpio -P)..."
 mkinitcpio -P
 ok "initramfs rebuilt"
 
-info "Updating GRUB config..."
-grub-mkconfig -o /boot/grub/grub.cfg
-ok "GRUB config updated"
-
 # =============================================================================
-#  STEP 16 — Dual boot (optional)
+#  STEP 17 — Dual boot (optional)
 # =============================================================================
 dimarch::section "Dual boot"
 
