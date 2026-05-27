@@ -23,15 +23,20 @@
     ],
 
     "modules-right": [
-        "cpu",
-        "memory",
-        "temperature",
+	"group/stats",
+        "custom/weather",
         "pulseaudio",
         "hyprland/language",
         "tray",
         "clock",
         "custom/power"
     ],
+
+    // ── Stats group ────────────────────────────────────────
+    "group/stats": { 
+	"orientation": "horizontal",
+	"modules": ["cpu", "memory", "temperature"]
+    },
 
     // ── Logo ───────────────────────────────────────────────
     "custom/logo": {
@@ -49,8 +54,9 @@
         "persistent-workspaces": {
            "DP-1": [1, 2, 3, 4, 5],
            "DP-2": [6, 7]
-        } 
+        }
     },
+
     // ── Active window title ────────────────────────────────
     "hyprland/window": {
         "format": "{title}",
@@ -61,7 +67,7 @@
     // ── CPU ────────────────────────────────────────────────
     "cpu": {
         "interval": 2,
-        "format": " {usage}%",
+        "format": "{usage}% 󰻠",
         "tooltip": false
     },
 
@@ -81,12 +87,25 @@
         "tooltip": false
     },
 
-    // ── Volume ────────────────────────────────────────────
+    // ── Weather ───────────────────────────────────────────
+    "custom/weather": {
+        "exec": "~/.config/waybar/scripts/weather.sh",
+        "interval": 1800,
+        "format": "{}",
+        "tooltip": true
+    },
+
+    // ── Volume + Microphone ───────────────────────────────
     "pulseaudio": {
-        "format": "{icon} {volume}%",
-        "format-muted": "󰝟",
+        "format": "{volume}% {icon}  {format_source}",
+        "format-bluetooth": "{volume}% {icon}  {format_source}",
+        "format-muted": "󰝟  {format_source}",
+        "format-source": "{volume}% 󰍬",
+        "format-source-muted": "󰍭",
         "format-icons": {
-            "default": ["󰕿", "󰖀", "󰕾"]
+            "headphone": "󰋋",
+            "headset":   "󰋎",
+            "default":   ["󰕿", "󰖀", "󰕾"]
         },
         "on-click": "pavucontrol",
         "tooltip-format": "{desc}\n{volume}%"
@@ -107,13 +126,12 @@
 
     // ── Clock ─────────────────────────────────────────────
     "clock": {
-        "interval": 60,
-        "format": "{:%H:%M}",
-        "format-alt": "{:%A, %d %B}",
-        "tooltip-format": "<big>{:%Y %B}</big>\n<tt>{calendar}</tt>",
-        "on-click": "mode"
+    	"interval": 1,
+    	"format": "{:%H:%M:%S}",
+    	"format-alt": "{:%A, %d %B}",
+    	"tooltip-format": "<big>{:%Y %B}</big>\n<tt>{calendar}</tt>",
+    	"on-click": "mode"
     },
-
     // ── Power menu ────────────────────────────────────────
     "custom/power": {
         "format": "⏻",

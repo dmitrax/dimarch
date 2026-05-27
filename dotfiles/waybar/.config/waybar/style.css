@@ -25,6 +25,7 @@
 
 /* ── Global reset ───────────────────────────────────────── */
 * {
+    all: unset;
     font-family: "Inter Variable", "Inter", sans-serif;
     font-size: 14px;
     font-weight: 500;
@@ -127,34 +128,54 @@ tooltip {
     color: @text_faded;
 }
 
-/* ── System modules ─────────────────────────────────────── */
-#cpu,
-#memory,
-#temperature,
-#pulseaudio,
-#clock {
-    padding: 0 8px;
-    margin: 3px 0;
+/* ── Stats group (cpu + memory + temperature) ───────────── */
+#stats {
+    background: @bg_module;
+    border: 1px solid @border_module;
+    border-radius: 5px;
+    padding: 0 4px;
+    margin: 3px 2px;
+}
+
+#stats #cpu,
+#stats #memory,
+#stats #temperature {
+    background: transparent;
+    border: none;
+    border-radius: 0;
+    padding: 0 6px;
+    margin: 0;
     color: @text_soft;
 }
 
-#cpu { margin-left: 8px; }
+#stats #cpu.warning,
+#stats #memory.warning  { color: @warning; }
+#stats #cpu.critical,
+#stats #memory.critical { color: @urgent;  }
 
-#cpu.warning,
-#memory.warning  { color: @warning; }
-#cpu.critical,
-#memory.critical { color: @urgent;  }
-
-#temperature.critical {
+#stats #temperature.critical {
     color: @urgent;
     font-weight: 600;
 }
 
-/* ── Volume — highlighted module ────────────────────────── */
+/* ── Weather ────────────────────────────────────────────── */
+#custom-weather {
+    background: @bg_module;
+    border: 1px solid @border_module;
+    border-radius: 5px;
+    padding: 0 10px;
+    margin: 3px 2px;
+    color: @text_soft;
+}
+
+/* ── Volume + Microphone ────────────────────────────────── */
 #pulseaudio {
     background: @bg_module;
     border: 1px solid @border_module;
     border-radius: 5px;
+    padding: 0 10px;
+    margin: 3px 2px;
+    font-family: "JetBrainsMono Nerd Font Propo";
 }
 
 #pulseaudio.muted {
@@ -174,13 +195,14 @@ tooltip {
     letter-spacing: 0.4px;
 }
 
-/* ── Tray — grouped module ──────────────────────────────── */
+/* ── Tray ───────────────────────────────────────────────── */
 #tray {
     background: @bg_module;
     padding: 0 7px;
     margin: 3px 3px;
     border-radius: 5px;
     border: 1px solid @border_module;
+    font-family: "JetBrainsMono Nerd Font Propo";
 }
 
 #tray > .passive {
@@ -191,7 +213,7 @@ tooltip {
     -gtk-icon-effect: highlight;
 }
 
-/* ── Clock — anchor module ──────────────────────────────── */
+/* ── Clock ──────────────────────────────────────────────── */
 #clock {
     background: @bg_module;
     border: 1px solid @border_module;
@@ -209,6 +231,7 @@ tooltip {
     padding: 0 10px;
     margin: 3px 3px 3px 0;
     border-radius: 6px;
+    font-family: "JetBrainsMono Nerd Font Propo";
     transition: background 150ms ease, color 150ms ease;
 }
 
