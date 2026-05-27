@@ -24,5 +24,9 @@ hl.on("hyprland.start", function()
     hl.exec_cmd("hyprland-per-window-layout")
   -- hl.exec_cmd("hyprswitch init --show-title &")
 
+    -- Auto-mount daemon for removable media (USB drives, SD cards)
+    -- Replaces automounting that GNOME/KDE handle out of the box
+    hl.exec_cmd("udiskie --tray")
+
     hl.exec_cmd("hyprctl setcursor Bibata-Modern-Classic 24")
 end)
