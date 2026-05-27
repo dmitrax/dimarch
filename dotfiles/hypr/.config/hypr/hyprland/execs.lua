@@ -24,6 +24,11 @@ hl.on("hyprland.start", function()
     hl.exec_cmd("hyprland-per-window-layout")
   -- hl.exec_cmd("hyprswitch init --show-title &")
 
+    -- Polkit authentication agent
+    -- Required for GUI privilege escalation dialogs (Dolphin, Flatpak, etc.)
+    -- Without this, GUI apps silently fail when requesting root permissions
+    hl.exec_cmd("/usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1")
+
     -- Auto-mount daemon for removable media (USB drives, SD cards)
     -- Replaces automounting that GNOME/KDE handle out of the box
     hl.exec_cmd("udiskie --tray")
