@@ -1,6 +1,6 @@
 # DimArch OS — Sage
 
-> Modern system. Old soul.
+Modern system. Old soul.
 
 > ⚠️ **Work in progress** — actively developed, not yet ready for general use.
 
