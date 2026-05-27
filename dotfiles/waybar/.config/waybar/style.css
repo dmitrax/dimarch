@@ -275,3 +275,43 @@ tooltip {
     padding: 0 10px;
     margin: 3px 2px;
 }
+
+/* ── GTK popup menus (tray icons) ───────────────────────── */
+menu {
+    background: rgba(22, 22, 28, 0.92);
+    border: 1px solid @border_soft;
+    border-radius: 8px;
+    padding: 4px 0;
+    color: @text_main;
+}
+
+menuitem {
+    padding: 6px 14px;
+    border-radius: 5px;
+    margin: 2px 4px;
+    color: @text_soft;
+}
+
+menuitem:hover {
+    background: @bg_hover;
+    color: @text_main;
+}
+
+menuitem:disabled {
+    color: @text_faded;
+}
+
+separator {
+    background: @border_soft;
+    margin: 4px 0;
+    min-height: 1px;
+}
+
+/* ── Tooltip ────────────────────────────────────────────── */
+tooltip {
+    background: rgba(22, 22, 28, 0.92);
+    border: 1px solid @border_soft;
+    border-radius: 8px;
+    color: @text_main;
+    padding: 6px 10px;
+}
