@@ -1,7 +1,7 @@
 -- =========================================================
 -- DimArch OS — Decoration
 -- Hyprland v0.55+ / Lua config
--- Light KSK Royal / macOS-like floating desktop
+-- Sage Theme — calm, clean, rooted. MATE-inspired floating desktop
 -- =========================================================
 
 hl.config({

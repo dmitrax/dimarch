@@ -1,4 +1,4 @@
--- Light KSK Royal — static colors until matugen is configured
+-- Sage Theme — static colors until matugen is configured
 hl.config({
     general = {
         col = {
