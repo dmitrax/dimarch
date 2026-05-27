@@ -15,6 +15,10 @@ hl.on("hyprland.start", function()
     -- Desktop services
     hl.exec_cmd("hyprpaper")
     hl.exec_cmd("waybar -c ~/.config/waybar/config-top.jsonc -s ~/.config/waybar/style.css")
+        -- Clipboard history daemon
+        -- Watches clipboard and stores entries in cliphist database
+	hl.exec_cmd("wl-paste --type text --watch cliphist store")
+	hl.exec_cmd("wl-paste --type image --watch cliphist store")
     hl.exec_cmd("hypridle")
     hl.exec_cmd("swayosd-server")
     hl.exec_cmd("hyprland-per-window-layout")

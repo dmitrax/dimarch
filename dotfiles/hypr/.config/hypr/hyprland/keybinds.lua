@@ -104,3 +104,10 @@ hl.bind("XF86AudioMicMute",     hl.dsp.exec_cmd("swayosd-client --input-volume m
 hl.bind("SUPER + L", hl.dsp.exec_cmd(
     "loginctl lock-session"
 ))
+
+-- Super + V
+-- Show clipboard history via rofi.
+-- Select entry → decode → copy back to clipboard.
+hl.bind(mod .. " + V", hl.dsp.exec_cmd(
+    "cliphist list | rofi -dmenu -p 'Clipboard' | cliphist decode | wl-copy"
+))
