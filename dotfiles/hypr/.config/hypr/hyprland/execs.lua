@@ -23,6 +23,7 @@ hl.on("hyprland.start", function()
     hl.exec_cmd("swayosd-server")
     hl.exec_cmd("hyprland-per-window-layout")
   -- hl.exec_cmd("hyprswitch init --show-title &")
+    hl.exec_cmd("caffeine-ng")
 
     -- Polkit authentication agent
     -- Required for GUI privilege escalation dialogs (Dolphin, Flatpak, etc.)
