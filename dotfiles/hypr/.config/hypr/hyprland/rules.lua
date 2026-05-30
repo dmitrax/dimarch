@@ -116,3 +116,14 @@ hl.window_rule({
     persistent_size = false,   -- override global rule
     center = true,
 })
+
+-- ---------------------------------------------------------
+-- XWayland apps
+-- ---------------------------------------------------------
+ 
+-- XWayland windows default to position 0,0 (top-left corner).
+-- This rule centers all XWayland windows on open.
+hl.window_rule({
+    match = { xwayland = true },
+    center = true,
+})
