@@ -28,6 +28,7 @@
         "pulseaudio",
         "hyprland/language",
         "tray",
+	"idle_inhibitor",
         "clock",
         "custom/power"
     ],
@@ -132,6 +133,21 @@
     	"tooltip-format": "<big>{:%Y %B}</big>\n<tt>{calendar}</tt>",
     	"on-click": "mode"
     },
+
+    // ── Idle inhibitor (caffeine) ─────────────────────────
+    // Uses zwp_idle_inhibit_manager_v1 — native Wayland protocol.
+    // hypridle fully respects this inhibitor.
+    // Click to toggle: ON = system will not lock or suspend.
+    "idle_inhibitor": {
+        "format": "{icon}",
+        "format-icons": {
+            "activated":   "\uF0F4",
+            "deactivated": "\uF0F4"
+        },
+        "tooltip-format-activated":   "Caffeine ON — idle inhibited",
+        "tooltip-format-deactivated": "Caffeine OFF"
+    },
+    
     // ── Power menu ────────────────────────────────────────
     "custom/power": {
         "format": "⏻",
