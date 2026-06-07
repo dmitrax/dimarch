@@ -1,0 +1,94 @@
+"$schema" = 'https://starship.rs/config-schema.json'
+
+# ════════════════════════════════════════════════════════════════
+#  DimArch OS — Starship Prompt Config
+#  Theme: DimArch Sage
+# ════════════════════════════════════════════════════════════════
+
+format = """
+$os$directory$git_branch$git_status$nodejs$python$rust$cmd_duration
+$time$character"""
+
+palette = "dimarch_sage"
+
+# ── OS icon ──────────────────────────────────────────────────────
+[os]
+disabled = false
+style    = "bold sage"
+
+[os.symbols]
+Linux = "󰌽 "
+Arch  = "󰣇 "
+
+# ── Directory ────────────────────────────────────────────────────
+[directory]
+style             = "bold sage"
+truncation_length = 3
+truncate_to_repo  = true
+read_only         = " 󰌾"
+read_only_style   = "bold red"
+
+# ── Git ──────────────────────────────────────────────────────────
+[git_branch]
+#symbol = " "
+style  = "bold purple"
+
+[git_status]
+style    = "bold red"
+ahead    = "⇡${count}"
+behind   = "⇣${count}"
+diverged = "⇕⇡${ahead_count}⇣${behind_count}"
+modified = "!${count}"
+untracked = "?${count}"
+staged   = "+${count}"
+stashed  = "≡"
+
+# ── Languages ────────────────────────────────────────────────────
+[nodejs]
+symbol = " "
+style  = "bold sage"
+
+[python]
+symbol             = " "
+style              = "bold warm"
+pyenv_version_name = true
+
+[rust]
+symbol = " "
+style  = "bold red"
+
+# ── Command duration ─────────────────────────────────────────────
+[cmd_duration]
+min_time = 2000
+style    = "bold warm"
+format   = "[ $duration]($style) "
+
+# ── Time + arrow prompt (line 2) ─────────────────────────────────
+# Renders as:  ╰─[ 15:42 ]──❯
+[time]
+disabled    = false
+format      = "[╰─](overlay)[ $time ](bold fg:sage bg:sage_dim)[](fg:sage_dim)"
+time_format = "%H:%M"
+
+[character]
+success_symbol = "[──❯](bold sage)"
+error_symbol   = "[──❯](bold red)"
+
+# ════════════════════════════════════════════════════════════════
+#  DimArch Sage Color Palette
+# ════════════════════════════════════════════════════════════════
+[palettes.dimarch_sage]
+bg_dark   = "#16161c"
+bg        = "#1e1e26"
+surface   = "#252530"
+overlay   = "#3a3a4a"
+text      = "#edeae4"
+subtext   = "#b8bdb7"
+sage      = "#7fb89e"
+sage_dark = "#5e9f82"
+sage_dim  = "#2d4a40"
+warm      = "#d4a96a"
+red       = "#c47a7a"
+blue      = "#7a9cc4"
+purple    = "#a07fb8"
+cyan      = "#7fb8b4"
