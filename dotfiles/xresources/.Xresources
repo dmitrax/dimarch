@@ -1,0 +1,16 @@
+! =========================================================
+! DimArch OS — XWayland font rendering
+! ~/.Xresources
+!
+! Xft.dpi = 96 × monitor scale
+! Primary monitor: LG 4K, scale 1.5 → 96 × 1.5 = 144
+! Applied at Hyprland start via: xrdb -merge ~/.Xresources
+! =========================================================
+
+Xft.dpi: 144
+Xft.autohint: 0
+Xft.lcdfilter: lcddefault
+Xft.hintstyle: hintfull
+Xft.hinting: 1
+Xft.antialias: 1
+Xft.rgba: rgb

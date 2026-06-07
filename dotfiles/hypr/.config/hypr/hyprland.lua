@@ -15,6 +15,7 @@ require("hyprland/general")
 require("hyprland/colors")
 require("hyprland/decoration")
 require("hyprland/misc")
+require("hyprland/xwayland")
 require("hyprland/animations")
 
 -- Rules

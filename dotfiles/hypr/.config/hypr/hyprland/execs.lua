@@ -12,6 +12,11 @@ hl.on("hyprland.start", function()
     -- Required by Chromium/Vivaldi when using libsecret password storage.
     hl.exec_cmd("gnome-keyring-daemon --start --components=secrets,pkcs11,ssh")
 
+    -- XWayland font rendering settings.
+    -- Applies Xft.dpi and hinting from ~/.Xresources to all XWayland apps
+    -- (Steam, Enpass, Zoom, etc). Must run before any XWayland app starts.
+    hl.exec_cmd("xrdb -merge ~/.Xresources")
+
     -- Desktop services
     hl.exec_cmd("hyprpaper")
     hl.exec_cmd("waybar -c ~/.config/waybar/config-top.jsonc -s ~/.config/waybar/style.css")
