@@ -1,0 +1,140 @@
+{
+  // ── Privacy & AI ─────────────────────────────────────────────────────────
+  "telemetry.telemetryLevel": "off",
+  "chat.disableAIFeatures": true,
+  "workbench.enableExperiments": false,
+  "workbench.settings.enableNaturalLanguageSearch": false,
+  "extensions.ignoreRecommendations": true,
+  "update.showReleaseNotes": false,
+  "workbench.startupEditor": "none",
+  "settingsSync.ignoredSettings": [
+    "terminal.integrated.profiles.osx",
+    "terminal.integrated.defaultProfile.osx",
+    "terminal.integrated.profiles.linux",
+    "terminal.integrated.defaultProfile.linux"
+  ],
+
+  // ── Theme: Everforest Pro Dark Vibrant + Sage accents ────────────────────
+  "workbench.colorTheme": "Everforest Pro Dark Vibrant",
+  "workbench.iconTheme": "material-icon-theme",
+  "material-icon-theme.folders.color": "#7fb89e",
+  "material-icon-theme.opacity": 0.9,
+  "workbench.colorCustomizations": {
+    "[Everforest Pro Dark Vibrant]": {
+      "activityBar.activeBorder":                 "#7fb89e",
+      "activityBarBadge.background":              "#7fb89e",
+      "activityBarBadge.foreground":              "#2b3339",
+      "statusBar.background":                     "#232b30",
+      "statusBar.foreground":                     "#d3c6aa",
+      "statusBarItem.hoverBackground":            "#3a4a42",
+      "tab.activeBorderTop":                      "#7fb89e",
+      "editorCursor.foreground":                  "#7fb89e",
+      "editor.selectionBackground":               "#7fb89e26",
+      "editor.findMatchHighlightBackground":      "#7fb89e20",
+      "focusBorder":                              "#7fb89e",
+      "scrollbarSlider.activeBackground":         "#7fb89e55",
+      "button.background":                        "#7fb89e",
+      "button.foreground":                        "#2b3339",
+      "button.hoverBackground":                   "#6daa8f",
+      "extensionButton.prominentBackground":      "#7fb89e",
+      "extensionButton.prominentForeground":      "#2b3339",
+      "extensionButton.prominentHoverBackground": "#6daa8f",
+      "textLink.foreground":                      "#7fb89e",
+      "textLink.activeForeground":                "#8fcbaf",
+      "badge.background":                         "#7fb89e",
+      "badge.foreground":                         "#2b3339",
+      "progressBar.background":                   "#7fb89e",
+      "editor.background":                        "#262f2c",
+      "sideBar.background":                       "#212b28",
+      "activityBar.background":                   "#1d2623",
+      "editorGroupHeader.tabsBackground":         "#212b28",
+      "panel.background":                         "#212b28"
+    }
+  },
+
+  // ── Font: JetBrains Mono Nerd Font (same as Ghostty) ─────────────────────
+  "editor.fontFamily": "'JetBrainsMono Nerd Font', 'JetBrains Mono', monospace",
+  "editor.fontSize": 14,
+  "editor.fontLigatures": true,
+  "editor.lineHeight": 1.6,
+  "terminal.integrated.fontFamily": "'JetBrainsMono Nerd Font'",
+  "terminal.integrated.fontSize": 14,
+
+  // ── Editor behaviour ──────────────────────────────────────────────────────
+  "editor.formatOnSave": true,
+  "editor.tabSize": 2,
+  "editor.insertSpaces": true,
+  "editor.detectIndentation": true,
+  "editor.wordWrap": "off",
+  "editor.minimap.enabled": false,
+  "editor.bracketPairColorization.enabled": true,
+  "editor.guides.bracketPairs": "active",
+  "editor.renderWhitespace": "boundary",
+  "editor.smoothScrolling": true,
+  "files.trimTrailingWhitespace": true,
+  "files.insertFinalNewline": true,
+  "files.autoSave": "onWindowChange",
+  "workbench.list.smoothScrolling": true,
+
+  // ── Per-language formatters ───────────────────────────────────────────────
+  "[python]": {
+    "editor.defaultFormatter": "charliermarsh.ruff",
+    "editor.tabSize": 4,
+    "editor.rulers": [88]
+  },
+  "[javascript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[typescript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[json]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[jsonc]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[shellscript]": {
+    "editor.defaultFormatter": "foxundermoon.shell-format"
+  },
+  "[lua]": {
+    "editor.tabSize": 4,
+    "editor.formatOnSave": false
+  },
+  "[markdown]": {
+    "editor.wordWrap": "on",
+    "files.trimTrailingWhitespace": false
+  },
+
+  // ── Git ───────────────────────────────────────────────────────────────────
+  "git.autofetch": true,
+  "git.confirmSync": false,
+
+  // ── File / search exclusions ──────────────────────────────────────────────
+  "files.exclude": {
+    "**/__pycache__": true,
+    "**/.DS_Store": true,
+    "**/node_modules": true,
+    "**/.ruff_cache": true
+  },
+  "search.exclude": {
+    "**/node_modules": true,
+    "**/.git": true,
+    "**/__pycache__": true
+  },
+
+  // ── Platform-specific ─────────────────────────────────────────────────────
+  "[linux]": {
+    "window.titleBarStyle": "custom",
+    "terminal.integrated.profiles.linux": {
+      "zsh": { "path": "/usr/bin/zsh", "args": ["-l"] }
+    },
+    "terminal.integrated.defaultProfile.linux": "zsh"
+  },
+  "[osx]": {
+    "terminal.integrated.profiles.osx": {
+      "zsh": { "path": "/opt/homebrew/bin/zsh", "args": ["-l"] }
+    },
+    "terminal.integrated.defaultProfile.osx": "zsh"
+  }
+}

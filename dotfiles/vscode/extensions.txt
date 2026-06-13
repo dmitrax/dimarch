@@ -1,0 +1,45 @@
+# VS Code extensions — DimArch OS
+# Install: grep -v '^#' extensions.txt | xargs -L1 code --install-extension
+
+# ── Theme ─────────────────────────────────────────────────────────────────
+AndreiLucaci.everforest-pro
+PKief.material-icon-theme
+
+# ── AI ────────────────────────────────────────────────────────────────────
+anthropic.claude-code
+
+# ── Python ────────────────────────────────────────────────────────────────
+ms-python.python
+ms-python.vscode-pylance
+charliermarsh.ruff
+
+# ── JavaScript / Node ─────────────────────────────────────────────────────
+dbaeumer.vscode-eslint
+esbenp.prettier-vscode
+
+# ── Shell ─────────────────────────────────────────────────────────────────
+timonwong.shellcheck
+foxundermoon.shell-format
+
+# ── Lua (Hyprland configs) ────────────────────────────────────────────────
+sumneko.lua
+
+# ── TOML (pyproject.toml, configs) ───────────────────────────────────────
+tamasfe.even-better-toml
+
+# ── Web ───────────────────────────────────────────────────────────────────
+ritwickdey.LiveServer
+
+# ── HTTP / API (Ollama, ComfyUI) ──────────────────────────────────────────
+humao.rest-client
+
+# ── Markdown ──────────────────────────────────────────────────────────────
+yzhang.markdown-all-in-one
+
+# ── Git ───────────────────────────────────────────────────────────────────
+mhutchie.git-graph
+
+# ── UX ────────────────────────────────────────────────────────────────────
+usernamehw.errorlens
+oderwat.indent-rainbow
+fill-labs.dependi
