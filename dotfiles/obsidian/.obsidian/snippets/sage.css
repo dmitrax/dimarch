@@ -1,0 +1,31 @@
+/* ── Sage for Obsidian ───────────────────────────────────────────────────────
+   Everforest Enchanted Light + Sage accents
+   Pairs with Everforest Pro Dark Vibrant in VSCode
+   Accent: #7fb89e
+   ────────────────────────────────────────────────────────────────────────── */
+
+body.theme-light.mod-linux {
+  /* Soft warm background */
+  --background-primary:              #f8f4ea;
+  --background-secondary:            #f3edd8;
+  --background-primary-alt:          #f3edd8;
+  --background-modifier-border:      #e8e1cc;
+
+  /* Titlebar and tabs — match secondary */
+  --titlebar-background:             #f3edd8;
+  --titlebar-background-focused:     #f3edd8;
+  --tab-container-background:        #f3edd8;
+  --tab-background-active:           #f8f4ea;
+
+  /* Links — saturated sage green */
+  --link-color:                      #35a77c;
+  --link-color-hover:                #2a9068;
+  --link-unresolved-color:           #8da101;
+  --link-unresolved-opacity:         0.8;
+}
+
+/* White text on accent buttons */
+button.mod-cta,
+.mod-cta {
+  color: #ffffff !important;
+}
