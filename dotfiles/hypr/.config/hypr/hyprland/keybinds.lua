@@ -2,7 +2,7 @@ local mod = "SUPER"
 
 -- Apps
 hl.bind(mod .. " + Return", hl.dsp.exec_cmd("ghostty"))
-hl.bind(mod .. " + E",      hl.dsp.exec_cmd("dolphin"))
+hl.bind(mod .. " + E",      hl.dsp.exec_cmd("thunar"))
 hl.bind(mod .. " + Space",  hl.dsp.exec_cmd("rofi -show drun"))
 
 -- Window management

@@ -1,3 +1,3 @@
 hl.env("terminal",    "ghostty")
-hl.env("fileManager", "dolphin")
+hl.env("fileManager", "thunar")
 hl.env("browser",     "firefox")

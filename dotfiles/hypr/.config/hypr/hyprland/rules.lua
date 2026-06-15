@@ -60,10 +60,9 @@ hl.window_rule({
 -- ---------------------------------------------------------
 
 hl.window_rule({
-    match = { class = "^(dolphin|org.kde.dolphin)$" },
+    match = { class = "^(thunar)$" },
     float = true,
     persistent_size = true,
-    size = { "monitor_w * 0.62", "monitor_h * 0.72" },
     center = true,
 })
 
