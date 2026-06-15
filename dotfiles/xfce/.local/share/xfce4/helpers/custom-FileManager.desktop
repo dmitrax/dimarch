@@ -1,0 +1,10 @@
+[Desktop Entry]
+NoDisplay=true
+Version=1.0
+Encoding=UTF-8
+Type=X-XFCE-Helper
+X-XFCE-Category=FileManager
+X-XFCE-CommandsWithParameter=/usr/bin/thunar "%s"
+Icon=org.xfce.thunar
+Name=Thunar
+X-XFCE-Commands=/usr/bin/thunar
