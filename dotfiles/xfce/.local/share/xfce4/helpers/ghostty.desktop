@@ -4,7 +4,7 @@ Version=1.0
 Encoding=UTF-8
 Type=X-XFCE-Helper
 X-XFCE-Category=TerminalEmulator
-X-XFCE-CommandsWithParameter=ghostty -e %s
+X-XFCE-CommandsWithParameter=ghostty --working-directory=%s
 Icon=com.mitchellh.ghostty
 Name=Ghostty
 X-XFCE-Commands=ghostty
