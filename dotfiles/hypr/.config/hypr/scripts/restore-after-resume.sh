@@ -143,3 +143,5 @@ hyprctl workspaces >> "$LOG" 2>&1 || true
 
 log "clients after restore:"
 hyprctl clients -j | jq '.[] | {class, title, workspace: .workspace.id, floating, at, size, address}' >> "$LOG" 2>&1 || true
+
+~/.config/hypr/scripts/collect-resume-evidence.sh >> "$LOG" 2>&1 || true
