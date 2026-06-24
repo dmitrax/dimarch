@@ -4,6 +4,13 @@ set -euo pipefail
 
 STATE_FILE="/tmp/dimarch-hypr-clients-before-sleep.json"
 LOG="/tmp/dimarch-restore-after-resume.log"
+LOCK="/tmp/dimarch-restore-after-resume.lock"
+
+# Only one instance may run at a time (after_sleep_cmd + on-resume can both fire).
+if ! mkdir "$LOCK" 2>/dev/null; then
+    exit 0
+fi
+trap 'rmdir "$LOCK" 2>/dev/null || true' EXIT
 
 # Overwrite log on each resume cycle.
 : > "$LOG"
@@ -41,6 +48,19 @@ apply_monitor_layout() {
     # DP-1 = LG 4K, right, scale 1.5.
     run hyprctl eval 'hl.monitor({ output = "DP-2", mode = "1920x1080@60", position = "0x0", scale = 1 })'
     run hyprctl eval 'hl.monitor({ output = "DP-1", mode = "3840x2160@60", position = "1920x0", scale = 1.5 })'
+}
+
+rebind_workspaces() {
+    log "rebinding workspaces to monitors"
+
+    # Workspaces may have migrated to DP-2 while DP-1 was offline during sleep.
+    local ws
+    for ws in 1 2 3 4 5; do
+        run hyprctl dispatch "hl.dsp.workspace.move({ monitor = \"DP-1\", workspace = \"${ws}\" })"
+    done
+    for ws in 6 7; do
+        run hyprctl dispatch "hl.dsp.workspace.move({ monitor = \"DP-2\", workspace = \"${ws}\" })"
+    done
 }
 
 restore_clients_from_state() {
@@ -82,7 +102,7 @@ ensure_waybar() {
 
     if ! pgrep -x waybar >/dev/null; then
         log "waybar is not running, starting"
-        waybar >/tmp/waybar.log 2>&1 &
+        waybar -c ~/.config/waybar/config-top.jsonc -s ~/.config/waybar/style.css >/tmp/waybar.log 2>&1 &
     else
         log "waybar is already running"
     fi
@@ -102,6 +122,11 @@ apply_monitor_layout
 
 # Give Hyprland a moment to settle layout.
 sleep 1
+
+# Explicitly move workspaces back to their designated monitors before restoring windows.
+rebind_workspaces
+
+sleep 0.5
 
 # Restore exact saved floating window geometry.
 restore_clients_from_state
