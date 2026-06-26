@@ -1,0 +1,67 @@
+#!/usr/bin/env bash
+# dimarch-hypridle-gen — internal script, called via: dimarchctl power apply
+#
+# Reads timeout values from dimarch.conf (user override first, then /etc/),
+# generates ~/.config/hypr/hypridle.conf from hypridle.conf.tmpl,
+# restarts hypridle user service.
+
+set -euo pipefail
+
+SYS_CONF="/etc/dimarch.conf"
+USER_CONF="${XDG_CONFIG_HOME:-$HOME/.config}/dimarch/dimarch.conf"
+TMPL="${XDG_CONFIG_HOME:-$HOME/.config}/hypr/hypridle.conf.tmpl"
+OUT="${XDG_CONFIG_HOME:-$HOME/.config}/hypr/hypridle.conf"
+
+# ─────────────────────────────────────────────────────────────────────────────
+
+_conf_get() {
+    local section="$1" key="$2" file="$3"
+    [[ -f "$file" ]] || return 1
+    awk -F' *= *' -v s="$section" -v k="$key" '
+        /^\[/ { cur = substr($0, 2, length($0)-2) }
+        cur==s && $1==k {
+            gsub(/[[:space:]]*#.*$/, "", $2)
+            gsub(/^[[:space:]]+|[[:space:]]+$/, "", $2)
+            print $2; exit
+        }
+    ' "$file"
+}
+
+_conf_get_merged() {
+    local section="$1" key="$2" val=""
+    if [[ -f "$USER_CONF" ]]; then
+        val=$(_conf_get "$section" "$key" "$USER_CONF" 2>/dev/null || true)
+    fi
+    [[ -n "$val" ]] && echo "$val" && return 0
+    _conf_get "$section" "$key" "$SYS_CONF" 2>/dev/null || true
+}
+
+# ─────────────────────────────────────────────────────────────────────────────
+
+[[ -f "$TMPL" ]] || {
+    echo "dimarch-hypridle-gen: template not found: $TMPL" >&2
+    echo "  Deploy dotfiles first: cp dotfiles/hypr/.config/hypr/hypridle.conf.tmpl $TMPL" >&2
+    exit 1
+}
+
+export LOCK_TIMEOUT MONITOR_OFF_TIMEOUT HIBERNATE_TIMEOUT
+
+LOCK_TIMEOUT=$(_conf_get_merged power lock_timeout)
+MONITOR_OFF_TIMEOUT=$(_conf_get_merged power monitor_off_timeout)
+HIBERNATE_TIMEOUT=$(_conf_get_merged power hibernate_timeout)
+
+LOCK_TIMEOUT=${LOCK_TIMEOUT:-300}
+MONITOR_OFF_TIMEOUT=${MONITOR_OFF_TIMEOUT:-420}
+HIBERNATE_TIMEOUT=${HIBERNATE_TIMEOUT:-1200}
+
+envsubst < "$TMPL" > "$OUT"
+
+echo "  written: $OUT"
+echo "  lock=${LOCK_TIMEOUT}s  monitor_off=${MONITOR_OFF_TIMEOUT}s  hibernate=${HIBERNATE_TIMEOUT}s"
+
+if systemctl --user is-active --quiet hypridle 2>/dev/null; then
+    systemctl --user restart hypridle
+    echo "  hypridle restarted."
+else
+    echo "  hypridle not running — config updated, start it manually."
+fi

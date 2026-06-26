@@ -55,6 +55,19 @@ sleep_mode = suspend
 #
 monitor_off = none
 
+# Idle timeouts (seconds). Applied by: dimarchctl power apply
+#
+#   lock_timeout         — idle time before hyprlock activates
+#   monitor_off_timeout  — idle time before monitors turn off (monitor_off must be != none)
+#   hibernate_timeout    — idle time before dimarch-sleep runs
+#
+# Defaults: 300 / 420 / 1200  (5 min / 7 min / 20 min)
+# Change here, then run: dimarchctl power apply
+#
+lock_timeout         = 300
+monitor_off_timeout  = 420
+hibernate_timeout    = 1200
+
 # Swapfile path (only used when sleep_mode = hibernate).
 # Must be on a real partition (not zram/tmpfs) with RAM+2G free space.
 # setup-hibernate.sh auto-sizes based on detected RAM.

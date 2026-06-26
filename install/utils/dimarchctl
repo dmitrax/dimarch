@@ -1,0 +1,212 @@
+#!/usr/bin/env bash
+# dimarchctl — DimArch OS unified CLI
+#
+# Usage: dimarchctl <command> [subcommand] [--json]
+
+set -euo pipefail
+
+VERSION="0.1.0"
+SYS_CONF="/etc/dimarch.conf"
+USER_CONF="${XDG_CONFIG_HOME:-$HOME/.config}/dimarch/dimarch.conf"
+
+# ─────────────────────────────────────────────────────────────────────────────
+#  Config helpers
+# ─────────────────────────────────────────────────────────────────────────────
+
+_conf_get() {
+    local section="$1" key="$2" file="$3"
+    [[ -f "$file" ]] || return 1
+    awk -F' *= *' -v s="$section" -v k="$key" '
+        /^\[/ { cur = substr($0, 2, length($0)-2) }
+        cur==s && $1==k {
+            gsub(/[[:space:]]*#.*$/, "", $2)
+            gsub(/^[[:space:]]+|[[:space:]]+$/, "", $2)
+            print $2; exit
+        }
+    ' "$file"
+}
+
+_conf_get_merged() {
+    local section="$1" key="$2" val=""
+    if [[ -f "$USER_CONF" ]]; then
+        val=$(_conf_get "$section" "$key" "$USER_CONF" 2>/dev/null || true)
+    fi
+    [[ -n "$val" ]] && echo "$val" && return 0
+    _conf_get "$section" "$key" "$SYS_CONF" 2>/dev/null || true
+}
+
+_conf_source() {
+    local section="$1" key="$2" val=""
+    if [[ -f "$USER_CONF" ]]; then
+        val=$(_conf_get "$section" "$key" "$USER_CONF" 2>/dev/null || true)
+        [[ -n "$val" ]] && echo "user" && return 0
+    fi
+    echo "system"
+}
+
+# ─────────────────────────────────────────────────────────────────────────────
+#  version
+# ─────────────────────────────────────────────────────────────────────────────
+
+cmd_version() {
+    local json=false
+    [[ "${1:-}" == "--json" ]] && json=true
+
+    if $json; then
+        printf '{"version":"%s","system":"DimArch OS"}\n' "$VERSION"
+    else
+        echo "dimarchctl $VERSION — DimArch OS"
+    fi
+}
+
+# ─────────────────────────────────────────────────────────────────────────────
+#  health  (Phase 0 stub — dimarch-health-check pending)
+# ─────────────────────────────────────────────────────────────────────────────
+
+cmd_health() {
+    local json=false
+    [[ "${1:-}" == "--json" ]] && json=true
+
+    if $json; then
+        printf '{"status":"not_implemented","phase":"0","note":"dimarch-health-check pending"}\n'
+    else
+        echo "dimarchctl health — not yet implemented (Phase 0)"
+    fi
+}
+
+# ─────────────────────────────────────────────────────────────────────────────
+#  display status  (Phase 0 stub)
+# ─────────────────────────────────────────────────────────────────────────────
+
+cmd_display_status() {
+    local json=false
+    [[ "${1:-}" == "--json" ]] && json=true
+
+    if $json; then
+        printf '{"status":"not_implemented","phase":"0"}\n'
+    else
+        echo "dimarchctl display status — not yet implemented (Phase 0)"
+    fi
+}
+
+# ─────────────────────────────────────────────────────────────────────────────
+#  power status
+# ─────────────────────────────────────────────────────────────────────────────
+
+cmd_power_status() {
+    local json=false
+    [[ "${1:-}" == "--json" ]] && json=true
+
+    local lock_t mon_t hib_t sleep_mode monitor_off
+    lock_t=$(_conf_get_merged power lock_timeout);        lock_t=${lock_t:-300}
+    mon_t=$(_conf_get_merged power monitor_off_timeout);  mon_t=${mon_t:-420}
+    hib_t=$(_conf_get_merged power hibernate_timeout);    hib_t=${hib_t:-1200}
+    sleep_mode=$(_conf_get_merged power sleep_mode);      sleep_mode=${sleep_mode:-suspend}
+    monitor_off=$(_conf_get_merged power monitor_off);    monitor_off=${monitor_off:-none}
+
+    local src_lock src_mon src_hib
+    src_lock=$(_conf_source power lock_timeout)
+    src_mon=$(_conf_source power monitor_off_timeout)
+    src_hib=$(_conf_source power hibernate_timeout)
+
+    local user_exists=false
+    [[ -f "$USER_CONF" ]] && user_exists=true
+
+    if $json; then
+        printf '{
+  "sleep_mode": "%s",
+  "monitor_off": "%s",
+  "lock_timeout": %s,
+  "monitor_off_timeout": %s,
+  "hibernate_timeout": %s,
+  "sources": {
+    "lock_timeout": "%s",
+    "monitor_off_timeout": "%s",
+    "hibernate_timeout": "%s"
+  },
+  "user_conf_exists": %s,
+  "user_conf": "%s"
+}\n' \
+            "$sleep_mode" "$monitor_off" \
+            "$lock_t" "$mon_t" "$hib_t" \
+            "$src_lock" "$src_mon" "$src_hib" \
+            "$user_exists" "$USER_CONF"
+    else
+        printf '  sleep mode      : %s\n'       "$sleep_mode"
+        printf '  monitor off     : %s\n'       "$monitor_off"
+        printf '  lock timeout    : %ss (%s min)  [%s]\n' "$lock_t" "$((lock_t / 60))"  "$src_lock"
+        printf '  monitor timeout : %ss (%s min)  [%s]\n' "$mon_t"  "$((mon_t  / 60))"  "$src_mon"
+        printf '  hibernate       : %ss (%s min)  [%s]\n' "$hib_t"  "$((hib_t  / 60))"  "$src_hib"
+        echo ""
+        if $user_exists; then
+            printf '  user config     : %s\n' "$USER_CONF"
+        else
+            printf '  config          : %s  (no user override)\n' "$SYS_CONF"
+        fi
+    fi
+}
+
+# ─────────────────────────────────────────────────────────────────────────────
+#  power apply
+# ─────────────────────────────────────────────────────────────────────────────
+
+cmd_power_apply() {
+    local gen
+    if command -v dimarch-hypridle-gen &>/dev/null; then
+        gen="$(command -v dimarch-hypridle-gen)"
+    else
+        gen="$(dirname "$(realpath "$0")")/dimarch-hypridle-gen"
+    fi
+
+    [[ -x "$gen" ]] || {
+        echo "dimarchctl: dimarch-hypridle-gen not found" >&2
+        exit 1
+    }
+
+    exec "$gen"
+}
+
+# ─────────────────────────────────────────────────────────────────────────────
+#  Usage
+# ─────────────────────────────────────────────────────────────────────────────
+
+usage() {
+    cat <<EOF
+Usage: dimarchctl <command> [subcommand] [--json]
+
+Commands:
+  version               DimArch OS version
+  health                System health check (Phase 0 — stub)
+  display status        Monitor layout status (Phase 0 — stub)
+  power status          Current power/idle timeout settings
+  power apply           Regenerate hypridle.conf from template + config
+
+To change idle timeouts:
+  1. Edit ~/.config/dimarch/dimarch.conf  (or /etc/dimarch.conf)
+  2. Run: dimarchctl power apply
+
+EOF
+}
+
+# ─────────────────────────────────────────────────────────────────────────────
+#  Main dispatch
+# ─────────────────────────────────────────────────────────────────────────────
+
+case "${1:-}" in
+    version) cmd_version "${@:2}" ;;
+    health)  cmd_health  "${@:2}" ;;
+    display)
+        case "${2:-}" in
+            status) cmd_display_status "${@:3}" ;;
+            *) echo "Usage: dimarchctl display status [--json]" >&2; exit 1 ;;
+        esac
+        ;;
+    power)
+        case "${2:-}" in
+            status) cmd_power_status "${@:3}" ;;
+            apply)  cmd_power_apply ;;
+            *) echo "Usage: dimarchctl power <status|apply> [--json]" >&2; exit 1 ;;
+        esac
+        ;;
+    *) usage; exit ${1:+1} ;;
+esac

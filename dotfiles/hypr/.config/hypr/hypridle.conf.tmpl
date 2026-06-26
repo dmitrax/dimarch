@@ -1,7 +1,16 @@
 # =========================================================
-# DimArch OS — Hypridle
+# DimArch OS — Hypridle (generated from hypridle.conf.tmpl)
 # Idle / lock / monitor off / suspend
 # Hyprland v0.55+ (dimarch-monitor, never dpms/wlopm directly)
+#
+# Timeout values come from dimarch.conf [power]:
+#   lock_timeout         = ${LOCK_TIMEOUT}
+#   monitor_off_timeout  = ${MONITOR_OFF_TIMEOUT}
+#   hibernate_timeout    = ${HIBERNATE_TIMEOUT}
+#
+# To change timeouts:
+#   1. Edit ~/.config/dimarch/dimarch.conf  (or /etc/dimarch.conf)
+#   2. Run: dimarchctl power apply
 # =========================================================
 
 general {
@@ -41,43 +50,24 @@ general {
 }
 
 # ---------------------------------------------------------
-# 5 min idle → lock screen
-#
-# Timeline:
-#   5:00  → lock
-#   7:00  → dimarch-monitor off (none/wlopm/ddcutil via dimarch.conf)
-#   20:00 → dimarch-sleep (suspend/hibernate via dimarch.conf)
-#
-# Caffeine (Waybar idle_inhibitor or systemd-inhibit):
-#   ALL three listeners below are blocked when active.
-#   The system will not lock, will not turn off monitors,
-#   and will not suspend for as long as caffeine is on.
-#
-# Note: no suspend is scheduled here.
-# Suspend lives in its own listener (timeout = 1200).
-# This avoids the systemd-run decoupling race condition
-# where an external timer would fire regardless of caffeine.
+# lock_timeout → lock screen
 # ---------------------------------------------------------
 listener {
-    timeout = 300
+    timeout = ${LOCK_TIMEOUT}
 
     on-timeout = loginctl lock-session
 }
 
 # ---------------------------------------------------------
-# 7 min idle → turn monitors off (via dimarch-monitor)
+# monitor_off_timeout → turn monitors off (via dimarch-monitor)
 #
 # dimarch-monitor reads /etc/dimarch.conf [power] monitor_off:
 #   none    — no-op (safe default, works on all hardware)
 #   wlopm   — wlopm --off/--on (most GPUs, NOT AMD GCN3/Polaris)
 #   ddcutil — DDC-CI via I2C (hardware-level, GPU context untouched)
-#
-# This is NOT a suspend, so after_sleep_cmd does not run.
-# We must therefore save window geometry here ourselves,
-# and restore it explicitly on resume.
 # ---------------------------------------------------------
 listener {
-    timeout = 420
+    timeout = ${MONITOR_OFF_TIMEOUT}
 
     on-timeout = sh -c '~/.config/hypr/scripts/save-before-sleep.sh; dimarch-monitor off'
 
@@ -85,21 +75,14 @@ listener {
 }
 
 # ---------------------------------------------------------
-# 20 min idle → sleep (suspend or hibernate)
+# hibernate_timeout → sleep (suspend or hibernate)
 #
 # dimarch-sleep reads /etc/dimarch.conf [power] sleep_mode:
 #   suspend   — S3 suspend-to-RAM (default)
 #   hibernate — suspend-to-disk (required for AMD RX 580 Polaris)
-#
-# By keeping sleep as a plain listener (not a systemd-run
-# timer), caffeine properly blocks it along with lock and
-# monitor-off. No external timer, no race conditions.
-#
-# before_sleep_cmd runs automatically on sleep —
-# no need to call loginctl lock-session here.
 # ---------------------------------------------------------
 listener {
-    timeout = 1200
+    timeout = ${HIBERNATE_TIMEOUT}
 
     on-timeout = dimarch-sleep
 }
