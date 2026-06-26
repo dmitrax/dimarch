@@ -1,0 +1,57 @@
+#!/usr/bin/env bash
+# dimarch-monitor — monitor power wrapper for DimArch OS
+#
+# Reads monitor_off from /etc/dimarch.conf [power] section and
+# calls the appropriate tool. Defaults to 'none' if config is missing.
+#
+# Usage: dimarch-monitor off | on
+# Called by hypridle on idle timeout / resume.
+
+set -euo pipefail
+
+_conf_get() {
+    local section="$1" key="$2" file="${3:-/etc/dimarch.conf}"
+    [[ -f "$file" ]] || return 1
+    awk -F' *= *' -v s="$section" -v k="$key" '
+        /^\[/ { cur = substr($0, 2, length($0)-2) }
+        cur==s && $1==k {
+            gsub(/[[:space:]]*#.*$/, "", $2)
+            gsub(/^[[:space:]]+|[[:space:]]+$/, "", $2)
+            print $2; exit
+        }
+    ' "$file"
+}
+
+DIMARCH_CONF="${DIMARCH_CONF:-/etc/dimarch.conf}"
+MONITOR_OFF=$(_conf_get power monitor_off "$DIMARCH_CONF" 2>/dev/null || true)
+MONITOR_OFF="${MONITOR_OFF:-none}"
+ACTION="${1:-}"
+
+case "$ACTION" in
+    off)
+        case "$MONITOR_OFF" in
+            none)    exit 0 ;;
+            wlopm)   exec wlopm --off '*' ;;
+            ddcutil)
+                ddcutil setvcp D6 04 --display 1 2>/dev/null || true
+                ddcutil setvcp D6 04 --display 2 2>/dev/null || true
+                ;;
+            *) echo "dimarch-monitor: unknown monitor_off '${MONITOR_OFF}'" >&2; exit 1 ;;
+        esac
+        ;;
+    on)
+        case "$MONITOR_OFF" in
+            none)    exit 0 ;;
+            wlopm)   exec wlopm --on '*' ;;
+            ddcutil)
+                ddcutil setvcp D6 01 --display 1 2>/dev/null || true
+                ddcutil setvcp D6 01 --display 2 2>/dev/null || true
+                ;;
+            *) echo "dimarch-monitor: unknown monitor_off '${MONITOR_OFF}'" >&2; exit 1 ;;
+        esac
+        ;;
+    *)
+        echo "Usage: dimarch-monitor off|on" >&2
+        exit 1
+        ;;
+esac

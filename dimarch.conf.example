@@ -44,6 +44,17 @@ hyprland_scale_secondary = 1.0
 #
 sleep_mode = suspend
 
+# Monitor power off method (called by hypridle on second idle timeout).
+#
+#   none    — no monitor off (safe default, works on all hardware)
+#   wlopm   — wlopm --off/--on (most GPUs; NOT AMD GCN3/Polaris RX 4xx/5xx)
+#   ddcutil — DDC-CI via I2C (hardware-level, GPU context untouched)
+#             Requires: paru -S ddcutil; modprobe i2c-dev
+#             Test first: ddcutil detect && ddcutil --display N getvcp D6
+#             Not all monitors support DDC write (e.g. LG HDR 4K fails).
+#
+monitor_off = none
+
 # Swapfile path (only used when sleep_mode = hibernate).
 # Must be on a real partition (not zram/tmpfs) with RAM+2G free space.
 # setup-hibernate.sh auto-sizes based on detected RAM.
