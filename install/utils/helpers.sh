@@ -247,6 +247,30 @@ dimarch::enable_service() {
 }
 
 # =============================================================================
+#  Config reader — parse dimarch.conf INI format
+# =============================================================================
+
+# dimarch::conf_get section key [/path/to/dimarch.conf]
+# Returns the trimmed value for key in [section].
+# Config file defaults to /etc/dimarch.conf.
+dimarch::conf_get() {
+    local section="$1"
+    local key="$2"
+    local file="${3:-/etc/dimarch.conf}"
+
+    [[ -f "$file" ]] || return 1
+
+    awk -F' *= *' -v s="$section" -v k="$key" '
+        /^\[/ { cur = substr($0, 2, length($0)-2) }
+        cur==s && $1==k {
+            gsub(/[[:space:]]*#.*$/, "", $2)
+            gsub(/^[[:space:]]+|[[:space:]]+$/, "", $2)
+            print $2; exit
+        }
+    ' "$file"
+}
+
+# =============================================================================
 #  Phase completion summary
 # =============================================================================
 

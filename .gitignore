@@ -35,3 +35,6 @@ tmp/
 *.tmp
 .cache/
 CLAUDE.md
+
+# Local hardware config — never commit
+dimarch.conf

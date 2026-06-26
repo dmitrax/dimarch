@@ -1,0 +1,50 @@
+# ================================================================
+# DimArch OS — System Configuration
+# ================================================================
+# Copy to dimarch.conf and fill in your values:
+#   cp dimarch.conf.example dimarch.conf
+#
+# dimarch.conf is gitignored — never commit hardware-specific data.
+# Deploy to /etc/dimarch.conf via install scripts (or manually).
+# ================================================================
+
+[system]
+hostname = myhostname
+username = myuser
+
+[gpu]
+vendor = amd
+# Uncomment for AMD GCN 3 / Polaris (RX 4xx/5xx series).
+# Required before ROCm support lands in the driver.
+# Remove or leave commented for RDNA/RDNA2+ and non-AMD GPUs.
+# amd_gfx_version = 8.0.3
+
+[boot]
+# limine — recommended for new installs (default DimArch bootloader)
+# grub   — legacy / current live machine
+bootloader = limine
+
+[monitors]
+# Hyprland output names. Check with: hyprctl monitors | grep Monitor
+primary   = DP-1
+secondary = DP-2
+
+[desktop]
+hyprland_scale_primary   = 1.0
+hyprland_scale_secondary = 1.0
+
+[power]
+# Sleep mode used by dimarch-sleep (called by hypridle on idle timeout).
+#
+#   suspend   — S3 suspend-to-RAM (default, works on most hardware)
+#   hibernate — suspend-to-disk via swapfile
+#               Required for AMD RX 580 Polaris and hardware with
+#               PCI CONFIG reset on S3 resume (GPU context loss).
+#               Run install/utils/setup-hibernate.sh first.
+#
+sleep_mode = suspend
+
+# Swapfile path (only used when sleep_mode = hibernate).
+# Must be on a real partition (not zram/tmpfs) with RAM+2G free space.
+# setup-hibernate.sh auto-sizes based on detected RAM.
+swapfile_path = /home/.swapfile
