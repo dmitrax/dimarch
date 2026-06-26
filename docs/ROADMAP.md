@@ -127,21 +127,29 @@ Written as components ship. Not accumulated at the end.
 Fix BUG-01, BUG-02, BUG-04 per severity classification above.
 Gather evidence before writing fixes. Do not assume root cause.
 
-### 0.2 — dimarchctl skeleton
+### 0.2 — dimarchctl skeleton ✅
 
 File: `install/utils/dimarchctl`
 
-Phase 0 scope only:
+Phase 0 scope (implemented 2026-06-26):
 ```
-dimarchctl health          Run health checks (--core by default)
-dimarchctl display status  Show current monitor layout from hyprctl
-dimarchctl version         DimArch OS version + component status
+dimarchctl version         DimArch OS version
+dimarchctl health          System health check (stub — 0.3 pending)
+dimarchctl display status  Monitor layout (stub — pending)
+dimarchctl power status    Current idle timeout values + config source
+dimarchctl power apply     Regenerate hypridle.conf from template + config
 ```
 
 Design requirements:
-- Bash-first implementation
-- `--json` flag on every command (machine-readable output)
-- Modular: each subcommand in a separate function, easy to extend
+- Bash-first implementation ✅
+- `--json` flag on every command ✅
+- Modular: each subcommand in a separate function, easy to extend ✅
+
+Power timeout configuration:
+- Source of truth: `dimarch.conf [power]` keys `lock_timeout`, `monitor_off_timeout`, `hibernate_timeout`
+- User override (no sudo): `~/.config/dimarch/dimarch.conf`
+- Template: `~/.config/hypr/hypridle.conf.tmpl` → generated: `~/.config/hypr/hypridle.conf`
+- To apply: `dimarchctl power apply`
 
 ### 0.3 — dimarch-health-check v0.1
 
@@ -488,12 +496,14 @@ Public-facing README for `dmitrax/dimarch`:
 
 ```
 Phase 0 — Core Stability & Diagnostics
-  [ ] BUG-01: GPU crash after resume (P0 — hypothesis first, then fix)
+  [✓] BUG-01: GPU crash after resume — FIXED 2026-06-26 (hibernate via systemd target)
+  [✓] BUG-04: restore-after-resume.sh IPC fix — FIXED 2026-06-24
+  [✓] monitor-off: dimarch-monitor wrapper, monitor_off=none for RX 580 — 2026-06-26
+  [✓] dimarchctl skeleton: version, health, display status, power status, power apply — 2026-06-26
+  [✓] dimarch.conf: power timeout keys + user override (~/.config/dimarch/dimarch.conf) — 2026-06-26
+  [✓] hypridle.conf.tmpl: configurable timeouts via dimarchctl power apply — 2026-06-26
   [ ] BUG-02: XWayland resolution after resume (P0)
-  [ ] BUG-04: restore-after-resume.sh IPC fix (P0)
-  [ ] dimarchctl skeleton: health, display status, version
   [ ] dimarch-health-check v0.1 (--core)
-  [ ] dimarch.conf minimal template + scripts read it
   [ ] 01-btrfs-setup.sh: verify still correct
   [ ] Current manual setup documented
 
