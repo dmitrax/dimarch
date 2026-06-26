@@ -6,6 +6,7 @@
 set -euo pipefail
 
 VERSION="0.1.0"
+PHASE="1"
 SYS_CONF="/etc/dimarch.conf"
 USER_CONF="${XDG_CONFIG_HOME:-$HOME/.config}/dimarch/dimarch.conf"
 
@@ -53,9 +54,9 @@ cmd_version() {
     [[ "${1:-}" == "--json" ]] && json=true
 
     if $json; then
-        printf '{"version":"%s","system":"DimArch OS"}\n' "$VERSION"
+        printf '{"version":"%s","phase":%s,"system":"DimArch OS"}\n' "$VERSION" "$PHASE"
     else
-        echo "dimarchctl $VERSION — DimArch OS"
+        echo "dimarchctl $VERSION — DimArch OS  [Phase $PHASE]"
     fi
 }
 
