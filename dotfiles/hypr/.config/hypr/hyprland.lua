@@ -3,28 +3,28 @@
 -- =========================================================
 
 -- Base
-require("hyprland/env")
-require("hyprland/variables")
+require("modules/env")
+require("modules/variables")
 
 -- Monitors must be loaded early.
 require("monitors")
 
 -- Input / look / behavior
-require("hyprland/input")
-require("hyprland/general")
-require("hyprland/colors")
-require("hyprland/decoration")
-require("hyprland/misc")
-require("hyprland/xwayland")
-require("hyprland/animations")
+require("modules/input")
+require("modules/general")
+require("modules/colors")
+require("modules/decoration")
+require("modules/misc")
+require("modules/xwayland")
+require("modules/animations")
 
 -- Rules
-require("hyprland/rules")
+require("modules/rules")
 
 -- Workspace rules
 -- Temporarily disabled while testing resume behavior.
-require("hyprland/workspaces")
+require("modules/workspaces")
 
 -- Binds / autostart
-require("hyprland/keybinds")
-require("hyprland/execs")
+require("modules/keybinds")
+require("modules/execs")
