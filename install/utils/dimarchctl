@@ -60,17 +60,123 @@ cmd_version() {
 }
 
 # ─────────────────────────────────────────────────────────────────────────────
-#  health  (Phase 0 stub — dimarch-health-check pending)
+#  health --core
 # ─────────────────────────────────────────────────────────────────────────────
 
 cmd_health() {
     local json=false
-    [[ "${1:-}" == "--json" ]] && json=true
+    for arg in "$@"; do [[ "$arg" == "--json" ]] && json=true; done
+
+    local -a ids labels statuses details
+    local pass=0 fail=0 warn=0
+
+    _check() {
+        local id="$1" label="$2" status="$3" detail="${4:-}"
+        ids+=("$id"); labels+=("$label"); statuses+=("$status"); details+=("$detail")
+        case "$status" in
+            pass) pass=$((pass+1)) ;;
+            fail) fail=$((fail+1)) ;;
+            warn) warn=$((warn+1)) ;;
+        esac
+    }
+
+    # 1. /etc/dimarch.conf
+    if [[ -f "$SYS_CONF" ]]; then
+        _check sys_conf "/etc/dimarch.conf exists" pass
+    else
+        _check sys_conf "/etc/dimarch.conf exists" fail "file not found"
+    fi
+
+    # 2. swapfile exists on disk
+    local swapfile
+    swapfile=$(_conf_get_merged power swapfile_path)
+    swapfile=${swapfile:-/home/.swapfile}
+    if [[ -f "$swapfile" ]]; then
+        _check swapfile_exists "swapfile exists ($swapfile)" pass
+    else
+        _check swapfile_exists "swapfile exists ($swapfile)" fail "not found — run setup-hibernate.sh"
+    fi
+
+    # 3. swapfile active in /proc/swaps
+    if grep -q "^$swapfile " /proc/swaps 2>/dev/null; then
+        _check swapfile_active "swapfile active in /proc/swaps" pass
+    else
+        _check swapfile_active "swapfile active in /proc/swaps" fail "not mounted — check /etc/fstab"
+    fi
+
+    # 4. GRUB has resume_offset=
+    local grub_cmdline
+    grub_cmdline=$(grep -E '^GRUB_CMDLINE_LINUX' /etc/default/grub 2>/dev/null || true)
+    if echo "$grub_cmdline" | grep -q 'resume_offset='; then
+        _check grub_resume "GRUB resume_offset configured" pass
+    else
+        _check grub_resume "GRUB resume_offset configured" fail "missing in /etc/default/grub"
+    fi
+
+    # 5. sudoers hibernate rule (check via sudo -ln — file not readable without root)
+    if sudo -ln 2>/dev/null | grep -q 'hibernate.target'; then
+        _check sudoers_hibernate "sudoers hibernate rule present" pass
+    else
+        _check sudoers_hibernate "sudoers hibernate rule present" fail "run: sudo setup-hibernate.sh"
+    fi
+
+    # 6. dimarch-sleep executable
+    if command -v dimarch-sleep &>/dev/null; then
+        _check dimarch_sleep "dimarch-sleep in PATH" pass
+    else
+        _check dimarch_sleep "dimarch-sleep in PATH" fail "not found — deploy install/utils/dimarch-sleep"
+    fi
+
+    # 7. dimarch-monitor executable
+    if command -v dimarch-monitor &>/dev/null; then
+        _check dimarch_monitor "dimarch-monitor in PATH" pass
+    else
+        _check dimarch_monitor "dimarch-monitor in PATH" fail "not found — deploy install/utils/dimarch-monitor"
+    fi
+
+    # 8. hypridle running (session check)
+    if pgrep -x hypridle &>/dev/null; then
+        _check hypridle_running "hypridle running" pass
+    else
+        _check hypridle_running "hypridle running" warn "not running — ok outside Hyprland session"
+    fi
+
+    # 9. hypridle.conf generated
+    local hypridle_conf="${XDG_CONFIG_HOME:-$HOME/.config}/hypr/hypridle.conf"
+    if [[ -f "$hypridle_conf" ]]; then
+        _check hypridle_conf "hypridle.conf generated" pass
+    else
+        _check hypridle_conf "hypridle.conf generated" fail "run: dimarchctl power apply"
+    fi
+
+    # 10. user dimarch.conf
+    if [[ -f "$USER_CONF" ]]; then
+        _check user_conf "user config exists ($USER_CONF)" pass
+    else
+        _check user_conf "user config exists ($USER_CONF)" warn "optional — system defaults used"
+    fi
 
     if $json; then
-        printf '{"status":"not_implemented","phase":"0","note":"dimarch-health-check pending"}\n'
+        printf '{"checks":['
+        local i
+        for i in "${!ids[@]}"; do
+            [[ $i -gt 0 ]] && printf ','
+            printf '{"id":"%s","status":"%s","label":"%s","detail":"%s"}' \
+                "${ids[$i]}" "${statuses[$i]}" "${labels[$i]}" "${details[$i]}"
+        done
+        printf '],"summary":{"pass":%d,"fail":%d,"warn":%d}}\n' "$pass" "$fail" "$warn"
     else
-        echo "dimarchctl health — not yet implemented (Phase 0)"
+        local i
+        for i in "${!ids[@]}"; do
+            case "${statuses[$i]}" in
+                pass) printf '[PASS] %s\n' "${labels[$i]}" ;;
+                fail) printf '[FAIL] %s — %s\n' "${labels[$i]}" "${details[$i]}" ;;
+                warn) printf '[WARN] %s — %s\n' "${labels[$i]}" "${details[$i]}" ;;
+            esac
+        done
+        echo ""
+        printf '%d passed, %d failed, %d warning(s)\n' "$pass" "$fail" "$warn"
+        return $([[ $fail -gt 0 ]] && echo 1 || echo 0)
     fi
 }
 
@@ -176,7 +282,7 @@ Usage: dimarchctl <command> [subcommand] [--json]
 
 Commands:
   version               DimArch OS version
-  health                System health check (Phase 0 — stub)
+  health [--core]       System health check (10 core checks, --core is default)
   display status        Monitor layout status (Phase 0 — stub)
   power status          Current power/idle timeout settings
   power apply           Regenerate hypridle.conf from template + config
