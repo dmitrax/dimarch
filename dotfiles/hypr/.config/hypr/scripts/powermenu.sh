@@ -5,6 +5,6 @@ chosen=$(printf "  Shutdown\n  Reboot\n  Sleep\n  Lock" | \
 case "$chosen" in
     "  Shutdown") systemctl poweroff ;;
     "  Reboot")   systemctl reboot ;;
-    "  Sleep")    systemctl suspend ;;
+    "  Sleep")    dimarch-sleep ;;
     "  Lock")     loginctl lock-session ;;
 esac
