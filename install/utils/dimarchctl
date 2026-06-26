@@ -157,14 +157,19 @@ cmd_health() {
     fi
 
     if $json; then
-        printf '{"checks":['
-        local i
+        local out i
+        out='{"checks":['
         for i in "${!ids[@]}"; do
-            [[ $i -gt 0 ]] && printf ','
-            printf '{"id":"%s","status":"%s","label":"%s","detail":"%s"}' \
-                "${ids[$i]}" "${statuses[$i]}" "${labels[$i]}" "${details[$i]}"
+            [[ $i -gt 0 ]] && out+=','
+            out+=$(printf '{"id":"%s","status":"%s","label":"%s","detail":"%s"}' \
+                "${ids[$i]}" "${statuses[$i]}" "${labels[$i]}" "${details[$i]}")
         done
-        printf '],"summary":{"pass":%d,"fail":%d,"warn":%d}}\n' "$pass" "$fail" "$warn"
+        out+=$(printf '],"summary":{"pass":%d,"fail":%d,"warn":%d}}' "$pass" "$fail" "$warn")
+        if command -v jq &>/dev/null; then
+            printf '%s\n' "$out" | jq .
+        else
+            printf '%s\n' "$out"
+        fi
     else
         local i
         for i in "${!ids[@]}"; do
