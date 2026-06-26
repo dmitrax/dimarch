@@ -205,9 +205,15 @@ dimarch::section "sudoers"
 
 # systemctl hibernate fails via logind CanHibernate() on systemd 261 (ENOENT).
 # dimarch-sleep bypasses logind by calling 'sudo systemctl start hibernate.target'.
-install -m 440 "${SCRIPT_DIR}/dimarch-hibernate-nopasswd.sudoers" \
-    /etc/sudoers.d/dimarch-hibernate
-ok "sudoers: %wheel NOPASSWD: systemctl start hibernate.target"
+# Grant only the specific desktop user, not the entire wheel group.
+DESKTOP_USER=$(dimarch::conf_get system username "$DIMARCH_CONF")
+[[ -z "$DESKTOP_USER" ]] && die "dimarch.conf [system] username is not set."
+
+sed "s/__USERNAME__/${DESKTOP_USER}/" \
+    "${SCRIPT_DIR}/dimarch-hibernate-nopasswd.sudoers" \
+    > /etc/sudoers.d/dimarch-hibernate
+chmod 440 /etc/sudoers.d/dimarch-hibernate
+ok "sudoers: ${DESKTOP_USER} NOPASSWD: systemctl start hibernate.target"
 
 # =============================================================================
 #  Deploy dimarch.conf if not already at /etc/
