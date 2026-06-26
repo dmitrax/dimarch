@@ -1,0 +1,9 @@
+# DimArch OS — allow wheel group to hibernate without password.
+#
+# systemctl hibernate goes through logind CanHibernate() which fails in systemd 261
+# (ENOENT — cannot verify swap file offset from logind sandbox). Workaround: call
+# hibernate.target directly, bypassing logind. dimarch-sleep uses this rule.
+#
+# Deploy: install -m 440 dimarch-hibernate-nopasswd.sudoers \
+#                         /etc/sudoers.d/dimarch-hibernate
+%wheel ALL=(ALL) NOPASSWD: /usr/bin/systemctl start hibernate.target

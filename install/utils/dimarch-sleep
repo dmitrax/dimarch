@@ -27,7 +27,10 @@ SLEEP_MODE=$(_conf_get power sleep_mode "$DIMARCH_CONF" 2>/dev/null || true)
 SLEEP_MODE="${SLEEP_MODE:-suspend}"
 
 case "$SLEEP_MODE" in
-    hibernate) exec systemctl hibernate ;;
+    # systemctl hibernate goes through logind CanHibernate() which returns ENOENT in
+    # systemd 261 (cannot verify swap offset from sandbox). Bypass via hibernate.target
+    # directly. Requires NOPASSWD sudoers rule (deployed by setup-hibernate.sh).
+    hibernate) exec sudo systemctl start hibernate.target ;;
     suspend)   exec systemctl suspend   ;;
     *)
         echo "dimarch-sleep: unknown sleep_mode '${SLEEP_MODE}', falling back to suspend" >&2

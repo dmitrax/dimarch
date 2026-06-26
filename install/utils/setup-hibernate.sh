@@ -198,6 +198,18 @@ install -m 755 "${SCRIPT_DIR}/dimarch-sleep" /usr/local/bin/dimarch-sleep
 ok "dimarch-sleep → /usr/local/bin/dimarch-sleep"
 
 # =============================================================================
+#  sudoers — allow wheel to hibernate without password
+# =============================================================================
+
+dimarch::section "sudoers"
+
+# systemctl hibernate fails via logind CanHibernate() on systemd 261 (ENOENT).
+# dimarch-sleep bypasses logind by calling 'sudo systemctl start hibernate.target'.
+install -m 440 "${SCRIPT_DIR}/dimarch-hibernate-nopasswd.sudoers" \
+    /etc/sudoers.d/dimarch-hibernate
+ok "sudoers: %wheel NOPASSWD: systemctl start hibernate.target"
+
+# =============================================================================
 #  Deploy dimarch.conf if not already at /etc/
 # =============================================================================
 
@@ -212,11 +224,12 @@ fi
 
 dimarch::done \
     "Hibernate configured" \
-    "Test: systemctl hibernate   |   Revert: setup-hibernate.sh --remove (not yet implemented)"
+    "Test: sudo systemctl start hibernate.target   |   Via idle: set sleep_mode=hibernate in dimarch.conf"
 
 echo ""
 info "Swapfile:    ${SWAPFILE}  (${SWAP_GB}G, ${FS_TYPE})"
 info "resume=      UUID=${SWAP_UUID}"
 info "offset=      ${RESUME_OFFSET}"
 info "sleep_mode in dimarch.conf: set to 'hibernate' to activate"
+info "Note: uses 'sudo systemctl start hibernate.target' — logind CanHibernate() broken in systemd 261"
 echo ""
