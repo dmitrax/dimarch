@@ -5,9 +5,6 @@
 
 hl.config({
     env = {
-        -- AMD RX 580 Polaris / GFX 8.0.3 — mandatory ROCm fix
-        {"HSA_OVERRIDE_GFX_VERSION", "8.0.3"},
-
         -- Session identity
         {"XDG_CURRENT_DESKTOP", "Hyprland"},
         {"XDG_SESSION_DESKTOP", "Hyprland"},

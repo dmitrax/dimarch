@@ -163,7 +163,6 @@ Checks:
 - [ ] xdg-desktop-portal-hyprland responding
 - [ ] polkit agent running
 - [ ] amdgpu module loaded
-- [ ] HSA_OVERRIDE_GFX_VERSION set
 - [ ] BTRFS: all subvolumes mounted with correct options
 - [ ] Snapper: limine-snapper-sync.service enabled
 - [ ] journalctl: no amdgpu errors since last boot
