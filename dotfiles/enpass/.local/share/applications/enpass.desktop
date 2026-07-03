@@ -1,0 +1,12 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=Enpass
+Name[en_IN]=Enpass
+GenericName=Enpass Password Manager
+Icon=enpass
+Icon[en_IN]=enpass
+Terminal=false
+Exec=env QT_SCALE_FACTOR=0.65 /opt/enpass/Enpass %U
+MimeType=x-scheme-handler/enpassauth;x-scheme-handler/enpasscard;x-scheme-handler/enpassstart;x-scheme-handler/enpass;x-scheme-handler/cloudkit-7adb8cc6tf.in.sinew.walletx;x-scheme-handler/enpassshare;application/enpasscard;
+Categories=Utility
