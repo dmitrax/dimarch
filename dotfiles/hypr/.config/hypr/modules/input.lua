@@ -1,7 +1,7 @@
 hl.config({
     input = {
-        kb_layout          = "us,ru",
-        kb_options         = "grp:rctrl_rshift_toggle",
+        kb_layout          = "us,ru,ua",
+        kb_variant         = ",,winkeys",
         numlock_by_default = true,
         repeat_delay       = 250,
         repeat_rate        = 35,

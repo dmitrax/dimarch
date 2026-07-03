@@ -111,3 +111,31 @@ hl.bind("SUPER + L", hl.dsp.exec_cmd(
 hl.bind(mod .. " + V", hl.dsp.exec_cmd(
     "cliphist list | rofi -dmenu -p 'Clipboard' | cliphist decode | wl-copy"
 ))
+
+-- =========================================================
+-- Keyboard layout switching (macOS-style)
+-- =========================================================
+
+-- Right Alt + Space (Left Alt also works, unused otherwise)
+-- Tap = MRU swap between the two most recently used layouts.
+hl.bind("ALT + Space", hl.dsp.exec_cmd(
+    "~/.config/hypr/scripts/kb-layout.sh mru"
+))
+
+-- Super + Alt + Space
+-- Opens rofi menu to pick any of the three layouts directly.
+-- Extends the MRU tap (Alt + Space) with Super, same escalation pattern
+-- as Super + Shift + S below.
+hl.bind("SUPER + ALT + Space", hl.dsp.exec_cmd(
+    "~/.config/hypr/scripts/kb-layout.sh menu"
+))
+
+-- Submap entered while the layout-picker rofi menu is open.
+-- No Alt+Space bind here on purpose: with the global bind above inactive,
+-- the keypress passes straight through to rofi, which is configured to
+-- treat Alt+Space as "next row" — so the same two fingers that opened
+-- the menu can keep cycling through it. Escape is a safety net in case
+-- the script's own submap reset doesn't run (e.g. rofi killed externally).
+hl.define_submap("kblayoutpicker", function()
+    hl.bind("Escape", hl.dsp.submap("reset"))
+end)
