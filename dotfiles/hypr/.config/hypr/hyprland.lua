@@ -20,6 +20,7 @@ require("modules/animations")
 
 -- Rules
 require("modules/rules")
+require("modules/window-position-memory")
 
 -- Workspace rules
 -- Temporarily disabled while testing resume behavior.
