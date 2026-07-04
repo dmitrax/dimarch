@@ -558,7 +558,6 @@ Separate install scripts, not part of core phases:
 ```
 install/apps/
 ├── ollama.sh          Ollama + ROCm for AI workloads
-├── davinci.sh         DaVinci Resolve (requires ROCM)
 ├── comfyui.sh         ComfyUI + checkpoints
 ├── mise.sh            Node/Python/Rust via mise
 ├── voicebox.sh        Local TTS/STT (evaluate; optional)
