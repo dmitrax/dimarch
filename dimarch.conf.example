@@ -72,3 +72,31 @@ hibernate_timeout    = 1200
 # Must be on a real partition (not zram/tmpfs) with RAM+2G free space.
 # setup-hibernate.sh auto-sizes based on detected RAM.
 swapfile_path = /home/.swapfile
+
+[vpn]
+# WireGuard client — optional, off by default.
+# Set to true only after you've downloaded your own config from your
+# WireGuard admin UI (e.g. wg-easy) and placed it at wg_conf_path below.
+# Then run: sudo install/utils/setup-wireguard.sh
+enable = false
+
+# NetworkManager connection name used by `dimarchctl vpn` and the Waybar
+# tray module. wg-easy generated configs default to this — change only if
+# you renamed the connection.
+interface = wg0
+
+# Path to the WireGuard config file. Contains private keys — never commit
+# this file or copy it into the dimarch repo/dotfiles.
+wg_conf_path = /etc/wireguard/wg0.conf
+
+# Admin UI access (used by: dimarchctl vpn ui).
+#   tunnel — admin UI is only reachable via SSH port-forward. `dimarchctl vpn ui`
+#            opens it itself (ssh -L admin_ui_port:localhost:admin_ui_port) — you
+#            only need a plain Host entry in ~/.ssh/config named ssh_host below,
+#            no LocalForward required there.
+#   direct — admin UI is reachable directly, e.g. behind your own reverse
+#            proxy + TLS. Requires admin_ui_url below.
+admin_ui_mode = tunnel
+admin_ui_port = 51821
+ssh_host      =
+admin_ui_url  =

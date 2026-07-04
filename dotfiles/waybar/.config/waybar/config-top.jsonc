@@ -28,6 +28,7 @@
         "pulseaudio",
         "hyprland/language",
         "tray",
+        "custom/vpn",
 	"idle_inhibitor",
         "clock",
         "custom/power"
@@ -118,6 +119,19 @@
         "format-en": "EN",
         "format-ru": "RU",
         "format-uk": "UA"
+    },
+
+    // ── WireGuard VPN ──────────────────────────────────────
+    // Status polled from `dimarchctl vpn status --json` (see dimarch.conf [vpn]).
+    // Click to toggle; signal 8 forces an immediate re-poll instead of waiting
+    // for the interval, so the icon updates right after the click.
+    "custom/vpn": {
+        "exec": "~/.config/waybar/scripts/vpn-status.sh",
+        "return-type": "json",
+        "interval": 5,
+        "signal": 8,
+        "on-click": "dimarchctl vpn toggle >/dev/null && pkill -RTMIN+8 waybar",
+        "tooltip": true
     },
 
     // ── System tray ───────────────────────────────────────

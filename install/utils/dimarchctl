@@ -279,6 +279,98 @@ cmd_power_apply() {
 }
 
 # ─────────────────────────────────────────────────────────────────────────────
+#  vpn status / up / down / toggle / ui
+# ─────────────────────────────────────────────────────────────────────────────
+
+_vpn_interface() {
+    local iface
+    iface=$(_conf_get_merged vpn interface)
+    echo "${iface:-wg0}"
+}
+
+_vpn_active() {
+    local iface="$1"
+    nmcli -t -f NAME connection show --active 2>/dev/null | grep -qx "$iface"
+}
+
+cmd_vpn_status() {
+    local json=false
+    [[ "${1:-}" == "--json" ]] && json=true
+
+    local iface connected=false public_ip=""
+    iface=$(_vpn_interface)
+    _vpn_active "$iface" && connected=true
+
+    if $connected; then
+        public_ip=$(curl -s --max-time 2 ifconfig.io 2>/dev/null || true)
+    fi
+
+    if $json; then
+        printf '{"interface":"%s","connected":%s,"public_ip":"%s"}\n' \
+            "$iface" "$connected" "$public_ip"
+    else
+        if $connected; then
+            printf '  VPN         : ON  (%s)\n' "$iface"
+            [[ -n "$public_ip" ]] && printf '  Public IP   : %s\n' "$public_ip"
+        else
+            printf '  VPN         : OFF (%s)\n' "$iface"
+        fi
+    fi
+}
+
+cmd_vpn_up() {
+    local iface; iface=$(_vpn_interface)
+    nmcli connection up "$iface" >/dev/null
+    echo "VPN ON"
+}
+
+cmd_vpn_down() {
+    local iface; iface=$(_vpn_interface)
+    nmcli connection down "$iface" >/dev/null
+    echo "VPN OFF"
+}
+
+cmd_vpn_toggle() {
+    local iface; iface=$(_vpn_interface)
+    if _vpn_active "$iface"; then
+        cmd_vpn_down
+    else
+        cmd_vpn_up
+    fi
+}
+
+# Opens the WireGuard admin UI (tunnel mode: idempotent SSH port-forward + browser;
+# direct mode: just opens admin_ui_url). Config: dimarch.conf [vpn].
+cmd_vpn_ui() {
+    local mode port
+    mode=$(_conf_get_merged vpn admin_ui_mode); mode=${mode:-tunnel}
+    port=$(_conf_get_merged vpn admin_ui_port); port=${port:-51821}
+
+    if [[ "$mode" == "direct" ]]; then
+        local url; url=$(_conf_get_merged vpn admin_ui_url)
+        [[ -z "$url" ]] && { echo "dimarchctl: vpn.admin_ui_url is not set" >&2; exit 1; }
+        xdg-open "$url" &>/dev/null &
+        echo "Opening ${url}"
+        return
+    fi
+
+    local host; host=$(_conf_get_merged vpn ssh_host)
+    [[ -z "$host" ]] && { echo "dimarchctl: vpn.ssh_host is not set" >&2; exit 1; }
+
+    if ss -ltn 2>/dev/null | grep -q ":${port} "; then
+        echo "Tunnel already up"
+    else
+        # Explicit -L: don't assume ~/.ssh/config has a LocalForward for this
+        # host — it's a personal file outside the repo and may not have one.
+        ssh -f -N -L "${port}:localhost:${port}" "$host"
+        echo "Tunnel started via ${host} (-L ${port}:localhost:${port})"
+    fi
+
+    xdg-open "http://localhost:${port}" &>/dev/null &
+    echo "Opening http://localhost:${port}"
+}
+
+# ─────────────────────────────────────────────────────────────────────────────
 #  Usage
 # ─────────────────────────────────────────────────────────────────────────────
 
@@ -292,10 +384,15 @@ Commands:
   display status        Monitor layout status (Phase 0 — stub)
   power status          Current power/idle timeout settings
   power apply           Regenerate hypridle.conf from template + config
+  vpn status            WireGuard connection status (+ public IP when on)
+  vpn up|down|toggle    Connect/disconnect the VPN
+  vpn ui                Open the WireGuard admin UI (tunnel or direct, see dimarch.conf)
 
 To change idle timeouts:
   1. Edit ~/.config/dimarch/dimarch.conf  (or /etc/dimarch.conf)
   2. Run: dimarchctl power apply
+
+VPN setup: sudo install/utils/setup-wireguard.sh (reads dimarch.conf [vpn])
 
 EOF
 }
@@ -318,6 +415,16 @@ case "${1:-}" in
             status) cmd_power_status "${@:3}" ;;
             apply)  cmd_power_apply ;;
             *) echo "Usage: dimarchctl power <status|apply> [--json]" >&2; exit 1 ;;
+        esac
+        ;;
+    vpn)
+        case "${2:-}" in
+            status) cmd_vpn_status "${@:3}" ;;
+            up)     cmd_vpn_up ;;
+            down)   cmd_vpn_down ;;
+            toggle) cmd_vpn_toggle ;;
+            ui)     cmd_vpn_ui ;;
+            *) echo "Usage: dimarchctl vpn <status|up|down|toggle|ui> [--json]" >&2; exit 1 ;;
         esac
         ;;
     *) usage; exit ${1:+1} ;;

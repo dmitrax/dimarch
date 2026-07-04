@@ -244,6 +244,25 @@ tooltip {
     color: @accent;
 }
 
+/* ── WireGuard VPN ──────────────────────────────────────── */
+#custom-vpn {
+    background: @bg_module;
+    border: 1px solid @border_module;
+    border-radius: 5px;
+    color: @text_muted;
+    font-size: 15px;
+    font-family: "JetBrainsMono Nerd Font Propo";
+    padding: 0 10px;
+    margin: 3px 2px;
+    transition: background 150ms ease, color 150ms ease, border-color 150ms ease;
+}
+
+#custom-vpn.connected {
+    background: @bg_active;
+    border-color: rgba(127, 184, 158, 0.35);
+    color: @accent;
+}
+
 /* ── Power button ───────────────────────────────────────── */
 #custom-power {
     color: @text_muted;

@@ -34,3 +34,12 @@ setopt SHARE_HISTORY
 
 # ── PATH ─────────────────────────────────────────────────
 export PATH="/home/dmitry/.local/bin:$PATH"
+
+# ── WireGuard VPN (dimarchctl vpn — config in dimarch.conf [vpn]) ────────
+alias vpn='dimarchctl vpn up'
+alias vpnoff='dimarchctl vpn down'
+alias vpnst='dimarchctl vpn status'
+alias wg-ui='dimarchctl vpn ui'
+
+# ── Local machine overrides (not tracked — personal hosts/paths/secrets) ──
+[[ -f ~/.zshrc.local ]] && source ~/.zshrc.local

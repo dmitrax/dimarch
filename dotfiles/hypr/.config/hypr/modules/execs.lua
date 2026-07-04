@@ -51,5 +51,9 @@ hl.on("hyprland.start", function()
     -- Replaces automounting that GNOME/KDE handle out of the box.
     hl.exec_cmd("udiskie --tray")
 
+    -- Network tray icon. Required for the WireGuard VPN tray toggle
+    -- (dimarch.conf [vpn]) — without it Waybar's tray module stays empty.
+    hl.exec_cmd("nm-applet --indicator")
+
     hl.exec_cmd("hyprctl setcursor Bibata-Modern-Classic 24")
 end)
