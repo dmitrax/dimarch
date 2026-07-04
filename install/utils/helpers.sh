@@ -233,7 +233,7 @@ dimarch::require_chroot() {
 # =============================================================================
 
 # Enable and start a systemd service
-# dimarch::enable_service grub-btrfsd snapper-timeline.timer
+# dimarch::enable_service limine-snapper-sync snapper-timeline.timer
 dimarch::enable_service() {
     for svc in "$@"; do
         info "Enabling service: ${svc}"
