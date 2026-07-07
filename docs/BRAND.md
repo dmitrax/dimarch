@@ -35,7 +35,7 @@ The system is calmer and quieter — not lesser.
 DimArch OS is an opinionated Arch Linux desktop system: calm by design,
 fast by default, and structured as a complete daily system rather than
 a pile of dotfiles. DimArch means Dimmed Arch — a quieter, more deliberate
-desktop built on Hyprland, BTRFS, Limine, and the Sage visual identity.
+desktop built on Hyprland, BTRFS, GRUB, and the Sage visual identity.
 
 ---
 

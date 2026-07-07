@@ -20,7 +20,7 @@
 #    13. Audio — pipewire, pipewire-pulse, wireplumber, pavucontrol
 #    14. Base fonts — noto-fonts, noto-fonts-emoji, ttf-liberation
 #    15. Desktop utils — cliphist, wl-clipboard, udiskie
-#    16. Plymouth — boot splash animation + theme (Limine + amdgpu early KMS)
+#    16. Plymouth — boot splash animation + theme (GRUB + amdgpu early KMS)
 #    17. Dual boot — optional RTC sync for Windows coexistence
 # =============================================================================
 
@@ -380,21 +380,22 @@ else
     ok "Plymouth hook added after udev"
 fi
 
-# Add quiet splash to Limine kernel cmdline.
-# Limine config lives at /boot/limine.conf.
-# We patch every CMDLINE= line that doesn't already contain 'splash'.
-LIMINE_CONF="/boot/limine.conf"
+# Add quiet splash to the GRUB kernel cmdline.
+# GRUB config lives at /etc/default/grub (GRUB_CMDLINE_LINUX_DEFAULT).
+GRUB_DEFAULT_CONF="/etc/default/grub"
 
-if [[ ! -f "$LIMINE_CONF" ]]; then
-    warn "Limine config not found at ${LIMINE_CONF} — skipping cmdline patch"
-    warn "Add 'quiet splash' to CMDLINE manually in ${LIMINE_CONF}"
+if [[ ! -f "$GRUB_DEFAULT_CONF" ]]; then
+    warn "GRUB config not found at ${GRUB_DEFAULT_CONF} — skipping cmdline patch"
+    warn "Add 'quiet splash' to GRUB_CMDLINE_LINUX_DEFAULT manually in ${GRUB_DEFAULT_CONF}"
 else
-    if grep -q "splash" "$LIMINE_CONF"; then
-        info "quiet splash already in Limine cmdline — skipping"
+    if grep -q '^GRUB_CMDLINE_LINUX_DEFAULT=.*splash' "$GRUB_DEFAULT_CONF"; then
+        info "quiet splash already in GRUB cmdline — skipping"
     else
-        info "Adding quiet splash to Limine CMDLINE entries..."
-        sed -i '/^[[:space:]]*CMDLINE=/ s/$/ quiet splash/' "$LIMINE_CONF"
-        ok "quiet splash added to Limine CMDLINE"
+        info "Adding quiet splash to GRUB_CMDLINE_LINUX_DEFAULT..."
+        sed -i '/^GRUB_CMDLINE_LINUX_DEFAULT=/ s/"$/ quiet splash"/' "$GRUB_DEFAULT_CONF"
+        info "Regenerating GRUB configuration..."
+        grub-mkconfig -o /boot/grub/grub.cfg
+        ok "quiet splash added to GRUB cmdline"
     fi
 fi
 

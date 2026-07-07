@@ -5,10 +5,12 @@
 #
 # Prerequisites:
 #   1. Before archinstall: partition the disk manually with cfdisk/gdisk:
-#        p1 — 4G    FAT32  → ESP (4 GB required for limine-snapper-sync)
+#        p1 — 1G    FAT32  → ESP, mounted at /boot/efi (GRUB reads kernels
+#                             straight out of BTRFS snapshots via grub-btrfs —
+#                             no per-snapshot copy to the ESP, so no 4G bloat)
 #        p2 — 296G  (raw)  → archinstall will format as BTRFS + install here
 #        p3 — 700G  (raw)  → fast data (this script formats it)
-#   2. In archinstall: select p2 as root, BTRFS filesystem, Limine bootloader, no DE
+#   2. In archinstall: select p2 as root, BTRFS filesystem, GRUB bootloader, no DE
 #   3. After archinstall completes: arch-chroot /mnt → run this script
 #
 # What this script does:
@@ -80,13 +82,13 @@ ROOT_DISK="/dev/${ROOT_DISK_NAME}"
 [[ -b "$ROOT_DISK" ]] || die "Cannot find parent disk for $ROOT_PART"
 
 # Detect ESP via findmnt (reliable — archinstall already mounted it)
-EFI_PART=$(findmnt -n -o SOURCE /boot 2>/dev/null || true)
+EFI_PART=$(findmnt -n -o SOURCE /boot/efi 2>/dev/null || true)
 EFI_UUID=""
 if [[ -b "$EFI_PART" ]]; then
     EFI_UUID=$(blkid -s UUID -o value "$EFI_PART")
-    info "ESP detected:   ${BOLD}${EFI_PART}${NC} → /boot"
+    info "ESP detected:   ${BOLD}${EFI_PART}${NC} → /boot/efi"
 else
-    warn "ESP not detected at /boot — will skip ESP entry in fstab"
+    warn "ESP not detected at /boot/efi — will skip ESP entry in fstab"
 fi
 
 echo ""
@@ -227,8 +229,10 @@ EOF
 
 if [[ -n "$EFI_UUID" ]]; then
     cat >> /etc/fstab << EOF
-# ESP — Limine bootloader (kernels + initramfs + snapshot entries)
-UUID=${EFI_UUID}  /boot  vfat  defaults,umask=0077  0 2
+# ESP — GRUB bootloader (EFI System Partition, FAT32).
+# /boot itself stays inside the @ subvolume — grub-btrfs needs the kernel
+# and initramfs reachable inside every BTRFS snapshot, not copied to the ESP.
+UUID=${EFI_UUID}  /boot/efi  vfat  defaults,umask=0077  0 2
 
 EOF
 fi
@@ -319,7 +323,7 @@ echo ""
 echo -e "  ${CYAN}Root partition:${NC}  $ROOT_PART"
 echo -e "  ${CYAN}Subvolumes:${NC}      @ @home @snapshots @var_log @var_cache @var_tmp"
 [[ -n "$EFI_PART" ]] && \
-    echo -e "  ${CYAN}ESP:${NC}             $EFI_PART → /boot"
+    echo -e "  ${CYAN}ESP:${NC}             $EFI_PART → /boot/efi"
 [[ "$SKIP_FAST" == false ]] && \
     echo -e "  ${CYAN}Fast partition:${NC}  $FAST_PART → /mnt/fast"
 echo -e "  ${CYAN}zram:${NC}            ${ZRAM_NOTE}"

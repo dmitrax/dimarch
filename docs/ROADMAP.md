@@ -164,7 +164,7 @@ Checks:
 - [ ] polkit agent running
 - [ ] amdgpu module loaded
 - [ ] BTRFS: all subvolumes mounted with correct options
-- [ ] Snapper: limine-snapper-sync.service enabled
+- [ ] Snapper: grub-btrfsd.service enabled
 - [ ] journalctl: no amdgpu errors since last boot
 
 Output format: `[✓] check name` / `[✗] check name — reason`
@@ -189,7 +189,7 @@ vendor = amd              # amd | nvidia | intel | auto
 amd_gfx_version = 8.0.3  # Polaris override; set to "auto" to skip
 
 [boot]
-bootloader = limine
+bootloader = grub
 
 [desktop]
 hyprland_scale_primary = 1.5
@@ -283,7 +283,7 @@ Not a blocker for Phase 1 entry, but closes during this phase.
 Scripts to write and test:
 - `02-cachyos.sh` — CachyOS repos, kernel LTS/BORE, paru, reflector
 - `03-base.sh` — locale, bluetooth, audio, Plymouth, core utilities
-- `04-snapper.sh` — Snapper + limine-snapper-sync, snap-pac
+- `04-snapper.sh` — Snapper + grub-btrfs + grub-btrfsd, snap-pac
 
 All scripts must:
 - Source `helpers.sh`

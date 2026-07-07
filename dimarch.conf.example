@@ -20,9 +20,8 @@ vendor = amd
 # amd_gfx_version = 8.0.3
 
 [boot]
-# limine — recommended for new installs (default DimArch bootloader)
-# grub   — legacy / current live machine
-bootloader = limine
+# grub — DimArch bootloader, GRUB + grub-btrfs + snap-pac
+bootloader = grub
 
 [monitors]
 # Hyprland output names. Check with: hyprctl monitors | grep Monitor

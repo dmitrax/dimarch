@@ -34,7 +34,7 @@ This is not just a rice. It's a classic desktop experience rebuilt on a modern s
 | Kernel | CachyOS LTS + BORE |
 | Compositor | Hyprland (Wayland) |
 | Theme | Sage — calm, clean, rooted |
-| Bootloader | Limine |
+| Bootloader | GRUB |
 | Filesystem | BTRFS with snapshots |
 
 ---
