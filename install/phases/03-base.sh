@@ -9,19 +9,22 @@
 #    2.  Bluetooth — bluez, blueman, bluez-utils
 #    3.  OOM killer — systemd-oomd
 #    4.  Firewall — ufw with sensible defaults
-#    5.  Firmware — missing firmware packages for common hardware
-#    6.  Archives — unrar, unzip, p7zip, lrzip, unace, squashfs-tools
-#    7.  Codecs — gstreamer plugins, ffmpegthumbnailer
-#    8.  Filesystems — ntfs-3g, exfatprogs, fuse-exfat
-#    9.  Network utils — wget, aria2, openssh
-#    10. Monitoring — btop, nvtop, lm_sensors, smartmontools
-#    11. File utils — tree, fd, ripgrep, fzf, eza, zoxide
-#    12. Documentation — man-db, man-pages
-#    13. Audio — pipewire, pipewire-pulse, wireplumber, pavucontrol
-#    14. Base fonts — noto-fonts, noto-fonts-emoji, ttf-liberation
-#    15. Desktop utils — cliphist, wl-clipboard, udiskie
-#    16. Plymouth — boot splash animation + theme (GRUB + amdgpu early KMS)
-#    17. Dual boot — optional RTC sync + os-prober GRUB detection for Windows
+#    5.  Hardware auto-detection — chwd (GPU/network/power-management drivers,
+#        any vendor: AMD/NVIDIA/Intel — required for a public repo that must
+#        install cleanly on hardware other than the maintainer's own RX 580)
+#    6.  Firmware — missing firmware packages for common hardware
+#    7.  Archives — unrar, unzip, p7zip, lrzip, unace, squashfs-tools
+#    8.  Codecs — gstreamer plugins, ffmpegthumbnailer
+#    9.  Filesystems — ntfs-3g, exfatprogs, fuse-exfat
+#    10. Network utils — wget, aria2, openssh
+#    11. Monitoring — btop, nvtop, lm_sensors, smartmontools
+#    12. File utils — tree, fd, ripgrep, fzf, eza, zoxide
+#    13. Documentation — man-db, man-pages
+#    14. Audio — pipewire, pipewire-pulse, wireplumber, pavucontrol
+#    15. Base fonts — noto-fonts, noto-fonts-emoji, ttf-liberation
+#    16. Desktop utils — cliphist, wl-clipboard, udiskie
+#    17. Plymouth — boot splash animation + theme (GRUB + amdgpu early KMS)
+#    18. Dual boot — optional RTC sync + os-prober GRUB detection for Windows
 #        coexistence (dimarch.conf [boot] enable_windows_dualboot, off by default)
 # =============================================================================
 
@@ -148,7 +151,29 @@ else
 fi
 
 # =============================================================================
-#  STEP 5 — Firmware
+#  STEP 5 — Hardware auto-detection (chwd)
+# =============================================================================
+dimarch::section "Hardware auto-detection (chwd)"
+
+# chwd (CachyOS Hardware Detection) reads PCI/USB device IDs and installs the
+# matching driver profile — GPU (nvidia/amd/intel/nouveau), network (broadcom-wl,
+# marvell-wifi), power management (intel-lpmd), VM guest tools. This is what
+# keeps the installer hardware-agnostic: dimarch is a public repo and must not
+# assume every installer is running on the maintainer's RX 580 — chwd picks the
+# right mesa/vulkan/firmware packages for whatever GPU and NIC are actually
+# present. `-a`/`--autoconfigure` with no value defaults to "any" (all classes).
+# AI SDK profiles (CUDA/ROCm) are opt-in via a separate --ai_sdk flag and are
+# deliberately NOT passed here — RX 580 (gfx803) isn't in chwd's ROCm
+# gc_versions list anyway, and the project's AI stack is Vulkan/llama-cpp-vulkan,
+# not ROCm (see rx580-gpu-compute-stack decision).
+dimarch::pacman_install chwd
+
+info "Running chwd -a (autoconfigure all detected hardware)..."
+chwd -a
+ok "chwd hardware auto-detection complete"
+
+# =============================================================================
+#  STEP 6 — Firmware
 # =============================================================================
 dimarch::section "Missing firmware packages"
 
@@ -163,7 +188,7 @@ dimarch::paru_install \
 ok "Firmware packages installed"
 
 # =============================================================================
-#  STEP 6 — Archives
+#  STEP 7 — Archives
 # =============================================================================
 dimarch::section "Archive utilities"
 
@@ -179,7 +204,7 @@ dimarch::pacman_install \
 ok "Archive utilities installed"
 
 # =============================================================================
-#  STEP 7 — Codecs
+#  STEP 8 — Codecs
 # =============================================================================
 dimarch::section "Media codecs"
 
@@ -200,7 +225,7 @@ if [[ -d "$THUMB_FAIL" ]]; then
 fi
 
 # =============================================================================
-#  STEP 8 — Filesystems
+#  STEP 9 — Filesystems
 # =============================================================================
 dimarch::section "Filesystem support"
 
@@ -212,7 +237,7 @@ dimarch::pacman_install \
 ok "NTFS, exFAT filesystem support installed"
 
 # =============================================================================
-#  STEP 9 — Network utilities
+#  STEP 10 — Network utilities
 # =============================================================================
 dimarch::section "Network utilities"
 
@@ -226,7 +251,7 @@ dimarch::pacman_install \
 ok "Network utilities installed"
 
 # =============================================================================
-#  STEP 10 — System monitoring
+#  STEP 11 — System monitoring
 # =============================================================================
 dimarch::section "System monitoring"
 
@@ -242,7 +267,7 @@ sensors-detect --auto > /dev/null 2>&1 || true
 ok "Monitoring tools installed"
 
 # =============================================================================
-#  STEP 11 — File utilities
+#  STEP 12 — File utilities
 # =============================================================================
 dimarch::section "File utilities"
 
@@ -257,7 +282,7 @@ dimarch::pacman_install \
 ok "File utilities installed"
 
 # =============================================================================
-#  STEP 12 — Documentation
+#  STEP 13 — Documentation
 # =============================================================================
 dimarch::section "Documentation"
 
@@ -268,7 +293,7 @@ dimarch::pacman_install \
 ok "man pages installed"
 
 # =============================================================================
-#  STEP 13 — Audio (PipeWire)
+#  STEP 14 — Audio (PipeWire)
 # =============================================================================
 dimarch::section "Audio (PipeWire)"
 
@@ -294,7 +319,7 @@ fi
 ok "PipeWire audio stack installed"
 
 # =============================================================================
-#  STEP 14 — Base fonts
+#  STEP 15 — Base fonts
 # =============================================================================
 dimarch::section "Base fonts"
 
@@ -306,7 +331,7 @@ dimarch::pacman_install \
 ok "Base fonts installed"
 
 # =============================================================================
-#  STEP 15 — Desktop utilities
+#  STEP 16 — Desktop utilities
 # =============================================================================
 dimarch::section "Desktop utilities"
 
@@ -349,7 +374,7 @@ dimarch::pacman_install \
 ok "XDG desktop portals installed"
 
 # =============================================================================
-#  STEP 16 — Plymouth (boot splash)
+#  STEP 17 — Plymouth (boot splash)
 # =============================================================================
 dimarch::section "Plymouth boot splash"
 
@@ -452,7 +477,7 @@ mkinitcpio -P
 ok "initramfs rebuilt"
 
 # =============================================================================
-#  STEP 17 — Dual boot (optional)
+#  STEP 18 — Dual boot (optional)
 # =============================================================================
 dimarch::section "Dual boot"
 
