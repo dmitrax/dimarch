@@ -21,7 +21,8 @@
 #    14. Base fonts — noto-fonts, noto-fonts-emoji, ttf-liberation
 #    15. Desktop utils — cliphist, wl-clipboard, udiskie
 #    16. Plymouth — boot splash animation + theme (GRUB + amdgpu early KMS)
-#    17. Dual boot — optional RTC sync for Windows coexistence
+#    17. Dual boot — optional RTC sync + os-prober GRUB detection for Windows
+#        coexistence (dimarch.conf [boot] enable_windows_dualboot, off by default)
 # =============================================================================
 
 set -euo pipefail
@@ -397,6 +398,43 @@ else
         grub-mkconfig -o /boot/grub/grub.cfg
         ok "quiet splash added to GRUB cmdline"
     fi
+fi
+
+# =============================================================================
+#  Optional — Windows dual-boot detection (os-prober)
+# =============================================================================
+# Off by default. Enable only if Windows is actually installed on this
+# machine: dimarch.conf [boot] enable_windows_dualboot = true
+
+DIMARCH_CONF="${DIMARCH_CONF:-/etc/dimarch.conf}"
+ENABLE_DUALBOOT="$(dimarch::conf_get boot enable_windows_dualboot "$DIMARCH_CONF")"
+ENABLE_DUALBOOT="${ENABLE_DUALBOOT:-false}"
+
+if [[ "$ENABLE_DUALBOOT" == "true" ]]; then
+    dimarch::section "Windows dual-boot (os-prober)"
+
+    dimarch::pacman_install os-prober
+    ok "os-prober installed"
+
+    # GRUB >= 2.06 disables os-prober by default for security reasons — it
+    # takes an explicit GRUB_DISABLE_OS_PROBER=false, not just the absence
+    # of "=true". Arch's stock /etc/default/grub ships the line commented
+    # out, so handle commented, uncommented, and missing cases alike.
+    if grep -q '^GRUB_DISABLE_OS_PROBER=false' "$GRUB_DEFAULT_CONF"; then
+        info "GRUB_DISABLE_OS_PROBER already false — os-prober enabled"
+    elif grep -q '^[[:space:]]*#\?GRUB_DISABLE_OS_PROBER=' "$GRUB_DEFAULT_CONF"; then
+        info "Enabling os-prober (GRUB_DISABLE_OS_PROBER=false)..."
+        sed -i 's/^[[:space:]]*#\?GRUB_DISABLE_OS_PROBER=.*/GRUB_DISABLE_OS_PROBER=false/' "$GRUB_DEFAULT_CONF"
+    else
+        info "Enabling os-prober (adding GRUB_DISABLE_OS_PROBER=false)..."
+        echo 'GRUB_DISABLE_OS_PROBER=false' >> "$GRUB_DEFAULT_CONF"
+    fi
+
+    info "Regenerating GRUB configuration with os-prober..."
+    grub-mkconfig -o /boot/grub/grub.cfg
+    ok "GRUB config updated — Windows entries (if found) added to boot menu"
+else
+    info "enable_windows_dualboot=false in ${DIMARCH_CONF} — skipping os-prober"
 fi
 
 # Install Plymouth theme (placeholder until dimarch-theme provides one).

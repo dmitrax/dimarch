@@ -23,6 +23,11 @@ vendor = amd
 # grub — DimArch bootloader, GRUB + grub-btrfs + snap-pac
 bootloader = grub
 
+# Set to true only if Windows is installed on this machine and GRUB should
+# detect it via os-prober (dual-boot boot-menu entry). Off by default —
+# installs os-prober and regenerates grub.cfg when enabled.
+enable_windows_dualboot = false
+
 [monitors]
 # Hyprland output names. Check with: hyprctl monitors | grep Monitor
 primary   = DP-1

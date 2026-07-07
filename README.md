@@ -37,6 +37,10 @@ This is not just a rice. It's a classic desktop experience rebuilt on a modern s
 | Bootloader | GRUB |
 | Filesystem | BTRFS with snapshots |
 
+Dual-booting with Windows? Set `enable_windows_dualboot = true` under `[boot]` in your
+`dimarch.conf` before running `install.sh` — GRUB will detect it via `os-prober`. Off by
+default.
+
 ---
 
 ## Install
