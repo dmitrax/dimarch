@@ -2,6 +2,16 @@ local mod = "SUPER"
 
 -- Apps
 hl.bind(mod .. " + Return", hl.dsp.exec_cmd("ghostty"))
+
+-- Ghostty light profile (content-work sessions) — separate window,
+-- dark SUPER+Return stays untouched. Colors: light.ghostty.
+-- $HOME, not ~ : tilde only expands at the start of a shell word,
+-- not after `=` inside --config-file=~/..., so it stays literal
+-- and Ghostty silently fails to find the override file.
+hl.bind(mod .. " + SHIFT + Return", hl.dsp.exec_cmd(
+    "ghostty --config-file=$HOME/.config/ghostty/light.ghostty"
+))
+
 hl.bind(mod .. " + E",      hl.dsp.exec_cmd("thunar"))
 hl.bind(mod .. " + Space",  hl.dsp.exec_cmd("rofi -show drun"))
 

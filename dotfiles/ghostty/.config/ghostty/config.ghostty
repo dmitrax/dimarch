@@ -21,7 +21,7 @@ background = 16161c
 foreground = edeae4
 
 # Selection
-selection-background = 2d4a40
+selection-background = 3f7a63
 selection-foreground = edeae4
 
 # Cursor
