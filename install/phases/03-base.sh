@@ -354,12 +354,24 @@ dimarch::pacman_install udiskie
 
 ok "Auto-mount daemon installed (udiskie)"
 
-# Polkit authentication agent.
-# Required for GUI privilege escalation dialogs (Dolphin, Flatpak, etc.).
-# Without this, GUI apps silently fail when requesting root permissions.
-dimarch::pacman_install polkit-gnome
+# Polkit authentication agent (hyprpolkitagent — hyprwm's own agent, recommended
+# by wiki.hypr.land over the unmaintained polkit-gnome).
+# Required for GUI privilege escalation dialogs. Without this, GUI apps silently
+# fail when requesting root permissions.
+# Ships its own systemd user service (WantedBy=graphical-session.target) —
+# enable it instead of exec'ing the binary from execs.lua.
+dimarch::pacman_install hyprpolkitagent
 
-ok "Polkit agent installed (polkit-gnome)"
+if [[ -n "$REALUSER" ]]; then
+    info "Enabling hyprpolkitagent for user ${REALUSER}..."
+    sudo -u "$REALUSER" systemctl --user enable --now hyprpolkitagent 2>/dev/null \
+        || warn "hyprpolkitagent user service will start automatically on login"
+else
+    warn "Cannot enable hyprpolkitagent — run as sudo to detect user"
+    warn "Run manually: systemctl --user enable --now hyprpolkitagent"
+fi
+
+ok "Polkit agent installed (hyprpolkitagent)"
 
 # XDG desktop portals — required for:
 #   - Screen sharing in Firefox/Chromium

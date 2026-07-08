@@ -42,10 +42,9 @@ hl.on("hyprland.start", function()
     -- it uses zwp_idle_inhibit_manager_v1 (native Wayland protocol).
     -- hl.exec_cmd("caffeine-ng")
 
-    -- Polkit authentication agent.
-    -- Required for GUI privilege escalation dialogs (Dolphin, Flatpak, etc.)
-    -- Without this, GUI apps silently fail when requesting root permissions.
-    hl.exec_cmd("/usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1")
+    -- Polkit authentication agent (hyprpolkitagent) is started via its own
+    -- systemd user service (WantedBy=graphical-session.target), not from here —
+    -- see 03-base.sh. Keeps it alive across Hyprland Safe Mode / config reloads.
 
     -- Auto-mount daemon for removable media (USB drives, SD cards).
     -- Replaces automounting that GNOME/KDE handle out of the box.

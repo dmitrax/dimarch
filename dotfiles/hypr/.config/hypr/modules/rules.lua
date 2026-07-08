@@ -96,6 +96,34 @@ hl.window_rule({
 })
 
 -- ---------------------------------------------------------
+-- Image viewer
+-- ---------------------------------------------------------
+
+-- swayimg auto-sizes its window once on open (see
+-- dotfiles/swayimg/.config/swayimg/init.lua). Resizing on every page instead
+-- caused a blur/transparency artifact confirmed independent of both
+-- Hyprland's animations and blur (no_anim/no_blur tested, artifact persisted
+-- either way) — root cause not pursued further, see init.lua for the
+-- one-time-resize workaround this rule no longer needs to work around.
+--
+-- persistent_size = false overrides the global catch-all rule above: without
+-- this, Hyprland remembers the last swayimg window's size for the session and
+-- races it against our own on_image_change resize, so opening a new image
+-- unpredictably keeps the previous image's (wrong aspect) size instead of
+-- fitting the new one. Same fix already used for Satty below, same reason.
+-- Tried opaque + force_rgbx as a candidate fix (theory: the "transparency"
+-- version of the artifact came from Hyprland compositing an undefined-alpha
+-- region during the transitional resize frame) — made things worse instead:
+-- the window stopped resizing at all past the first image, and stale content
+-- from earlier images stayed visible underneath the new one (a redraw/damage
+-- bug, not just an alpha one). Reverted; not worth pursuing further.
+hl.window_rule({
+    match = { class = "^(swayimg)$" },
+    center = true,
+    persistent_size = false,
+})
+
+-- ---------------------------------------------------------
 -- Picture-in-Picture
 -- ---------------------------------------------------------
 
