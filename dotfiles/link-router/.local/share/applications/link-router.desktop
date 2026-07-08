@@ -1,0 +1,7 @@
+[Desktop Entry]
+Type=Application
+Name=Link Router
+Comment=Routes Zoom links to the Zoom app, prompts for other browsers
+Exec=__HOME__/.local/bin/link-router %u
+NoDisplay=true
+MimeType=x-scheme-handler/https;x-scheme-handler/http;

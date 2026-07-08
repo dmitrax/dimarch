@@ -10,7 +10,7 @@
 | xdg-desktop-portal-hyprland | Screenshots, screen sharing |
 | uwsm | Launch Hyprland as systemd session |
 | waybar | Status bars |
-| rofi-wayland | App launcher |
+| rofi-wayland | App launcher; also powers the link router's browser picker (see `docs/link-router.md`) |
 | ghostty | GPU terminal emulator |
 | dolphin + kio + kio-extras | File manager |
 | ffmpegthumbs | Video thumbnails in Dolphin |

@@ -73,3 +73,29 @@ effective resolution at scale 1.5).
 it caused either visual regressions (grey bar) or performance degradation
 (lag after several turns) in every tested configuration. Proton was also
 tested and rejected — see symptoms above.
+
+
+
+## Zoom crashes/hangs joining a meeting via a clicked link
+
+**Symptom:** Zoom's Linux client crashes (`QSGRhiLayer: Unsupported size requested`,
+`stack smashing detected`, or a `libgallium`/Mesa RadeonSI abort) or silently hangs
+(audio connects, meeting window never renders — `eglSwapBuffers failed with 0x300d`)
+when joining a meeting by clicking an invite link (in a browser, Telegram, email, etc.).
+
+**Root cause:** unresolved defect in Zoom's own Qt Quick rendering code — reproduces
+even on pure software rendering (`llvmpipe`, GPU driver not involved at all), so it's not
+an RX 580/Mesa/Hyprland bug. The trigger correlates with the **join path**: a
+browser-mediated link click (`xdg-open` → browser → `zoommtg://` deep link → Zoom) is
+where it fires; joining the same meeting directly through Zoom's own **Join** dialog
+(manual meeting ID + password, no browser involved) reliably avoids it. Investigated
+extensively without a confirmed root mechanism — treat as a known, unexplained Zoom
+Linux-client defect, not something fixable from the DimArch side.
+
+**Fix:** join through Zoom's own Join dialog instead of clicking links — or, automated,
+install the link router (`docs/link-router.md`,
+`install/utils/setup-link-router.sh`), which transparently converts any `zoom.us/j/...`
+link into a direct app launch, skipping the browser hop entirely.
+
+**Not a fix:** joining via the browser tab instead of the native app "works" but isn't a
+real solution — it defeats the point of having a native client.

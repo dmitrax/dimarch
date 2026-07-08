@@ -1,0 +1,124 @@
+#!/bin/bash
+# Universal http(s) link router.
+# - Zoom join links go straight to the Zoom app (no browser hop).
+# - Everything else prompts a rofi picker among installed browsers,
+#   discovered dynamically from installed .desktop files (so adding
+#   or removing a browser package needs no changes here). Entries are
+#   deduped by their underlying binary and shown with their real
+#   display name + icon, not the .desktop file name.
+# - After launching, jumps to the workspace of the browser window that
+#   picked up the URL (single-instance browsers reuse an existing
+#   window rather than opening on the current workspace). If the
+#   browser wasn't running, Hyprland already opens the new window on
+#   the current workspace, so there's nothing extra to do.
+url="$1"
+script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+if [[ "$url" =~ ^https?://[a-zA-Z0-9.-]*\.zoom\.us/j/[0-9]+ ]]; then
+    exec "$script_dir/zoom-link-handler" "$url"
+fi
+
+all_desktop_files=(
+    /usr/share/applications/*.desktop
+    "$HOME/.local/share/applications/"*.desktop
+)
+
+# First pass: some apps ship multiple .desktop files for the same binary
+# (e.g. google-chrome.desktop + com.google.Chrome.desktop both launching
+# google-chrome-stable), and only one of the duplicates may declare
+# StartupWMClass. Collect the class per resolved binary across ALL files
+# first, so the dedup pass below doesn't lose it to file-ordering luck.
+declare -A wmclass_for_bin
+for desktop_file in "${all_desktop_files[@]}"; do
+    [ -f "$desktop_file" ] || continue
+    exec_line="$(grep -m1 "^Exec=" "$desktop_file" | cut -d= -f2-)"
+    [ -n "$exec_line" ] || continue
+    bin="$(command -v "${exec_line%% *}" 2>/dev/null || echo "${exec_line%% *}")"
+    wmclass="$(grep -m1 "^StartupWMClass=" "$desktop_file" | cut -d= -f2-)"
+    [ -n "$wmclass" ] && [ -z "${wmclass_for_bin[$bin]:-}" ] && wmclass_for_bin[$bin]="$wmclass"
+done
+
+declare -A seen_bins
+ids=()
+names=()
+icons=()
+wmclasses=()
+
+while IFS= read -r -d '' desktop_file; do
+    id="$(basename "$desktop_file")"
+    [ "$id" = "link-router.desktop" ] && continue
+
+    exec_line="$(grep -m1 "^Exec=" "$desktop_file" | cut -d= -f2-)"
+    # Skip desktop-environment "default browser" proxy wrappers (e.g. XFCE's
+    # exo-open) — they re-resolve the default themselves and could loop back
+    # into this router instead of naming a real browser.
+    [[ "$exec_line" == exo-open* ]] && continue
+    bin="$(command -v "${exec_line%% *}" 2>/dev/null || echo "${exec_line%% *}")"
+    [ -n "$bin" ] || continue
+    [ -n "${seen_bins[$bin]:-}" ] && continue
+    seen_bins[$bin]=1
+
+    name="$(grep -m1 "^Name=" "$desktop_file" | cut -d= -f2-)"
+    icon="$(grep -m1 "^Icon=" "$desktop_file" | cut -d= -f2-)"
+
+    ids+=("${id%.desktop}")
+    names+=("${name:-${id%.desktop}}")
+    icons+=("${icon:-application-x-executable}")
+    wmclasses+=("${wmclass_for_bin[$bin]:-${id%.desktop}}")
+done < <(grep -lZ 'MimeType=.*x-scheme-handler/https' \
+    /usr/share/applications/*.desktop \
+    "$HOME/.local/share/applications/"*.desktop 2>/dev/null)
+
+# Launches the browser, then jumps to whichever workspace holds the
+# (possibly pre-existing) window matching its class.
+launch_and_focus() {
+    local id="$1" wmclass="$2" url="$3"
+    gtk-launch "$id" "$url"
+
+    wmclass="${wmclass,,}"
+    local target_ws=""
+    for _ in 1 2 3 4 5 6 7 8; do
+        sleep 0.2
+        target_ws=$(hyprctl clients -j 2>/dev/null | python3 -c "
+import json, sys
+wmclass = sys.argv[1]
+try:
+    clients = [c for c in json.load(sys.stdin) if wmclass in c.get('class', '').lower()]
+except Exception:
+    clients = []
+if clients:
+    clients.sort(key=lambda c: c.get('focusHistoryID', 999999))
+    print(clients[0]['workspace']['id'])
+" "$wmclass")
+        [ -n "$target_ws" ] && break
+    done
+
+    if [ -n "$target_ws" ]; then
+        current_ws=$(hyprctl activeworkspace -j 2>/dev/null | python3 -c "
+import json, sys
+try:
+    print(json.load(sys.stdin).get('id', ''))
+except Exception:
+    pass
+")
+        [ "$target_ws" != "$current_ws" ] && hyprctl dispatch "hl.dsp.focus({ workspace = '${target_ws}' })" >/dev/null
+    fi
+}
+
+if [ "${#ids[@]}" -eq 0 ]; then
+    launch_and_focus "chromium" "chromium" "$url"
+    exit 0
+fi
+
+if [ "${#ids[@]}" -eq 1 ]; then
+    launch_and_focus "${ids[0]}" "${wmclasses[0]}" "$url"
+    exit 0
+fi
+
+index=$(
+    for i in "${!ids[@]}"; do
+        printf '%s\0icon\x1f%s\n' "${names[$i]}" "${icons[$i]}"
+    done | rofi -dmenu -i -show-icons -format i -p 'Open with:'
+)
+[ -n "$index" ] || exit 0
+launch_and_focus "${ids[$index]}" "${wmclasses[$index]}" "$url"
