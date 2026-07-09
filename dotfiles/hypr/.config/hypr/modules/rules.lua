@@ -161,10 +161,39 @@ hl.window_rule({
 -- Zoom escaped this class of bug entirely by switching to native Wayland
 -- (xwayland=false in ~/.config/zoomus.conf) — no longer pinned here.
 --
--- Enpass has no native Wayland build (xcb-only Qt backend), so it still hits
--- the bug. DP-2 (Dell) runs at integer scale 1.0, avoiding the coordinate math
--- issue — pinned there instead of fixing the bug itself.
+-- Enpass has no native Wayland build (xcb-only Qt backend), so it used to hit
+-- this bug and was pinned to DP-2 (integer scale 1.0) to avoid the coordinate
+-- math issue. Unpinned 2026-07-09 after installing qt5ct/qt6ct (env.lua's
+-- QT_QPA_PLATFORMTHEME=qt6ct now actually resolves) — submenus stopped
+-- collapsing on mouse movement. Root cause not confirmed (the upstream
+-- Hyprland/XWayland bug above is still open) — could be qt6ct fixing Qt's own
+-- DPI/scaling fallback rather than the coordinate bug itself. If submenus
+-- start collapsing again on the LG (DP-1, fractional scale), re-add:
+--   hl.window_rule({ match = { class = "^(Enpass|enpass)$" }, monitor = "DP-2" })
+--
+-- Lock the main window to its current comfortable size instead of whatever
+-- Enpass defaults to on fresh launch.
 hl.window_rule({
-    match = { class = "^(Enpass|enpass)$" },
-    monitor = "DP-2",
+    match = { class = "^(Enpass|enpass)$", title = "^Enpass$" },
+    size = { 1166, 782 },
+})
+
+-- Enpass Assistant is the small autofill/quick-access helper popup (shares
+-- the same window class as the main app, distinguished by title). Overriding
+-- center=true (from the xwayland catch-all above) back off let the app's own
+-- requested position through, but that position turned out to be wherever
+-- Enpass's own X11 popup logic lands (tested 2026-07-09: landed off-center,
+-- not near the Waybar tray or a browser icon) — Hyprland has no way to know
+-- where the tray/extension icon actually is, so there's nothing to anchor to.
+-- Pinned to a fixed spot near the DP-1 Waybar tray instead, for a predictable
+-- location rather than a wrong-but-varying one. `move` here is relative to the
+-- target monitor's own origin (confirmed empirically 2026-07-09: with
+-- monitor="DP-1" set, move={4144,40} landed at global (6064,40) = 1920 [DP-1's
+-- global x offset] + 4144 — the first attempt wrongly used a global-space
+-- value). DP-1 logical size is 2560x1440 (3840x2160 @ 1.5 scale) — 2224 puts
+-- the window's left edge near the right end of the bar, under the tray.
+hl.window_rule({
+    match = { class = "^(Enpass|enpass)$", title = "^Enpass Assistant$" },
+    monitor = "DP-1",
+    move = { 2224, 40 },
 })
