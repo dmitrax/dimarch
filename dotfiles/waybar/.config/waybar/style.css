@@ -183,17 +183,41 @@ tooltip {
     color: @text_faded;
 }
 
-/* ── Language ───────────────────────────────────────────── */
-#language {
+/* ── Keyboard group (language + CapsLock, merged box) ──── */
+/* Same pattern as #stats above: the group gets the one shared
+   background/border/pill, children reset to transparent/no-border and
+   just add their own spacing. CapsLock icon appears/disappears (empty
+   string when unlocked, per format-icons in config-top.jsonc) INSIDE
+   this same frame rather than as its own separate pill — per user
+   preference 2026-07-09 (initially built as two separate pills, changed
+   after direct feedback). */
+#keyboard {
     background: @bg_module;
+    border: 1px solid @border_module;
+    border-radius: 5px;
+    padding: 0 4px;
+    margin: 3px 2px;
+}
+
+#keyboard #language {
+    background: transparent;
+    border: none;
+    padding: 0 6px;
+    margin: 0;
     color: @text_soft;
     font-size: 15px;
     font-weight: 600;
-    padding: 0 9px;
-    margin: 3px 3px;
-    border-radius: 5px;
-    border: 1px solid @border_module;
     letter-spacing: 0.4px;
+}
+
+/* Locked-state color reuses @accent — the same Sage "active state" tone
+   already used for Waybar's own hover/active look and swayimg's gallery
+   selection. No background/border of its own — the shared #keyboard
+   frame already provides that. */
+#keyboard #keyboard-state label.capslock.locked {
+    color: @accent;
+    font-weight: 600;
+    padding: 0 6px 0 0;
 }
 
 /* ── Tray ───────────────────────────────────────────────── */

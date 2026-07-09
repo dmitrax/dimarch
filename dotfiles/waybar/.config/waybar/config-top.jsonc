@@ -26,7 +26,7 @@
 	"group/stats",
         "custom/weather",
         "pulseaudio",
-        "hyprland/language",
+        "group/keyboard",
         "tray",
         "custom/vpn",
 	"idle_inhibitor",
@@ -113,12 +113,46 @@
         "tooltip-format": "{desc}\n{volume}%"
     },
 
-    // ── Keyboard layout ───────────────────────────────────
+    // ── Keyboard (layout + CapsLock, merged group) ────────
+    // group/keyboard visually merges hyprland/language + keyboard-state into
+    // one shared box (same trick as group/stats above for cpu/memory/temp) —
+    // per user preference 2026-07-09, the CapsLock icon appears/disappears
+    // inside the same frame as the layout label, not as its own separate pill.
+    "group/keyboard": {
+        "orientation": "horizontal",
+        "modules": ["hyprland/language", "keyboard-state"]
+    },
+
     "hyprland/language": {
         "format": "  {}",
         "format-en": "EN",
         "format-ru": "RU",
         "format-uk": "UA"
+    },
+
+    // ── CapsLock indicator ────────────────────────────────
+    // Waybar's built-in keyboard-state module (waybar-keyboard-state(5)) reads
+    // libevdev LED state directly — requires the user to be in the `input`
+    // group (`sudo usermod -aG input <user>`, then reboot), otherwise this
+    // silently shows nothing. device-path pinned to the physical keyboard's
+    // stable by-path symlink (found live 2026-07-09: "Logitech Wireless
+    // Keyboard", the only device with a `leds` handler in
+    // /proc/bus/input/devices) rather than relying on "first valid device"
+    // auto-pick, which could land on the wrong /dev/input/eventN after a
+    // reboot or if another device is plugged in. Only capslock is enabled —
+    // numlock/scrolllock weren't asked for. format-icons "unlocked": "" makes
+    // the module collapse to zero width when caps is off (per user request:
+    // appear only while active), not a permanently-visible dimmed icon.
+    "keyboard-state": {
+        "capslock": true,
+        "format": "{icon}",
+        "format-icons": {
+            "capslock": {
+                "locked": "⇪",
+                "unlocked": ""
+            }
+        },
+        "device-path": "/dev/input/by-path/pci-0000:00:14.0-usb-0:10:1.1-event-kbd"
     },
 
     // ── WireGuard VPN ──────────────────────────────────────
