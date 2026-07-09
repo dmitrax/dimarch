@@ -152,14 +152,18 @@ dimarch::section "File managers"
 # extra). thunar-volman — Thunar's own device-insertion handling
 # (complements, doesn't replace, udiskie's tray auto-mount from
 # 03-base.sh). thunar-archive-plugin — right-click Extract/Compress,
-# pairs with file-roller (03-base.sh archive utilities).
+# pairs with file-roller (03-base.sh archive utilities). glycin —
+# GNOME sandboxed image decoder, registers tumbler .thumbnailer entries
+# for HEIF/JPEG XL/SVG/other image-rs formats; ffmpegthumbnailer (03-base.sh)
+# only covers video, not these image formats.
 dimarch::pacman_install \
     thunar \
     yazi \
     tumbler \
     gvfs \
     thunar-volman \
-    thunar-archive-plugin
+    thunar-archive-plugin \
+    glycin
 
 ok "File managers installed"
 
