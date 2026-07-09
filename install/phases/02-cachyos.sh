@@ -7,13 +7,15 @@
 #  What this script does:
 #    1. Adds CachyOS repositories (pacman.conf)
 #    2. Installs CachyOS keyring and mirrorlist
-#    3. Asks which CachyOS kernel to install: LTS (default) or current
+#    3. Adds chaotic-aur (prebuilt AUR binaries — mpv-uosc, nerd-fonts-inter,
+#       plymouth-theme-monoarch-refined and others already depend on it)
+#    4. Asks which CachyOS kernel to install: LTS (default) or current
 #       The stock Arch kernel (linux) is kept as a fallback — never removed
-#    4. Configures GRUB: remember last selected kernel (GRUB_SAVEDEFAULT)
-#    5. Installs paru (AUR helper) + configures paru.conf + bat/devtools
-#    6. Configures reflector — fastest mirrors, auto-refresh weekly
-#    7. Configures paccache — automatic package cache cleanup
-#    8. Installs bash-completion
+#    5. Configures GRUB: remember last selected kernel (GRUB_SAVEDEFAULT)
+#    6. Installs paru (AUR helper) + configures paru.conf + bat/devtools
+#    7. Configures reflector — fastest mirrors, auto-refresh weekly
+#    8. Configures paccache — automatic package cache cleanup
+#    9. Installs bash-completion
 # =============================================================================
 
 set -euo pipefail
@@ -76,7 +78,54 @@ pacman -Sy
 ok "Package databases updated"
 
 # =============================================================================
-#  STEP 2 — Kernel selection
+#  STEP 3 — Add chaotic-aur repository
+# =============================================================================
+dimarch::section "chaotic-aur repository"
+
+# Prebuilt AUR binaries — no local compile, unlike raw `paru -S` from AUR.
+# Found live 2026-07-09 already enabled with zero script wiring anywhere
+# (see adhoc-packages-pending-install-script-wiring.md) — mpv-uosc and
+# nerd-fonts-inter (both installed by 06-hyprland.sh) depend on it being
+# present, so it has to land before phase 06 in the run order (it does:
+# phases run 01→09 numerically). See
+# decision-chaotic-aur-as-accepted-package-source-because-prebuilt-binaries.md.
+# Key ID and package URLs verified against https://aur.chaotic.cx/docs
+# 2026-07-09 and cross-checked against this machine's already-working
+# live config — see this project's "verify docs before config changes" rule.
+if grep -q "\[chaotic-aur\]" "$PACMAN_CONF"; then
+    info "chaotic-aur already present in pacman.conf — skipping"
+else
+    info "Importing chaotic-aur signing key..."
+    if ! pacman-key --list-keys 3056513887B78AEB &>/dev/null; then
+        pacman-key --recv-key 3056513887B78AEB --keyserver keyserver.ubuntu.com
+        pacman-key --lsign-key 3056513887B78AEB
+        ok "Signing key imported and locally signed"
+    else
+        info "Signing key already present — skipping"
+    fi
+
+    info "Installing chaotic-keyring and chaotic-mirrorlist..."
+    pacman -U --noconfirm \
+        'https://cdn-mirror.chaotic.cx/chaotic-aur/chaotic-keyring.pkg.tar.zst' \
+        'https://cdn-mirror.chaotic.cx/chaotic-aur/chaotic-mirrorlist.pkg.tar.zst'
+    ok "chaotic-aur keyring and mirrorlist installed"
+
+    cat >> "$PACMAN_CONF" << 'EOF'
+
+# ── chaotic-aur ────────────────────────────────────────────────────────────
+[chaotic-aur]
+Include = /etc/pacman.d/chaotic-mirrorlist
+EOF
+
+    ok "chaotic-aur added to pacman.conf"
+
+    info "Syncing package databases..."
+    pacman -Sy
+    ok "Package databases updated"
+fi
+
+# =============================================================================
+#  STEP 4 — Kernel selection
 # =============================================================================
 dimarch::section "Kernel selection"
 
@@ -112,7 +161,7 @@ info "Selected: ${KERNEL_LABEL}"
 echo ""
 
 # =============================================================================
-#  STEP 3 — Install selected CachyOS kernel
+#  STEP 5 — Install selected CachyOS kernel
 # =============================================================================
 dimarch::section "Installing kernel"
 
@@ -134,7 +183,7 @@ else
 fi
 
 # =============================================================================
-#  STEP 4 — Configure GRUB
+#  STEP 6 — Configure GRUB
 # =============================================================================
 dimarch::section "Configuring GRUB"
 
@@ -166,7 +215,7 @@ else
 fi
 
 # =============================================================================
-#  STEP 5 — Install paru (AUR helper)
+#  STEP 7 — Install paru (AUR helper)
 # =============================================================================
 dimarch::section "Installing paru (AUR helper)"
 
@@ -247,7 +296,7 @@ paru --gendb
 ok "paru database initialized"
 
 # =============================================================================
-#  STEP 6 — Reflector (fastest mirrors)
+#  STEP 8 — Reflector (fastest mirrors)
 # =============================================================================
 dimarch::section "Configuring reflector"
 
@@ -290,7 +339,7 @@ systemctl enable --now reflector.timer
 ok "reflector.timer enabled"
 
 # =============================================================================
-#  STEP 7 — Paccache (automatic package cache cleanup)
+#  STEP 9 — Paccache (automatic package cache cleanup)
 # =============================================================================
 dimarch::section "Configuring paccache"
 
@@ -317,7 +366,7 @@ systemctl enable --now paccache.timer
 ok "paccache.timer enabled"
 
 # =============================================================================
-#  STEP 8 — bash-completion
+#  STEP 10 — bash-completion
 # =============================================================================
 dimarch::section "Base shell utilities"
 
