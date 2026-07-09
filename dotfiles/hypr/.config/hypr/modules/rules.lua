@@ -124,6 +124,22 @@ hl.window_rule({
 })
 
 -- ---------------------------------------------------------
+-- Video player (mpv)
+-- ---------------------------------------------------------
+
+-- mpv sizes its own window per-video via autofit-larger in mpv.conf, but the
+-- global catch-all rule above (persistent_size = true) remembers the last
+-- mpv window's size for the session and re-applies it to every new video
+-- regardless of resolution — same bug already found and fixed for swayimg
+-- and Satty below, same fix: override persistent_size = false here so each
+-- video actually gets mpv's own computed size instead of the previous one.
+hl.window_rule({
+    match = { class = "^(mpv)$" },
+    center = true,
+    persistent_size = false,
+})
+
+-- ---------------------------------------------------------
 -- Picture-in-Picture
 -- ---------------------------------------------------------
 
