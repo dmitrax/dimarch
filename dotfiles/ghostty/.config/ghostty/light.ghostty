@@ -48,7 +48,11 @@ palette = 15=#f7f5f0
 # ---------------------------------------------------------
 
 # Light background over a dark Hyprland/wallpaper aesthetic reads
-# poorly with heavy blur bleeding through — keep this profile
-# closer to opaque instead of the dark profile's 0.88/15.
-background-opacity = 0.97
-background-blur = 0
+# poorly with too much transparency bleeding through — keep this
+# profile closer to opaque than the dark profile.
+#
+# background-blur is a no-op on Hyprland (Ghostty docs: supported only
+# on macOS and KDE Plasma/KWin) — actual window blur is Hyprland's own
+# compositor-level decoration.blur (~/.config/hypr/modules/decoration.lua,
+# size=8/passes=2), identical for both profiles since it's global.
+background-opacity = 0.88
