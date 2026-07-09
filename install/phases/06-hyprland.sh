@@ -25,13 +25,9 @@
 #    12. Input group — required for Waybar's keyboard-state (CapsLock) module
 #    13. AUR extras — hyprland-per-window-layout
 #
-#  Known dependency gap (not fixed here — see taskboard.md "02-cachyos.sh —
-#  добавить STEP для chaotic-aur"): nerd-fonts-inter (STEP 9) and mpv-uosc
-#  (STEP 6) both live in chaotic-aur, which no script provisions yet. On a
-#  truly clean install run before that STEP exists, pacman will fail to
-#  find these two packages. Phase order (02 before 06) will close this gap
-#  once that STEP is written — until then, run 02's chaotic-aur setup by
-#  hand first, or expect this script to die() on those two packages.
+#  nerd-fonts-inter (STEP 9) and mpv-uosc (STEP 6) both live in chaotic-aur —
+#  provisioned by 02-cachyos.sh STEP 3, which must run before this script
+#  (phase order 01→09 guarantees that on a real install run).
 # =============================================================================
 
 set -euo pipefail
