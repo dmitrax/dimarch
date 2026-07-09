@@ -2,11 +2,30 @@
 -- DimArch OS — Initialization and Autostart Applications
 -- =========================================================
 
+-- Every var set in env.lua, by name (single source of truth — see env.lua).
+local env_var_names = {}
+for _, pair in ipairs(require("modules/env")) do
+    table.insert(env_var_names, pair[1])
+end
+local env_var_list = table.concat(env_var_names, " ")
+
 hl.on("hyprland.start", function()
     -- Export Hyprland session environment to DBus and systemd user services.
     -- Important for portals, keyring, Secret Service, browsers and desktop apps.
-    hl.exec_cmd("dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP XDG_SESSION_DESKTOP XDG_SESSION_TYPE")
-    hl.exec_cmd("systemctl --user import-environment WAYLAND_DISPLAY XDG_CURRENT_DESKTOP XDG_SESSION_DESKTOP XDG_SESSION_TYPE")
+    --
+    -- `uwsm finalize` is the real fix here, not a formality: it's what actually
+    -- marks the compositor unit started and lets graphical-session.target (and
+    -- everything gated on it — every XDG autostart .desktop entry UWSM manages)
+    -- proceed. Nothing in this repo called it before, so XDG-autostart apps ran
+    -- as bare systemd --user units with NONE of env.lua's vars — not QT_QPA_*,
+    -- not GDK_*, not even the cursor theme. That's a session-scoped mechanism
+    -- distinct from Hyprland's own process env: hl.exec_cmd() children (below)
+    -- inherit Hyprland's live env by fork() and always worked fine; anything
+    -- launched as its own systemd unit (autostart .desktop entries, hypridle.service)
+    -- only ever sees what's been explicitly finalized here. Confirmed live
+    -- 2026-07-09: Enpass's autostart process had zero QT_* vars in /proc/<pid>/environ.
+    hl.exec_cmd("dbus-update-activation-environment --systemd WAYLAND_DISPLAY " .. env_var_list)
+    hl.exec_cmd("uwsm finalize " .. env_var_list)
 
     -- GNOME Keyring / Secret Service.
     -- Required by Chromium/Vivaldi when using libsecret password storage.

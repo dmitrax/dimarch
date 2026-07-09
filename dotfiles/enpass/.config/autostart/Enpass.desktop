@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=Enpass
+Exec=bash -c "sleep 5 && env QT_FONT_DPI=134 QT_ENABLE_HIGHDPI_SCALING=0 /opt/enpass/Enpass -minimize"
+Icon=enpass.png
+Comment=The best password manager
+X-GNOME-Autostart-Delay=12
+X-GNOME-Autostart-enabled=true
