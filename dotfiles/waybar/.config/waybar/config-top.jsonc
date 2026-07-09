@@ -140,16 +140,21 @@
     // /proc/bus/input/devices) rather than relying on "first valid device"
     // auto-pick, which could land on the wrong /dev/input/eventN after a
     // reboot or if another device is plugged in. Only capslock is enabled —
-    // numlock/scrolllock weren't asked for. format-icons "unlocked": "" makes
-    // the module collapse to zero width when caps is off (per user request:
-    // appear only while active), not a permanently-visible dimmed icon.
+    // numlock/scrolllock weren't asked for. format-icons uses the SAME glyph
+    // for locked/unlocked (previously "unlocked" was "" to collapse the
+    // module to zero width) — that collapse changed #keyboard's total width,
+    // which shifted every module to its left in the bar every time caps was
+    // toggled (found live 2026-07-09 after reboot-testing this feature).
+    // Fix: keep the glyph's width reserved at all times; style.css toggles
+    // only its color (transparent when unlocked) via the locked/unlocked
+    // classes waybar already applies, so the block's width never changes.
     "keyboard-state": {
         "capslock": true,
         "format": "{icon}",
         "format-icons": {
             "capslock": {
                 "locked": "⇪",
-                "unlocked": ""
+                "unlocked": "⇪"
             }
         },
         "device-path": "/dev/input/by-path/pci-0000:00:14.0-usb-0:10:1.1-event-kbd"

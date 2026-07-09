@@ -210,14 +210,26 @@ tooltip {
     letter-spacing: 0.4px;
 }
 
-/* Locked-state color reuses @accent — the same Sage "active state" tone
+/* Width is reserved for the glyph in BOTH states (same icon string for
+   locked/unlocked, set in config-top.jsonc) — only color toggles here.
+   Collapsing to zero width on unlock (the original approach) changed
+   #keyboard's total width every time caps toggled, which shifted every
+   module to its LEFT in the bar (found live 2026-07-09 reboot-testing).
+   Locked-state color reuses @accent — the same Sage "active state" tone
    already used for Waybar's own hover/active look and swayimg's gallery
    selection. No background/border of its own — the shared #keyboard
    frame already provides that. */
+#keyboard #keyboard-state label.capslock {
+    font-weight: 600;
+    padding: 3px 6px 0 0;
+}
+
 #keyboard #keyboard-state label.capslock.locked {
     color: @accent;
-    font-weight: 600;
-    padding: 0 6px 0 0;
+}
+
+#keyboard #keyboard-state label.capslock.unlocked {
+    color: transparent;
 }
 
 /* ── Tray ───────────────────────────────────────────────── */
