@@ -147,10 +147,19 @@ dimarch::section "File managers"
 # tumbler is Thunar's own thumbnailer daemon (XFCE/GTK), not KDE's
 # ffmpegthumbs — ffmpegthumbnailer itself is already installed by
 # 03-base.sh STEP 8 (codecs) and plugs into tumbler automatically.
+# gvfs — virtual filesystem backend, required for Thunar's trash and
+# network-location browsing (silently broken without it, not an optional
+# extra). thunar-volman — Thunar's own device-insertion handling
+# (complements, doesn't replace, udiskie's tray auto-mount from
+# 03-base.sh). thunar-archive-plugin — right-click Extract/Compress,
+# pairs with file-roller (03-base.sh archive utilities).
 dimarch::pacman_install \
     thunar \
     yazi \
-    tumbler
+    tumbler \
+    gvfs \
+    thunar-volman \
+    thunar-archive-plugin
 
 ok "File managers installed"
 
