@@ -280,6 +280,47 @@ tooltip {
     color: @accent;
 }
 
+/* ── Notification center (swaync) ───────────────────────── */
+#custom-notification {
+    background: @bg_module;
+    border: 1px solid @border_module;
+    border-radius: 5px;
+    color: @text_muted;
+    font-size: 15px;
+    font-family: "JetBrainsMono Nerd Font Propo";
+    padding: 0 10px;
+    margin: 3px 2px;
+    transition: background 150ms ease, color 150ms ease, border-color 150ms ease;
+}
+
+/* Lit up (accent) whenever there are unread notifications, regardless of
+   DND/inhibited state — the icon glyph itself already distinguishes DND
+   (crossed-out bell) from normal, so color only needs to track "has
+   unread content", not every state combination. */
+#custom-notification.notification,
+#custom-notification.dnd-notification,
+#custom-notification.inhibited-notification,
+#custom-notification.dnd-inhibited-notification {
+    background: @bg_active;
+    border-color: rgba(127, 184, 158, 0.35);
+    color: @accent;
+}
+
+/* DND overrides the accent green with a warm orange (@warning) — signals
+   "notifications are being silenced" as distinct from the normal "you
+   have unread" state. Red (@urgent) was considered but is already the
+   critical-notification/power-button-hover color; reusing it here would
+   blur that meaning. Takes precedence over the block above via source
+   order (same specificity, declared later). */
+#custom-notification.dnd-notification,
+#custom-notification.dnd-none,
+#custom-notification.dnd-inhibited-notification,
+#custom-notification.dnd-inhibited-none {
+    background: rgba(217, 119, 6, 0.16);
+    border-color: rgba(217, 119, 6, 0.35);
+    color: @warning;
+}
+
 /* ── WireGuard VPN ──────────────────────────────────────── */
 #custom-vpn {
     background: @bg_module;

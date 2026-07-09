@@ -30,6 +30,7 @@
         "tray",
         "custom/vpn",
 	"idle_inhibitor",
+        "custom/notification",
         "clock",
         "custom/power"
     ],
@@ -177,6 +178,36 @@
     "tray": {
         "spacing": 8,
         "icon-size": 16
+    },
+
+    // ── Notification center (swaync) ───────────────────────
+    // swaync's own recommended waybar integration (README.md "Waybar
+    // Example"): swaync-client -swb streams one JSON line per event with a
+    // "class" field ("notification"/"none"/"dnd-notification"/etc.) that
+    // Waybar applies as a CSS class on #custom-notification — styling is
+    // handled purely via style.css (see the .notification/.dnd-notification/
+    // etc. selector group there), same convention as idle_inhibitor/
+    // custom-vpn's "accent when active" look, not inline pango markup.
+    // Left-click opens/closes the history panel, right-click toggles DND.
+    "custom/notification": {
+        "tooltip": true,
+        "format": "{icon}",
+        "format-icons": {
+            "notification": "󱅫",
+            "none": "󰂜",
+            "dnd-notification": "󰂠",
+            "dnd-none": "󰪓",
+            "inhibited-notification": "󰂛",
+            "inhibited-none": "󰪑",
+            "dnd-inhibited-notification": "󰂛",
+            "dnd-inhibited-none": "󰪑"
+        },
+        "return-type": "json",
+        "exec-if": "which swaync-client",
+        "exec": "swaync-client -swb",
+        "on-click": "swaync-client -t -sw",
+        "on-click-right": "swaync-client -d -sw",
+        "escape": true
     },
 
     // ── Clock ─────────────────────────────────────────────
