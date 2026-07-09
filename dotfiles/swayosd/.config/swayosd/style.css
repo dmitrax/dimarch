@@ -1,0 +1,60 @@
+/* DimArch OS — SwayOSD (Sage theme)
+   Volume / mic / CapsLock / ScrollLock popups. Same "dark glass" floating
+   card language as rofi/theme.rasi (bg ~rgba(18,20,26,0.8..0.85), Sage
+   accent #7fb89e) rather than the default GTK @theme_* colors this ships
+   with. Structure/selectors copied from /etc/xdg/swayosd/style.css. */
+
+window#osd {
+    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.10);
+    background: rgba(18, 20, 26, 0.85);
+}
+
+window#osd #container {
+    margin: 18px 22px;
+}
+
+window#osd image {
+    color: #7fb89e;
+}
+
+window#osd label {
+    color: #edeae4;
+}
+
+window#osd progressbar:disabled,
+window#osd image:disabled {
+    opacity: 0.5;
+}
+
+window#osd progressbar,
+window#osd segmentedprogress {
+    min-height: 6px;
+    border-radius: 999px;
+    background: transparent;
+    border: none;
+}
+
+window#osd trough,
+window#osd segment {
+    min-height: inherit;
+    border-radius: inherit;
+    border: none;
+    background: rgba(255, 255, 255, 0.10);
+}
+
+window#osd progress,
+window#osd segment.active {
+    min-height: inherit;
+    border-radius: inherit;
+    border: none;
+    background: #7fb89e;
+}
+
+window#osd segment {
+    margin-left: 8px;
+}
+
+window#osd segment:first-child {
+    margin-left: 0;
+}
