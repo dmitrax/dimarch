@@ -14,7 +14,7 @@
     "output": ["DP-1", "DP-2"],
 
     "modules-left": [
-        "custom/logo",
+        "image",
         "hyprland/workspaces"
     ],
 
@@ -42,8 +42,21 @@
     },
 
     // ── Logo ───────────────────────────────────────────────
-    "custom/logo": {
-        "format": "Arch",
+    // Arch Linux mark, traced from the official icon-only SVG shipped by
+    // the `filesystem` package (/usr/share/pixmaps/archlinux-logo.svg) —
+    // only the fill color was changed (upstream blue #1793d1 → a deep
+    // forest-sage #2f5041, same hue/saturation as @accent_dark #5e9f82 at
+    // much lower lightness) to match the Sage palette, geometry is
+    // untouched. Kept as a project asset (icons/archlinux-logo-sage.svg)
+    // rather than pointed at the system file, since GTK's image module
+    // can't recolor an arbitrary (non-symbolic) SVG via CSS — the color
+    // has to be baked in. Rendered via GTK's built-in image module (not
+    // custom/text) so it's a real vector logo. SVG loading is guaranteed
+    // transitively (gtk3, a hard Waybar dependency, itself depends on
+    // librsvg).
+    "image": {
+        "path": "~/.config/waybar/icons/archlinux-logo-sage.svg",
+        "size": 26,
         "tooltip": false,
         "on-click": "rofi -show drun"
     },
@@ -53,6 +66,7 @@
         "format": "{id}",
         "sort-by": "number",
         "disable-scroll": true,
+        "tooltip": false,
         "on-click": "~/.config/hypr/scripts/workspace-switch.sh {}",
         "persistent-workspaces": {
            "DP-1": [1, 2, 3, 4, 5],

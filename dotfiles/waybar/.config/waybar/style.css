@@ -5,7 +5,7 @@
    ========================================================= */
 
 /* ── CSS Variables ──────────────────────────────────────── */
-@define-color bg_panel        rgba(22, 22, 28, 0.72);
+@define-color bg_panel        rgba(13, 22, 26, 0.78);
 @define-color bg_panel_bottom rgba(18, 18, 24, 0.75);
 @define-color bg_module       rgba(255, 255, 255, 0.05);
 @define-color bg_hover        rgba(255, 255, 255, 0.08);
@@ -41,6 +41,13 @@
 window#waybar.top {
     background: @bg_panel;
     border-bottom: 1px solid @border_soft;
+    /* No rounding — tried bottom-only and all-four (2026-07-10); top
+       rounding doesn't render while anchored flush to the screen edge
+       (Hyprland's layer-shell clips an anchored edge to a rectangle
+       regardless of CSS, confirmed live via a magnified corner
+       screenshot), and a fully floating bar (margin on all sides) would
+       be needed to fix that — rejected as off-brand for DimArch's "Old
+       Soul", not just a rendering workaround. Flat rectangle instead. */
     color: @text_main;
 }
 
@@ -64,26 +71,51 @@ tooltip {
 }
 
 /* ── Logo button ────────────────────────────────────────── */
-#custom-logo {
+/* Full-height circle, flush with the panel's top/bottom/left edges
+   (margin: 0 — the point of "no gap"). min-width/min-height both pinned
+   to the bar's own height (32px, config-top.jsonc) so the box is an exact
+   square before border-radius turns it into a circle; the SVG logo (18px)
+   sits centered inside via GTK's default content alignment. */
+#image {
     background: @accent;
-    color: #0d1a14;
-    font-weight: 700;
-    font-size: 14px;
-    padding: 0 12px;
-    margin: 3px 6px 3px 4px;
-    border-radius: 6px;
-    letter-spacing: 0.4px;
+    /* GTK's box model adds padding ON TOP of min-width/min-height (content-box
+       behavior) rather than eating into it — so the border-box (what actually
+       gets the background + border-radius) has to be sized as icon + padding,
+       not icon size duplicated into min-*. 26px icon + 3px/3px horizontal and
+       2px/4px vertical padding both sum to exactly 32px — a true 32x32 circle,
+       with the asymmetric vertical split nudging the glyph 1px above center.
+       (An earlier attempt set min-*: 32px alongside nonzero padding, which
+       inflated the border-box to 32+padding and rendered as an oval.) */
+    min-width: 26px;
+    min-height: 26px;
+    padding: 2px 3px 4px 3px;
+    border-radius: 9999px;
+    /* Margin (outside the border-box) only repositions the circle — it
+       doesn't touch the 32x32 sizing above, so the shape stays a true
+       circle. Top/bottom stay 0 (still flush with the panel edges); left
+       gives a small indent off the screen edge, and the gap to the first
+       workspace pill comes from #workspaces' own left margin below. */
+    margin: 0 0 0 8px;
     transition: background 150ms ease;
 }
 
-#custom-logo:hover {
+#image:hover {
     background: @accent_dark;
 }
 
 /* ── Workspaces ─────────────────────────────────────────── */
 #workspaces {
-    margin: 0 4px;
-    padding: 0;
+    /* Left margin bumped up from the standard 4px to open a clear gap
+       after the logo circle (per user request 2026-07-10 — the circle
+       itself stays flush with the screen edge; workspaces shift right
+       instead of the circle gaining its own right margin). border-left is
+       the thin divider between the logo and workspace buttons — a real
+       border, not a ::before/::after pseudo-element (unsupported/fragile
+       in GTK CSS). padding-left gives the divider line breathing room
+       before button 1 instead of the border touching it directly. */
+    margin: 0 4px 0 10px;
+    padding: 0 0 0 8px;
+    border-left: 1px solid rgba(127, 184, 158, 0.25);
 }
 
 #workspaces button {
@@ -91,8 +123,16 @@ tooltip {
     color: @text_muted;
     font-size: 13px;
     font-weight: 600;
-    padding: 0 10px;
-    margin: 3px 1px;
+    /* Vertical padding (new) + tighter outer margin (3px -> 2px) makes the
+       button's own box taller, so it reaches close to the bar's full
+       inner height instead of just the label's line-height — "почти во
+       всю внутреннюю высоту панели" per the compact-bar spec. 3px (not
+       4px) top/bottom — 4px pushed the button's total height to 34px,
+       past the bar's own 32px, and Waybar auto-grew the whole bar to fit
+       (logged as "Requested height: 32 is less than the minimum height:
+       34"), which silently broke the "keep the current height" spec. */
+    padding: 3px 10px;
+    margin: 2px 1px;
     border-radius: 6px;
     min-width: 26px;
     border: 1px solid transparent;
@@ -135,7 +175,7 @@ tooltip {
     border: 1px solid @border_module;
     border-radius: 5px;
     padding: 0 4px;
-    margin: 3px 2px;
+    margin: 2px 2px;
 }
 
 #stats #cpu,
@@ -165,7 +205,7 @@ tooltip {
     border: 1px solid @border_module;
     border-radius: 5px;
     padding: 0 10px;
-    margin: 3px 2px;
+    margin: 2px 2px;
     color: @text_soft;
 }
 
@@ -175,7 +215,7 @@ tooltip {
     border: 1px solid @border_module;
     border-radius: 5px;
     padding: 0 10px;
-    margin: 3px 2px;
+    margin: 2px 2px;
     font-family: "JetBrainsMono Nerd Font Propo";
 }
 
@@ -196,7 +236,7 @@ tooltip {
     border: 1px solid @border_module;
     border-radius: 5px;
     padding: 0 4px;
-    margin: 3px 2px;
+    margin: 2px 2px;
 }
 
 #keyboard #language {
@@ -236,7 +276,7 @@ tooltip {
 #tray {
     background: @bg_module;
     padding: 0 7px;
-    margin: 3px 3px;
+    margin: 2px 3px;
     border-radius: 5px;
     border: 1px solid @border_module;
     font-family: "JetBrainsMono Nerd Font Propo";
@@ -258,7 +298,7 @@ tooltip {
     font-weight: 500;
     color: @text_main;
     padding: 0 10px;
-    margin: 3px 2px;
+    margin: 2px 2px;
 }
 
 /* ── Idle inhibitor (caffeine) ──────────────────────────── */
@@ -270,7 +310,7 @@ tooltip {
     font-size: 15px;
     font-family: "JetBrainsMono Nerd Font Propo";
     padding: 0 10px;
-    margin: 3px 2px;
+    margin: 2px 2px;
     transition: background 150ms ease, color 150ms ease, border-color 150ms ease;
 }
 
@@ -289,7 +329,7 @@ tooltip {
     font-size: 15px;
     font-family: "JetBrainsMono Nerd Font Propo";
     padding: 0 10px;
-    margin: 3px 2px;
+    margin: 2px 2px;
     transition: background 150ms ease, color 150ms ease, border-color 150ms ease;
 }
 
@@ -330,7 +370,7 @@ tooltip {
     font-size: 15px;
     font-family: "JetBrainsMono Nerd Font Propo";
     padding: 0 10px;
-    margin: 3px 2px;
+    margin: 2px 2px;
     transition: background 150ms ease, color 150ms ease, border-color 150ms ease;
 }
 
@@ -345,7 +385,7 @@ tooltip {
     color: @text_muted;
     font-size: 14px;
     padding: 0 10px;
-    margin: 3px 3px 3px 0;
+    margin: 2px 3px 2px 0;
     border-radius: 6px;
     font-family: "JetBrainsMono Nerd Font Propo";
     transition: background 150ms ease, color 150ms ease;
@@ -389,7 +429,7 @@ tooltip {
     color: @text_faded;
     font-size: 11px;
     padding: 0 10px;
-    margin: 3px 2px;
+    margin: 2px 2px;
 }
 
 /* ── GTK popup menus (tray icons) ───────────────────────── */
