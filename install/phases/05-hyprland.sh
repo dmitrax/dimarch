@@ -1,14 +1,20 @@
 #!/usr/bin/env bash
 # =============================================================================
-#  06-hyprland.sh — Hyprland desktop stack
+#  05-hyprland.sh — Hyprland desktop stack
 # =============================================================================
 #  Run as root after 03-base.sh (Qt/GTK portals, hyprpolkitagent, audio) and
-#  04-snapper.sh. Full rewrite (not a patch) of the legacy version, which
-#  installed mako + Dolphin + full KIO — both contradict accepted decisions
-#  (swaync, Thunar) and the script had no set -euo pipefail / --noconfirm,
-#  so it hung on an automated run. See taskboard.md "Install package —
-#  ревизия" and decision-install-package-first-instead-of-phase1-because-
-#  stale-scripts-block-clean-install.md.
+#  04-snapper.sh. Renumbered from 06-hyprland.sh 2026-07-10 — the planned
+#  05-gpu.sh phase was retired: its only remaining scope was the AI stack
+#  (llama-cpp-vulkan/sd.cpp/Open WebUI), which moved to install/apps/ai-stack.sh
+#  (optional, not part of the core numbered installer — not every DimArch
+#  install needs a local LLM/image-gen server). Base render layer is already
+#  covered by chwd in 03-base.sh. See taskboard.md "Install package — ревизия".
+#
+#  Full rewrite (not a patch) of the legacy version, which installed
+#  mako + Dolphin + full KIO — both contradict accepted decisions (swaync,
+#  Thunar) and the script had no set -euo pipefail / --noconfirm, so it hung
+#  on an automated run. See decision-install-package-first-instead-of-phase1-
+#  because-stale-scripts-block-clean-install.md.
 #
 #  What this script does:
 #    1.  Hyprland core — compositor, portal, session, lock/idle/wallpaper
@@ -27,7 +33,7 @@
 #
 #  nerd-fonts-inter (STEP 9) and mpv-uosc (STEP 6) both live in chaotic-aur —
 #  provisioned by 02-cachyos.sh STEP 3, which must run before this script
-#  (phase order 01→09 guarantees that on a real install run).
+#  (phase order 01→08 guarantees that on a real install run).
 # =============================================================================
 
 set -euo pipefail
@@ -38,7 +44,7 @@ DOTFILES_DIR="${REPO_ROOT}/dotfiles"
 source "${SCRIPT_DIR}/../utils/helpers.sh"
 
 # =============================================================================
-dimarch::banner "Phase 6 — Hyprland desktop stack"
+dimarch::banner "Phase 5 — Hyprland desktop stack"
 # =============================================================================
 
 dimarch::require_root
@@ -311,6 +317,6 @@ ok "AUR extras installed"
 
 # =============================================================================
 dimarch::done \
-    "Phase 6 complete" \
-    "Log out/reboot if the input group was just added. 05-gpu.sh, 07-dotfiles.sh, 08-theme.sh, 09-browser.sh still need to be written before a full clean-install run — see taskboard.md."
+    "Phase 5 complete" \
+    "Log out/reboot if the input group was just added. 06-dotfiles.sh, 07-theme.sh, 08-browser.sh still need to be written before a full clean-install run — see taskboard.md."
 # =============================================================================

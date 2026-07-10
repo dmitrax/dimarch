@@ -25,7 +25,7 @@ DimArch OS
 ├── DimArch Shell         ← taskbar, notifications, desktop layer, launcher
 ├── DimArch CLI           ← dimarchctl: health, snapshots, display, streaming
 ├── Sage Theme            ← visual identity (dimarch-theme repo)
-└── DimArch Installer     ← install.sh → phases 01–09 → system ready
+└── DimArch Installer     ← install.sh → phases 01–08 → system ready
 ```
 
 ---
@@ -44,6 +44,13 @@ DimArch OS
 6. **Installer is always reproducible.** At any point in the roadmap, a fresh
    install via install.sh must produce a working system for the phases completed
    so far.
+7. **Numbered phases build the base system only.** `install/phases/01-08` and
+   `install.sh` install only what practically every DimArch user needs:
+   Hyprland shell, Sage theme, hardware/driver detection, dotfiles, default
+   apps. Any standalone large or niche system — AI inference stacks, VMs for
+   Windows apps, creative/pro software — is a separate `install/apps/*.sh`
+   script, never invoked by the orchestrator by default (see "Optional Apps"
+   below).
 
 ---
 
@@ -301,7 +308,7 @@ All scripts must:
 **Exit criteria:**
 - dimarch-taskbar v0.2 running with socket events
 - dimarch-preview working for common filetypes
-- Installer phases 05–07 complete and tested
+- Installer phases 05–06 complete and tested
 
 ### 2.1 — dimarch-taskbar v0.2
 
@@ -355,9 +362,10 @@ dimarchctl theme reload              Re-apply GTK/Qt/icon theme
 ### Installer work (Track A — Phase 2)
 
 Scripts to write and test:
-- `05-gpu.sh` — AMD/Nvidia/Intel detection, ROCm, HSA override
-- `06-hyprland.sh` — Wayland stack, Ghostty, zsh+Starship, fonts
-- `07-dotfiles.sh` — Stow apply all dotfiles
+- `05-hyprland.sh` — Wayland stack, Ghostty, zsh+Starship, fonts ✅
+  (GPU/driver detection is `chwd` in `03-base.sh`, not a separate phase — see
+  Hard Rule 7. The AI compute stack lives in `install/apps/ai-stack.sh`.)
+- `06-dotfiles.sh` — Stow apply all dotfiles
 
 ---
 
@@ -369,7 +377,9 @@ Scripts to write and test:
 **Exit criteria:**
 - dimarch-daycenter v0.1 working with local SQLite
 - install.sh orchestrator works from zero to ready system
-- dimarchctl full subcommand set stable
+- dimarchctl full subcommand set stable, including a render-layer health
+  check (Vulkan/mesa loaded correctly after `chwd` — see dimarchctl
+  extensions below)
 
 ### 3.1 — dimarch-daycenter v0.1
 
@@ -414,6 +424,11 @@ No standalone clock logic in the taskbar itself.
 dimarchctl snapshot list|create|restore
 dimarchctl update check|apply
 dimarchctl power balanced|performance|quiet
+dimarchctl health --gpu     Render-layer check: Vulkan ICD for the detected
+                            vendor actually loads after chwd (e.g. a
+                            `vulkaninfo --summary` sanity check). Replaces
+                            the retired 05-gpu.sh phase — verification only,
+                            installs nothing.
 ```
 
 Full `--json` coverage on all subcommands.
@@ -421,9 +436,11 @@ Full `--json` coverage on all subcommands.
 ### Installer work (Track A — Phase 3)
 
 Scripts to write and test:
-- `08-theme.sh` — GTK theme (Colloid), Qt/Kvantum, SDDM, Sage icons
-- `09-browser.sh` — Firefox + optional Chromium/Thorium
-- `install.sh` — orchestrator for phases 02–09, reads dimarch.conf
+- `07-theme.sh` — GTK theme (Colloid), Qt/Kvantum, Sage icons from the
+  `dimarch-theme` repo; also runs `sddm/apply.sh` (deploys the `dimarch-sddm-theme`
+  repo's config) — this script applies both theme repos, it does not build them
+- `08-browser.sh` — Firefox + optional Chromium/Thorium
+- `install.sh` — orchestrator for phases 01–08, reads dimarch.conf
 
 install.sh requirements:
 - Reads dimarch.conf for hardware/user config
@@ -526,17 +543,17 @@ Phase 2 — Shell Polish + Installer Mid
   [ ] dimarch-icons: Tela Circle + overlay
   [ ] Full Stow migration
   [ ] dimarchctl: streaming, theme reload
-  [ ] 05-gpu.sh
-  [ ] 06-hyprland.sh
-  [ ] 07-dotfiles.sh
+  [ ] 05-hyprland.sh
+  [ ] 06-dotfiles.sh
 
 Phase 3 — Productivity + Installer Completion
   [ ] dimarch-daycenter v0.1: SQLite, calendar, tasks, quick capture, swaync reminders
   [ ] Clock/date applet in taskbar → opens daycenter
   [ ] dimarchctl: snapshot, update, power (full coverage)
+  [ ] dimarchctl: health --gpu (Vulkan render-layer check, replaces retired 05-gpu.sh)
   [ ] dimarchctl: --json on all commands
-  [ ] 08-theme.sh
-  [ ] 09-browser.sh
+  [ ] 07-theme.sh
+  [ ] 08-browser.sh
   [ ] install.sh orchestrator: reads dimarch.conf, phase skip logic, pre/post health
 
 Phase 4 — Public Release Readiness
@@ -557,8 +574,10 @@ Separate install scripts, not part of core phases:
 
 ```
 install/apps/
-├── ollama.sh          Ollama + ROCm for AI workloads
-├── comfyui.sh         ComfyUI + checkpoints
+├── ai-stack.sh        llama-cpp-vulkan + stable-diffusion.cpp + Open WebUI
+│                      (Vulkan/RADV compute — Ollama/ComfyUI need ROCm+HSA,
+│                      which is dead on gfx803/RX 580; see
+│                      rx580-gpu-compute-stack.md)
 ├── mise.sh            Node/Python/Rust via mise
 ├── voicebox.sh        Local TTS/STT (evaluate; optional)
 └── winapps.sh         WinApps VM (Looking Glass, UHD 630 passthrough)

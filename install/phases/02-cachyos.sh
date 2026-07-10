@@ -85,9 +85,9 @@ dimarch::section "chaotic-aur repository"
 # Prebuilt AUR binaries — no local compile, unlike raw `paru -S` from AUR.
 # Found live 2026-07-09 already enabled with zero script wiring anywhere
 # (see adhoc-packages-pending-install-script-wiring.md) — mpv-uosc and
-# nerd-fonts-inter (both installed by 06-hyprland.sh) depend on it being
-# present, so it has to land before phase 06 in the run order (it does:
-# phases run 01→09 numerically). See
+# nerd-fonts-inter (both installed by 05-hyprland.sh) depend on it being
+# present, so it has to land before phase 05 in the run order (it does:
+# phases run 01→08 numerically). See
 # decision-chaotic-aur-as-accepted-package-source-because-prebuilt-binaries.md.
 # Key ID and package URLs verified against https://aur.chaotic.cx/docs
 # 2026-07-09 and cross-checked against this machine's already-working
