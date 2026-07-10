@@ -151,9 +151,12 @@ tooltip {
        the thin divider between the logo and workspace buttons — a real
        border, not a ::before/::after pseudo-element (unsupported/fragile
        in GTK CSS). padding-left gives the divider line breathing room
-       before button 1 instead of the border touching it directly. */
+       before button 1 instead of the border touching it directly —
+       matched to the SAME 10px as margin-left (was 8px, visibly smaller
+       than the logo-to-divider gap; caught live 2026-07-11) so the
+       divider sits with equal spacing on both sides. */
     margin: 0 4px 0 10px;
-    padding: 0 0 0 8px;
+    padding: 0 0 0 10px;
     border-left: 1px solid rgba(127, 184, 158, 0.25);
 }
 
@@ -198,10 +201,40 @@ tooltip {
 }
 
 /* ── Window title ───────────────────────────────────────── */
+/* GTK centers the "center" module box against the bar's FULL width
+   (documented gtk_box_set_center_widget behavior — "centered with
+   respect to the full width of the box, even if the children at either
+   end take up different amounts of space"), NOT the actual visible gap
+   between modules-left and modules-right. Left group (logo+workspaces)
+   is much narrower than right group (stats/weather/pulseaudio/keyboard/
+   tray/vpn/idle/notification/clock/power), so true-center reads visibly
+   off-center from the real gap — confirmed live 2026-07-11 by measuring
+   exact pixel boundaries on a screenshot (grim + PIL): left group ends
+   at logical x≈287, right group starts at x≈1748 on the 2560-wide DP-1
+   bar, gap midpoint x≈1018, vs true center x=1280 — a ~262px leftward
+   correction. margin-right (not margin-left, and not negative — GTK
+   CSS margins are expected non-negative) pulls the whole centered box
+   left by exactly that amount: for a box centered via set_center_widget,
+   content_center = true_center + (margin_left - margin_right) / 2, so
+   margin-right ≈ 2 × 262 ≈ 525px with margin-left left at 0.
+   TWO caveats, don't "fix" this value casually:
+   (1) STATIC snapshot, not adaptive — will drift if the right-side
+       module set's rendered width changes meaningfully (tray icon
+       count, notification/VPN status text, weather string length).
+       Re-measure the same way (screenshot + pixel scan) rather than
+       eyeballing a new number.
+   (2) Tuned for DP-1 specifically (2560 logical width, scale 1.5) — this
+       same style.css also renders on DP-2 (1920 logical, scale 1.0,
+       narrower bar, same right-side module set proportionally larger),
+       where this exact margin will NOT center correctly. Waybar/GTK CSS
+       has no per-output media-query equivalent to branch on monitor
+       width — accepted as an inherent limitation of one shared
+       stylesheet across differently-sized outputs, not an oversight. */
 #window {
     color: @text_soft;
     font-size: 13px;
     padding: 0 12px;
+    margin: 0 525px 0 0;
 }
 
 #window.empty {
