@@ -229,7 +229,24 @@ tooltip {
        where this exact margin will NOT center correctly. Waybar/GTK CSS
        has no per-output media-query equivalent to branch on monitor
        width — accepted as an inherent limitation of one shared
-       stylesheet across differently-sized outputs, not an oversight. */
+       stylesheet across differently-sized outputs, not an oversight.
+   Bug this caused, found live 2026-07-11: on DP-2 the fixed 525px
+   margin plus the center title's own content left too little row width
+   for the bar to satisfy every module's natural size, so GTK shrank
+   #keyboard's hyprland/language label below its 2-character natural
+   width — down to Pango's own ellipsis minimum, rendering literally
+   "…" instead of "RU"/"EN". Isolated with a direct on/off test:
+   zeroing margin-right on a live reload made DP-2's label render
+   correctly again, so the squeeze is the real mechanism (a detour was
+   ruled out along the way — a stuck-module/IPC-binding theory for
+   hyprland/language that a real switchxkblayout toggle during testing
+   didn't disprove, because an ellipsized label shows the same "…"
+   regardless of the underlying value; `keyboard-name` was added to
+   hyprland/language below regardless, harmless and matches
+   keyboard-state's own device pin, but wasn't the fix). See the
+   #keyboard comment below for the still-open part of this (the fix for
+   the ellipsis introduced its own dead-space regression, not yet
+   resolved). */
 #window {
     color: @text_soft;
     font-size: 13px;
@@ -302,13 +319,31 @@ tooltip {
    string when unlocked, per format-icons in config-top.jsonc) INSIDE
    this same frame rather than as its own separate pill — per user
    preference 2026-07-09 (initially built as two separate pills, changed
-   after direct feedback). */
+   after direct feedback).
+   UNRESOLVED as of 2026-07-11, do not treat as done: a min-width floor
+   was added here to stop the DP-2 ellipsis bug (see #window comment
+   above), currently 60px — needed, confirmed live: at 0px the DP-2
+   ellipsis bug comes back. Separately, per direct user feedback, 60px
+   (and 74px before it) leaves visible dead space to the right of the
+   capslock glyph on DP-1 — still true, not yet fixed (my own screenshot
+   read had said "looks snug" at 60px, which was wrong; screenshots
+   aren't a substitute for the user's own eyes on the real screen — see
+   [[no-vault-save-before-testing]] memory). One theory already TRIED
+   AND REVERTED: giving label.capslock (below) its own font-family
+   ("JetBrainsMono Nerd Font Propo", matching how #pulseaudio pins its
+   icons) on the guess that "⇪" (U+21EA, not a Nerd Font PUA icon) falls
+   back from the global Inter Variable to some wide-side-bearing font —
+   reverted same session, user reported the glyph rendering with wrong
+   proportions (height) under that font. Gap source on DP-1 still
+   unidentified; min-width must stay ≥60px in the meantime to keep the
+   DP-2 fix working while this is investigated further. */
 #keyboard {
     background: @bg_module;
     border: 1px solid @border_module;
     border-radius: 5px;
     padding: 0 4px;
     margin: 2px 2px;
+    min-width: 60px;
 }
 
 #keyboard #language {

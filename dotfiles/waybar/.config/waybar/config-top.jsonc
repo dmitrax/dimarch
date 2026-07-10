@@ -152,10 +152,11 @@
     },
 
     "hyprland/language": {
-        "format": "  {}",
+        "format": "{}",
         "format-en": "EN",
         "format-ru": "RU",
-        "format-uk": "UA"
+        "format-uk": "UA",
+        "keyboard-name": "logitech-wireless-keyboard-pid:4023"
     },
 
     // ── CapsLock indicator ────────────────────────────────
