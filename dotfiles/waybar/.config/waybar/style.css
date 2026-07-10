@@ -11,13 +11,33 @@
 @define-color bg_hover        rgba(255, 255, 255, 0.08);
 @define-color bg_active       rgba(127, 184, 158, 0.20);
 
-@define-color text_main       #edeae4;
-@define-color text_soft       #c0bdb6;
-@define-color text_muted      #7a7770;
-@define-color text_faded      #4a4740;
+/* Full sage text ramp — same hue as @accent, stepped lightness/saturation
+   for hierarchy (colorsys hls_to_rgb, h≈0.426). Brightened repeatedly
+   2026-07-11 chasing "brighter, but real sage" — saturation stays fixed
+   per tier (~0.22-0.28, what made it read as sage rather than mint) and
+   only lightness keeps climbing: now 0.82/0.28, 0.68/0.26, 0.58/0.24,
+   0.46/0.22 for main/soft/muted/faded. NOTE: #stats #cpu/#memory/
+   #temperature's icon glyphs are deliberately NOT following this ramp
+   anymore — their format strings in config-top.jsonc now hardcode the
+   icon color via an inline pango <span color="#6ba88c">, the exact
+   text_soft value from the PREVIOUS (not this) brightening pass, per
+   explicit user request to keep "graphical elements" fixed while only
+   the text values keep getting lighter. Inline span color always wins
+   over this cascade for that glyph specifically. */
+@define-color text_main       #c4ddd2;
+@define-color text_soft       #98c2af;
+@define-color text_muted      #7aad96;
+@define-color text_faded      #5b8f78;
 
-@define-color accent          #7fb89e;
-@define-color accent_dark     #5e9f82;
+/* The one deliberate exception: CapsLock ON must read as neutral white,
+   not sage (user request 2026-07-11, flipped from an earlier ask — see
+   #keyboard #keyboard-state label.capslock.locked below) — everything
+   else in the bar is sage now, so ON-in-white is what actually stands
+   out as "lit up" against an all-sage backdrop. */
+@define-color text_neutral    #edeae4;
+
+@define-color accent          #c4ddd2;
+@define-color accent_dark     #89bca5;
 @define-color urgent          #d96c6c;
 @define-color warning         #d97706;
 
@@ -77,7 +97,26 @@ tooltip {
    square before border-radius turns it into a circle; the SVG logo (18px)
    sits centered inside via GTK's default content alignment. */
 #image {
-    background: @accent;
+    /* Dark sage radial gradient behind a light icon (icons/archlinux-
+       logo-sage.svg recolored to #b0d2c3 to match) — reversed from the
+       original light-circle/dark-mark version 2026-07-11. Centered
+       (circle at 50% 50%, not the earlier off-center 32%/28% "glossy
+       sphere" highlight) per follow-up feedback the same day — an even
+       radial falloff instead of a lopsided highlight spot. */
+    background: radial-gradient(circle at 50% 50%, #3c7059 0%, #224334 55%, #10221a 100%);
+    /* Outer drop shadow lifts the circle off the panel. Dropped the
+       top-rim white inset highlight that used to sit here 2026-07-11 —
+       it was tuned for the earlier off-center gradient's "glossy sphere"
+       look and read as a stray glow once the gradient became centered/
+       even (caught live: "вверху круга какое-то лишнее свечение"). A
+       faint bottom-edge inset is enough depth on its own now. */
+    box-shadow:
+        inset 0 -2px 3px rgba(0, 0, 0, 0.30),
+        0 2px 4px rgba(0, 0, 0, 0.35);
+    /* Drop shadow on the icon glyph itself (GTK-specific property, not
+       standard CSS) so the mark reads as sitting slightly above the
+       gradient rather than flat-printed on it. */
+    -gtk-icon-shadow: 0 1px 2px rgba(0, 0, 0, 0.45);
     /* GTK's box model adds padding ON TOP of min-width/min-height (content-box
        behavior) rather than eating into it — so the border-box (what actually
        gets the background + border-radius) has to be sized as icon + padding,
@@ -100,7 +139,7 @@ tooltip {
 }
 
 #image:hover {
-    background: @accent_dark;
+    background: radial-gradient(circle at 50% 50%, #4a8b6e 0%, #2c5a45 55%, #142c22 100%);
 }
 
 /* ── Workspaces ─────────────────────────────────────────── */
@@ -245,31 +284,66 @@ tooltip {
     padding: 0 6px;
     margin: 0;
     color: @text_soft;
-    font-size: 15px;
+    font-size: 17px;
     font-weight: 600;
     letter-spacing: 0.4px;
 }
 
 /* Width is reserved for the glyph in BOTH states (same icon string for
-   locked/unlocked, set in config-top.jsonc) — only color toggles here.
-   Collapsing to zero width on unlock (the original approach) changed
-   #keyboard's total width every time caps toggled, which shifted every
-   module to its LEFT in the bar (found live 2026-07-09 reboot-testing).
-   Locked-state color reuses @accent — the same Sage "active state" tone
-   already used for Waybar's own hover/active look and swayimg's gallery
-   selection. No background/border of its own — the shared #keyboard
-   frame already provides that. */
+   locked/unlocked, set in config-top.jsonc) — the base rule below fixes
+   padding/border-width identically for both states so only paint
+   (background/border-color/color) toggles, never box size. Collapsing to
+   zero width on unlock (the original approach) changed #keyboard's total
+   width every time caps toggled, which shifted every module to its LEFT
+   in the bar (found live 2026-07-09 reboot-testing) — border defined at
+   a fixed 1px here (transparent when off) rather than added only for
+   .locked is the same anti-reflow trick, extended to the new badge look.
+   Plain white text (tried 2026-07-11) stopped reading as "lit" once the
+   rest of the bar's text got brighter — a filled badge is the fix (same
+   background+border "lit" pattern already used by #idle_inhibitor/
+   #custom-vpn/#custom-notification elsewhere in this file), using
+   @warning's orange for real can't-miss-it contrast against an otherwise
+   all-sage bar, not @accent (would blend in) or @urgent (already means
+   "critical/power", per the existing DND-vs-notification color
+   reasoning above). */
 #keyboard #keyboard-state label.capslock {
-    font-weight: 600;
-    padding: 3px 6px 0 0;
+    font-weight: 700;
+    /* Horizontal spacing reverted to the original pre-badge values (0
+       left / 6px right, no extra margin) now that the badge idea (which
+       needed the wider 7px/7px breathing room around a filled
+       background) was replaced with a plain blinking glyph — the wider
+       padding was just pushing the arrow away from the RU/EN label with
+       nothing left to justify it (caught live 2026-07-11). Vertical 4px
+       top / 0 bottom split is kept — that's the unrelated "nudge the
+       glyph down" fix from earlier the same session. */
+    padding: 4px 6px 0 0;
+    border-radius: 4px;
+    border: 1px solid transparent;
+    transition: background 150ms ease, color 150ms ease, border-color 150ms ease;
 }
 
 #keyboard #keyboard-state label.capslock.locked {
-    color: @accent;
+    /* Badge (filled DND-orange background/border) tried and dropped same
+       session — replaced with a blinking glyph per follow-up request:
+       plain @warning orange, animated opacity via the keyframes below.
+       No background/border here anymore (stay transparent, same as the
+       base/unlocked look) so only the glyph itself pulses. */
+    background: transparent;
+    border-color: transparent;
+    color: @warning;
+    animation: capslock-blink 1s ease-in-out infinite;
+}
+
+@keyframes capslock-blink {
+    0% { opacity: 1; }
+    50% { opacity: 0.25; }
+    100% { opacity: 1; }
 }
 
 #keyboard #keyboard-state label.capslock.unlocked {
-    color: transparent;
+    background: transparent;
+    border-color: transparent;
+    color: @text_muted;
 }
 
 /* ── Tray ───────────────────────────────────────────────── */

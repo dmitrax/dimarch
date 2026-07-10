@@ -82,25 +82,38 @@
     },
 
     // ── CPU ────────────────────────────────────────────────
+    // Icon glyph pinned to a fixed sage (inline pango <span color=...>,
+    // honored since Waybar renders format strings as markup by default —
+    // "escape" defaults to false) — the number keeps following text_soft
+    // in style.css and gets brighter with it, the icon deliberately does
+    // not (user request 2026-07-11: text lighter, "graphical elements"
+    // unchanged). #6ba88c is the text_soft value from the PREVIOUS
+    // brightening pass, i.e. "as it already looked".
     "cpu": {
         "interval": 2,
-        "format": "{usage}% 󰻠",
+        "format": "{usage}% <span color='#6ba88c'>󰻠</span>",
         "tooltip": false
     },
 
     // ── Memory ────────────────────────────────────────────
     "memory": {
         "interval": 5,
-        "format": " {used:0.1f}G",
+        "format": "<span color='#6ba88c'></span> {used:0.1f}G",
         "tooltip-format": "{used:0.1f}G / {total:0.1f}G"
     },
 
     // ── GPU temperature (RX 580 — hwmon3) ─────────────────
+    // format-critical's icon uses @urgent's literal hex (#d96c6c) instead
+    // of the frozen sage — the critical state is a real thermal-safety
+    // signal (see rx580-gpu-compute-stack notes on this hardware), and an
+    // inline span color always overrides the CSS cascade, so leaving it
+    // sage here would have silently defeated #stats #temperature.critical
+    // turning the icon red.
     "temperature": {
         "hwmon-path": "/sys/class/hwmon/hwmon3/temp1_input",
         "critical-threshold": 85,
-        "format": "󰢮 {temperatureC}°",
-        "format-critical": "󰢮 {temperatureC}°",
+        "format": "<span color='#6ba88c'>󰢮</span> {temperatureC}°",
+        "format-critical": "<span color='#d96c6c'>󰢮</span> {temperatureC}°",
         "tooltip": false
     },
 
