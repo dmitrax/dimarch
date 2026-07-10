@@ -1,0 +1,27 @@
+# =========================================================
+# DimArch OS — yazi.toml
+# Overrides on top of yazi's bundled defaults. Anything not
+# listed here (openers, MIME rules, fetchers/previewers, …)
+# is inherited from yazi-config/preset/yazi-default.toml.
+# =========================================================
+
+[mgr]
+sort_by   = "natural"    # file2 before file10, unlike plain alphabetical
+linemode  = "size"       # show file size in the file list by default
+
+[preview]
+image_filter  = "lanczos3"  # higher-quality downscale than the default triangle filter
+image_quality = 90          # default range is 50-90 — go for the top of it
+
+# git.yazi — show git status as a linemode sign in the file list.
+# `id` intentionally omitted: the plugin's own README says to drop it
+# on Yazi > v26.1.22 (we run 26.5.6).
+[[plugin.prepend_fetchers]]
+url   = "*"
+run   = "git"
+group = "git"
+
+[[plugin.prepend_fetchers]]
+url   = "*/"
+run   = "git"
+group = "git"

@@ -24,6 +24,15 @@ alias reload='source ~/.zshrc'
 eval "$(zoxide init zsh)"
 alias cd='z'
 
+# ── yazi — file manager (cd into wherever you exit from) ──
+function y() {
+	local tmp="$(mktemp -t "yazi-cwd.XXXXXX")" cwd
+	command yazi "$@" --cwd-file="$tmp"
+	IFS= read -r -d '' cwd < "$tmp"
+	[ "$cwd" != "$PWD" ] && [ -d "$cwd" ] && builtin cd -- "$cwd"
+	command rm -f -- "$tmp"
+}
+
 # ── History ──────────────────────────────────────────────
 HISTFILE=~/.zsh_history
 HISTSIZE=10000
@@ -34,6 +43,13 @@ setopt SHARE_HISTORY
 
 # ── PATH ─────────────────────────────────────────────────
 export PATH="/home/dmitry/.local/bin:$PATH"
+
+# ── Default editor ───────────────────────────────────────
+# Unset $EDITOR made every tool that falls back to `${EDITOR:-vi}`
+# (yazi's folder opener, git commit, crontab -e, visudo, …) try a
+# literal `vi`, which isn't installed here (only `vim`) — exit 127.
+export EDITOR="vim"
+export VISUAL="$EDITOR"
 
 # ── WireGuard VPN (dimarchctl vpn — config in dimarch.conf [vpn]) ────────
 alias vpn='dimarchctl vpn up'

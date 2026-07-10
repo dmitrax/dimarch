@@ -1,0 +1,137 @@
+# =========================================================
+# DimArch OS — yazi theme.toml (Sage)
+# Same palette as rofi/theme.rasi, swaync/style.css,
+# swayosd/style.css and ghostty's ANSI colors:
+#   bg      #12141a / #16161c   accent (sage) #7fb89e
+#   text    #edeae4             text-secondary #c8c4be
+#   text-muted #7a7770          border  #3a3a4a
+#   danger  #d96c6c             warn (yellow) #d4a96a
+# Deliberately does not set a background anywhere — Ghostty's
+# own translucent/blurred background (background-opacity=0.85)
+# must stay visible through yazi, the same way it does for
+# every other terminal app. Only fg/accent colors are themed.
+# Anything not listed here inherits from yazi's bundled
+# theme-dark.toml (icons, filetype fallback colors, etc.).
+# =========================================================
+
+#:schema https://yazi-rs.github.io/schemas/theme.json
+
+[mgr]
+cwd = { fg = "#7fb89e" }
+
+find_keyword  = { fg = "#e4ba7a", bold = true, italic = true, underline = true }
+find_position = { fg = "#a07fb8", bg = "reset", bold = true, italic = true }
+
+symlink_target = { fg = "#8aacd4", italic = true }
+
+marker_copied   = { fg = "#8fccae", bg = "#8fccae" }
+marker_cut      = { fg = "#d48a8a", bg = "#d48a8a" }
+marker_marked   = { fg = "#8fccc8", bg = "#8fccc8" }
+marker_selected = { fg = "#e4ba7a", bg = "#e4ba7a" }
+marker_symbol   = "│"
+
+count_copied   = { fg = "#12141a", bg = "#7fb89e" }
+count_cut      = { fg = "#edeae4", bg = "#d96c6c" }
+count_selected = { fg = "#12141a", bg = "#d4a96a" }
+
+border_symbol = "│"
+border_style  = { fg = "#3a3a4a" }
+
+[tabs]
+active   = { fg = "#12141a", bg = "#7fb89e", bold = true }
+inactive = { fg = "#7a7770", bg = "#1e1e26" }
+
+sep_inner = { open = "", close = "" }
+sep_outer = { open = "", close = "" }
+
+[mode]
+normal_main = { fg = "#12141a", bg = "#7fb89e", bold = true }
+normal_alt  = { fg = "#7fb89e", bg = "#1e1e26" }
+
+select_main = { fg = "#12141a", bg = "#d4a96a", bold = true }
+select_alt  = { fg = "#d4a96a", bg = "#1e1e26" }
+
+unset_main = { fg = "#edeae4", bg = "#d96c6c", bold = true }
+unset_alt  = { fg = "#d96c6c", bg = "#1e1e26" }
+
+[status]
+sep_left  = { open = "", close = "" }
+sep_right = { open = "", close = "" }
+
+perm_sep  = { fg = "#3a3a4a" }
+perm_type  = { fg = "#7fb89e" }
+perm_read  = { fg = "#e4ba7a" }
+perm_write = { fg = "#d48a8a" }
+perm_exec  = { fg = "#7fb8b4" }
+
+progress_label  = { bold = true }
+progress_normal = { fg = "#7fb89e", bg = "#1e1e26" }
+progress_error  = { fg = "#edeae4", bg = "#d96c6c" }
+
+[which]
+mask            = { bg = "#12141a" }
+cand            = { fg = "#8fccc8" }
+rest            = { fg = "#7a7770" }
+desc            = { fg = "#a07fb8" }
+separator_style = { fg = "#7a7770" }
+
+[confirm]
+border  = { fg = "#7fb89e" }
+title   = { fg = "#7fb89e" }
+btn_yes = { fg = "#12141a", bg = "#7fb89e", bold = true }
+btn_no  = { fg = "#7a7770" }
+
+[spot]
+border   = { fg = "#7fb89e" }
+title    = { fg = "#7fb89e" }
+tbl_col  = { fg = "#8aacd4" }
+tbl_cell = { fg = "#12141a", bg = "#e4ba7a" }
+
+[notify]
+title_info  = { fg = "#7fb89e" }
+title_warn  = { fg = "#d4a96a" }
+title_error = { fg = "#d96c6c" }
+
+[pick]
+border = { fg = "#7fb89e" }
+active = { fg = "#a07fb8", bold = true }
+
+[input]
+border = { fg = "#7fb89e" }
+
+[cmp]
+border = { fg = "#7fb89e" }
+
+[tasks]
+border  = { fg = "#7fb89e" }
+hovered = { fg = "#a07fb8", bold = true }
+
+[help]
+border = { fg = "#7fb89e" }
+chord  = { fg = "#7fb8b4" }
+
+[filetype]
+rules = [
+	{ mime = "image/*", fg = "#e4ba7a" },
+	{ mime = "{audio,video}/*", fg = "#a07fb8" },
+	{ mime = "application/{zip,rar,7z*,tar,gzip,xz,zstd,bzip*,lzma,compress,archive,cpio,arj,xar,ms-cab*}", fg = "#d96c6c" },
+	{ mime = "application/{pdf,doc,rtf}", fg = "#7fb8b4" },
+	{ mime = "vfs/{absent,stale}", fg = "#7a7770" },
+
+	{ url = "*", is = "orphan", bg = "#d96c6c" },
+	{ url = "*", is = "exec"  , fg = "#7fb89e" },
+
+	{ url = "*", is = "dummy", bg = "#d96c6c" },
+	{ url = "*/", is = "dummy", bg = "#d96c6c" },
+
+	{ url = "*/", fg = "#7a9cc4" },
+]
+
+# git.yazi — status colors, no custom sign glyphs (defaults are fine)
+[git]
+modified  = { fg = "#d4a96a" }
+added     = { fg = "#7fb89e" }
+untracked = { fg = "#7a9cc4" }
+ignored   = { fg = "#7a7770" }
+deleted   = { fg = "#d96c6c", bold = true }
+updated   = { fg = "#7fb8b4" }

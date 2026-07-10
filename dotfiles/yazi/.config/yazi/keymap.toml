@@ -1,0 +1,18 @@
+# =========================================================
+# DimArch OS — yazi keymap.toml
+# Only additions on top of yazi's bundled default keymap.
+# =========================================================
+
+#:schema https://yazi-rs.github.io/schemas/keymap.json
+
+[mgr]
+
+prepend_keymap = [
+	# smart-enter.yazi — https://github.com/yazi-rs/plugins/tree/main/smart-enter.yazi
+	# Bound on l/Right/Enter (README only shows l) — without this, plain Enter still
+	# ran the stock `open` action, which for a folder falls back to `${EDITOR:-vi} %s`.
+	# $EDITOR was unset and `vi` isn't installed here (only `vim`) -> exit 127.
+	{ on = "l",        run = "plugin smart-enter", desc = "Enter the child directory, or open the file" },
+	{ on = "<Right>",  run = "plugin smart-enter", desc = "Enter the child directory, or open the file" },
+	{ on = "<Enter>",  run = "plugin smart-enter", desc = "Enter the child directory, or open the file" },
+]

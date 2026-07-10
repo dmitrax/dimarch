@@ -21,7 +21,8 @@
 #    2.  Panel & launcher — Waybar, rofi, libnotify
 #    3.  Notification center — swaync (Sage theme, deployed from dotfiles/)
 #    4.  OSD — swayosd (Sage theme + libinput backend service)
-#    5.  File managers — Thunar + yazi + tumbler (no Dolphin/KIO)
+#    5.  File managers — Thunar + yazi + tumbler (no Dolphin/KIO); yazi gets a
+#        Sage theme + git/smart-enter/full-border plugins (ya pkg install)
 #    6.  Default apps — mousepad, swayimg, mpv (+ mpv-mpris, mpv-uosc)
 #    7.  Default app associations — mimeapps.list
 #    8.  Screenshot — grim, slurp, satty, wl-clipboard
@@ -172,6 +173,28 @@ dimarch::pacman_install \
     glycin
 
 ok "File managers installed"
+
+# yazi — Sage theme + natural sort/size linemode/higher-quality image preview
+# (yazi.toml, theme.toml) + smart-enter bound on l/Right/Enter (keymap.toml,
+# init.lua). Plugins (git status linemode, full-border, smart-enter) are
+# pinned by rev+hash in package.toml, fetched via `ya pkg install` — Lua only,
+# no compilation, same class of risk as any other git-based fetch already
+# accepted in this project (chaotic-aur, paru). Requires `git` (03-base.sh
+# already installs it as a build dependency for paru in 02-cachyos.sh).
+deploy_dotfile "yazi/.config/yazi/yazi.toml"
+deploy_dotfile "yazi/.config/yazi/theme.toml"
+deploy_dotfile "yazi/.config/yazi/keymap.toml"
+deploy_dotfile "yazi/.config/yazi/init.lua"
+deploy_dotfile "yazi/.config/yazi/package.toml"
+
+if [[ -n "$REALUSER" ]]; then
+    info "Fetching yazi plugins (ya pkg install)..."
+    sudo -u "$REALUSER" ya pkg install \
+        && ok "yazi plugins installed (git, smart-enter, full-border)" \
+        || warn "ya pkg install failed — run manually as ${REALUSER}: ya pkg install"
+else
+    warn "No user detected — run manually: ya pkg install"
+fi
 
 # =============================================================================
 #  STEP 6 — Default apps
