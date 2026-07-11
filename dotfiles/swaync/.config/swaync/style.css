@@ -1,7 +1,15 @@
 /* DimArch OS — SwayNotificationCenter (Sage theme)
-   Same "dark glass" language as rofi/theme.rasi and swayosd/style.css
-   (bg ~rgba(18,20,26,0.85), Sage accent #7fb89e, text #edeae4, Inter
-   Variable) instead of the shipped dark-gray/blue defaults.
+   Repainted 2026-07-11 to match the Waybar top-bar Sage redesign from the
+   previous day (see waybar/style.css) — that session brightened the whole
+   bar's text ramp off the old flat #7fb89e accent onto a proper sage
+   hue-family (h≈0.426), with #7fb89e demoted to a low-alpha "active state"
+   tint (Waybar's @bg_active) rather than the primary accent color. This
+   file now follows the same convention: --text-color/--bg-selected use
+   Waybar's @text_main/@accent (#c4ddd2), and #7fb89e survives only as the
+   focus/border tint (Waybar's @bg_active / active-border alpha values).
+   rofi/theme.rasi and swayosd/style.css still use the OLD #7fb89e/#edeae4
+   pairing as of this date — deliberately NOT touched here, out of scope
+   for this pass (ask if those should follow too).
    cssPriority=user in config.json means this file fully REPLACES
    /etc/xdg/swaync/style.css rather than layering on top of it — so the
    full structural ruleset below is copied from the shipped default and
@@ -10,18 +18,29 @@
    in sync with upstream structural changes on swaync upgrades. */
 
 :root {
-  --cc-bg: rgba(18, 20, 26, 0.90);
-  --noti-border-color: rgba(255, 255, 255, 0.10);
-  --noti-bg: 18, 20, 26;
+  --cc-bg: rgba(13, 22, 26, 0.90);
+  --noti-border-color: rgba(255, 255, 255, 0.07);
+  --noti-bg: 13, 22, 26;
   --noti-bg-alpha: 0.85;
-  --noti-bg-darker: rgb(12, 13, 17);
-  --noti-bg-hover: rgba(127, 184, 158, 0.14);
-  --noti-bg-focus: rgba(127, 184, 158, 0.18);
+  --noti-bg-darker: rgb(9, 16, 19);
+  /* Pale sage tint (low-alpha @text_main, not neutral white) — considered
+     matching Waybar's literal @bg_hover (neutral white-alpha) but that
+     convention relies on Waybar's own hover targets already sitting on a
+     neutral pill background; swaync's notification card background is
+     sage-tinted dark (--noti-bg above), so a plain white overlay would
+     read as a slight "wrong-temperature" flash against it. Kept in the
+     same sage family as --noti-bg-focus below, distinguished by alpha
+     only (0.08 vs 0.20) rather than by hue — a deliberate choice for this
+     floating-card family (swaync/rofi/swayosd), not a literal 1:1 port of
+     Waybar's bar-chrome hover. User call, 2026-07-11. */
+  --noti-bg-hover: rgba(196, 221, 210, 0.08);
+  /* Focus/selected = sage tint at the same alpha as Waybar's @bg_active. */
+  --noti-bg-focus: rgba(127, 184, 158, 0.20);
   --noti-close-bg: rgba(255, 255, 255, 0.08);
   --noti-close-bg-hover: rgba(255, 255, 255, 0.16);
-  --text-color: #edeae4;
-  --text-color-disabled: rgba(237, 234, 228, 0.45);
-  --bg-selected: #7fb89e;
+  --text-color: #c4ddd2;
+  --text-color-disabled: rgba(196, 221, 210, 0.45);
+  --bg-selected: #c4ddd2;
   --notification-icon-size: 48px;
   --notification-app-icon-size: calc(var(--notification-icon-size) / 3);
   --notification-group-icon-size: 28px;
@@ -39,19 +58,19 @@
 }
 
 /* Fallback for older CSS themes */
-@define-color cc-bg rgba(18, 20, 26, 0.90);
-@define-color noti-border-color rgba(255, 255, 255, 0.10);
-@define-color noti-bg rgba(18, 20, 26, 0.85);
-@define-color noti-bg-opaque rgb(18, 20, 26);
-@define-color noti-bg-darker rgb(12, 13, 17);
-@define-color noti-bg-hover rgba(127, 184, 158, 0.14);
+@define-color cc-bg rgba(13, 22, 26, 0.90);
+@define-color noti-border-color rgba(255, 255, 255, 0.07);
+@define-color noti-bg rgba(13, 22, 26, 0.85);
+@define-color noti-bg-opaque rgb(13, 22, 26);
+@define-color noti-bg-darker rgb(9, 16, 19);
+@define-color noti-bg-hover rgba(196, 221, 210, 0.08);
 @define-color noti-bg-hover-opaque rgb(38, 48, 44);
-@define-color noti-bg-focus rgba(127, 184, 158, 0.18);
+@define-color noti-bg-focus rgba(127, 184, 158, 0.20);
 @define-color noti-close-bg rgba(255, 255, 255, 0.08);
 @define-color noti-close-bg-hover rgba(255, 255, 255, 0.16);
-@define-color text-color #edeae4;
-@define-color text-color-disabled rgba(237, 234, 228, 0.45);
-@define-color bg-selected #7fb89e;
+@define-color text-color #c4ddd2;
+@define-color text-color-disabled rgba(196, 221, 210, 0.45);
+@define-color bg-selected #c4ddd2;
 
 * {
   font-family: "Inter Variable", sans-serif;
@@ -206,7 +225,7 @@ notificationwindow, blankwindow {
 }
 
 .notification-row .notification-background .notification .notification-default-action .notification-content progressbar > trough > progress {
-  background-color: #7fb89e;
+  background-color: #c4ddd2;
 }
 
 .notification-row .notification-background .notification .notification-default-action .notification-content .body-image {
@@ -302,7 +321,7 @@ notificationwindow, blankwindow {
 }
 
 .notification-group .notification-group-headers .notification-group-icon {
-  color: #7fb89e;
+  color: #c4ddd2;
   -gtk-icon-size: var(--notification-group-icon-size);
 }
 
@@ -351,7 +370,10 @@ notificationwindow, blankwindow {
   background: var(--cc-bg);
   color: var(--text-color);
   border-radius: var(--border-radius);
-  border: 1px solid rgba(127, 184, 158, 0.20);
+  /* Same 0.35 alpha as Waybar's "active state" border convention
+     (#workspaces button.active, #idle_inhibitor.activated, etc.) — the
+     control center is effectively an always-on/open panel, same role. */
+  border: 1px solid rgba(127, 184, 158, 0.35);
 }
 
 .control-center .control-center-list-placeholder {
@@ -402,7 +424,7 @@ notificationwindow, blankwindow {
 .widget-title > label {
   margin-right: 8px;
   font-size: 1.5rem;
-  color: #7fb89e;
+  color: #c4ddd2;
   font-weight: 600;
 }
 
@@ -430,7 +452,13 @@ notificationwindow, blankwindow {
 }
 
 .widget-dnd switch:checked {
-  background: #7fb89e;
+  /* @warning orange, not the sage accent — matches Waybar's own DND
+     convention on #custom-notification.dnd-* (orange overrides the
+     normal sage "unread" tint specifically to mean "silenced", keeping
+     that meaning distinct from @urgent's critical/power-hover red). The
+     toggle that turns DND on should read the same color as the bell icon
+     does once DND is active. */
+  background: #d97706;
 }
 
 .widget-dnd switch slider {

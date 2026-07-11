@@ -1,13 +1,23 @@
 /* DimArch OS — SwayOSD (Sage theme)
    Volume / mic / CapsLock / ScrollLock popups. Same "dark glass" floating
-   card language as rofi/theme.rasi (bg ~rgba(18,20,26,0.8..0.85), Sage
-   accent #7fb89e) rather than the default GTK @theme_* colors this ships
-   with. Structure/selectors copied from /etc/xdg/swayosd/style.css. */
+   card language as rofi/theme.rasi and swaync/style.css, repainted the
+   same day (2026-07-11) to match the Waybar top-bar Sage redesign — base
+   rgb shifted from (18,20,26) to Waybar's @bg_panel tone (13,22,26), and
+   both the icon and label text moved off the old flat #7fb89e/#edeae4
+   pairing onto Waybar's brighter @accent/@text_main (#c4ddd2) — a single
+   shared color, matching the upstream default's own pattern of coloring
+   `image` and `label` identically (@theme_fg_color for both, see
+   /etc/xdg/swayosd/style.css). Considered keeping label as Waybar's
+   neutral #edeae4 @text_neutral (its one deliberate non-sage exception),
+   but that exception exists to make a state stand out against a wall of
+   OTHER sage text in a busy multi-module bar — a standalone OSD popup
+   with nothing else on screen doesn't have that problem, so there's no
+   real reason to diverge from the sage majority-text convention here. */
 
 window#osd {
     border-radius: 20px;
-    border: 1px solid rgba(255, 255, 255, 0.10);
-    background: rgba(18, 20, 26, 0.85);
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    background: rgba(13, 22, 26, 0.85);
 }
 
 window#osd #container {
@@ -15,11 +25,11 @@ window#osd #container {
 }
 
 window#osd image {
-    color: #7fb89e;
+    color: #c4ddd2;
 }
 
 window#osd label {
-    color: #edeae4;
+    color: #c4ddd2;
 }
 
 window#osd progressbar:disabled,
@@ -48,7 +58,7 @@ window#osd segment.active {
     min-height: inherit;
     border-radius: inherit;
     border: none;
-    background: #7fb89e;
+    background: #c4ddd2;
 }
 
 window#osd segment {

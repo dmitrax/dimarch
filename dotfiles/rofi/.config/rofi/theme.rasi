@@ -2,26 +2,34 @@
    DimArch Rofi Theme — Dark Glass
    For: rofi -show drun
    Style: DimArch / dark system UI
+   Repainted 2026-07-11 to match the Waybar top-bar Sage redesign (see
+   waybar/style.css) and swaync/style.css, updated the same day — text/
+   accent moved off the old flat #7fb89e/#edeae4 pairing onto Waybar's
+   brighter sage text ramp (@text_main #c4ddd2 etc.), with #7fb89e kept
+   only as the low-alpha "selected/active" tint family (accent-soft/
+   accent-border), matching Waybar's @bg_active convention. The `element
+   selected` tint here was ALREADY a pale sage tint, not neutral white —
+   no structural change needed, only the hex values.
    ========================================================= */
 
 * {
     font:                       "Inter 12";
 
-    bg:                         rgba ( 18, 20, 26, 72 % );
-    bg-input:                   rgba ( 28, 30, 38, 82 % );
+    bg:                         rgba ( 13, 22, 26, 72 % );
+    bg-input:                   rgba ( 23, 32, 38, 82 % );
 
-    text:                       rgba ( 237, 234, 228, 100 % );
-    text-secondary:             rgba ( 192, 189, 182, 100 % );
-    text-muted:                 rgba ( 122, 119, 112, 100 % );
+    text:                       rgba ( 196, 221, 210, 100 % );  /* @text_main #c4ddd2 */
+    text-secondary:             rgba ( 152, 194, 175, 100 % );  /* @text_soft #98c2af */
+    text-muted:                 rgba ( 122, 173, 150, 100 % );  /* @text_muted #7aad96 */
 
-    accent:                     rgba ( 127, 184, 158, 100 % );
-    accent-soft:                rgba ( 127, 184, 158, 18 % );
-    accent-border:              rgba ( 127, 184, 158, 40 % );
+    accent:                     rgba ( 196, 221, 210, 100 % );  /* @accent #c4ddd2 */
+    accent-soft:                rgba ( 127, 184, 158, 20 % );   /* old accent as tint, aligned to @bg_active's 20% alpha */
+    accent-border:              rgba ( 127, 184, 158, 35 % );   /* aligned to the active-border convention used in swaync/waybar */
 
-    danger:                     rgba ( 217, 108, 108, 100 % );
+    danger:                     rgba ( 217, 108, 108, 100 % );  /* = @urgent, already matched */
     danger-soft:                rgba ( 217, 108, 108, 18 % );
 
-    border:                     rgba ( 255, 255, 255, 10 % );
+    border:                     rgba ( 255, 255, 255, 7 % );    /* aligned to @border_soft 0.07 */
     border-outer:               rgba ( 0, 0, 0, 42 % );
     transparent:                rgba ( 0, 0, 0, 0 % );
 }
@@ -197,7 +205,7 @@ button selected {
    ───────────────────────────────────────────── */
 
 message {
-    background-color:           rgba ( 28, 30, 38, 46 % );
+    background-color:           rgba ( 23, 32, 38, 46 % );
     border:                     1px;
     border-color:               @border;
     border-radius:              12px;
