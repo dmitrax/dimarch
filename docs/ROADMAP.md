@@ -580,7 +580,8 @@ install/apps/
 │                      rx580-gpu-compute-stack.md)
 ├── mise.sh            Node/Python/Rust via mise
 ├── voicebox.sh        Local TTS/STT (evaluate; optional)
-└── winapps.sh         WinApps VM (Looking Glass, UHD 630 passthrough)
+├── winapps.sh         WinApps VM (Looking Glass, UHD 630 passthrough)
+└── zapzap.sh          ZapZap — WhatsApp desktop client (chaotic-aur)
 ```
 
 These are not versioned with DimArch OS releases.
