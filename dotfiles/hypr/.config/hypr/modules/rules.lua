@@ -83,6 +83,44 @@ hl.window_rule({
 })
 
 -- ---------------------------------------------------------
+-- Document viewers (Zathura, Papers)
+-- ---------------------------------------------------------
+
+-- Zathura has no per-document dynamic sizing like swayimg/mpv — without an
+-- explicit size, GTK4 picks a window size from the first page's own
+-- dimensions, which varies wildly (and unpredictably small) from document
+-- to document. Same fix as Firefox/LibreWolf/Thunar above: force a sane
+-- fraction of the monitor and let persistent_size (global catch-all) carry
+-- manual resizes for the rest of the session. App-id confirmed live via
+-- `hyprctl clients -j` 2026-07-14 (native Wayland, xwayland=false).
+-- Kept installed for ad hoc keyboard-driven use even though Papers is the
+-- default PDF handler (mimeapps.list) — not wired to any mimetype.
+hl.window_rule({
+    match = { class = "^(org.pwmt.zathura)$" },
+    float = true,
+    persistent_size = true,
+    size = { "monitor_w * 0.6", "monitor_h * 0.85" },
+    center = true,
+})
+
+-- Papers (default PDF/ePub/DjVu/XPS viewer, see decision-zathura-instead-of-
+-- browser-pdf-because-native-wayland-minimal-viewer.md follow-up). GTK4 +
+-- libadwaita, native Wayland (xwayland=false, class org.gnome.Papers,
+-- confirmed live 2026-07-14). This static size rule alone is NOT enough —
+-- Papers requests its own maximized state on every open (a dconf key
+-- looked like the cause at first, resetting it made no difference — the
+-- real mechanism and the actual fix live in modules/papers-window-fix.lua,
+-- required separately in hyprland.lua). Kept here anyway as the fallback
+-- floor this rule already gives Zathura/Firefox/Thunar.
+hl.window_rule({
+    match = { class = "^(org.gnome.Papers)$" },
+    float = true,
+    persistent_size = true,
+    size = { "monitor_w * 0.6", "monitor_h * 0.85" },
+    center = true,
+})
+
+-- ---------------------------------------------------------
 -- Dialogs / small utility windows
 -- ---------------------------------------------------------
 

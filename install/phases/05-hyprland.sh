@@ -23,7 +23,9 @@
 #    4.  OSD — swayosd (Sage theme + libinput backend service)
 #    5.  File managers — Thunar + yazi + tumbler (no Dolphin/KIO); yazi gets a
 #        Sage theme + git/smart-enter/full-border plugins (ya pkg install)
-#    6.  Default apps — mousepad, swayimg, mpv (+ mpv-mpris, mpv-uosc)
+#    6.  Default apps — mousepad, swayimg, mpv (+ mpv-mpris, mpv-uosc),
+#        zathura (keyboard-driven, not the default handler), papers (default
+#        PDF viewer)
 #    7.  Default app associations — mimeapps.list
 #    8.  Screenshot — grim, slurp, satty, wl-clipboard
 #    9.  Terminal & shell — Ghostty, zsh, starship, fonts
@@ -234,6 +236,37 @@ if [[ -n "$REALUSER" ]]; then
 else
     warn "No user detected — mpv-uosc symlinks not created, see this script's header"
 fi
+
+# zathura + zathura-pdf-mupdf (PDF/ePub/OpenXPS viewer) — kept installed for
+# ad hoc keyboard-driven reading, but NOT the default PDF handler (see
+# papers below). Live testing 2026-07-14 found it too keyboard-only for
+# normal mouse-first use (no toolbar/thumbnails by design — girara has
+# none, ever). GTK4, no libadwaita tail. MuPDF backend chosen over Poppler
+# for speed on ordinary documents — the two backends conflict and cannot be
+# installed together (zathura-pdf-poppler is the fallback if a specific PDF
+# renders wrong under MuPDF, not a co-installed alternative). See
+# decision-zathura-instead-of-browser-pdf-because-native-wayland-minimal-
+# viewer.md.
+dimarch::pacman_install \
+    zathura \
+    zathura-pdf-mupdf
+
+deploy_dotfile "zathura/.config/zathura/zathurarc"
+
+# papers (default PDF/ePub/DjVu/XPS viewer) — GNOME's official Evince
+# successor since GNOME 49 (2025 — Evince is the one now in legacy/
+# maintenance mode, not Papers). GTK4 + libadwaita, native Wayland
+# (xwayland=false, confirmed live). Real toolbar, page-thumbnail sidebar,
+# mouse-first navigation and presentation mode — what Zathura's
+# keyboard-only design can't offer. libadwaita is already a load-bearing
+# dependency of this stack (ghostty, satty, swaync, zenity), so this isn't
+# a new architectural tail, just a new consumer of one already present.
+# Picked over Evince: real dry-run incremental install on this machine was
+# ~27 MB (Papers) vs ~89 MB (Evince, mostly ghostscript for PostScript
+# support nobody here needs) — Papers is lighter in practice, not just on
+# lifecycle grounds. See decision-zathura-instead-of-browser-pdf-because-
+# native-wayland-minimal-viewer.md (follow-up).
+dimarch::pacman_install papers
 
 ok "Default apps installed"
 

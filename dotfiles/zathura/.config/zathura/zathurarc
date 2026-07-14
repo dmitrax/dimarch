@@ -1,0 +1,69 @@
+# DimArch OS — Zathura (Sage theme)
+#
+# PDF/ePub/OpenXPS viewer, MuPDF backend (zathura-pdf-mupdf — faster/lighter
+# than Poppler for ordinary documents; switch to zathura-pdf-poppler only if
+# a specific PDF renders wrong, the two backends conflict and can't coexist).
+# Same "dark glass" Sage palette as rofi/theme.rasi, swaync/style.css,
+# swayosd/style.css — base rgb(13,22,26) / #0d161a, accent+text #c4ddd2,
+# active/selected tint rgba(127,184,158,0.35) (Waybar's own "active state"
+# convention). See decision-zathura-instead-of-browser-pdf-because-native-
+# wayland-minimal-viewer.md.
+
+# ── Behaviour ─────────────────────────────────────────────────────────────
+
+set database sqlite
+set adjust-open "best-fit"
+set selection-clipboard "clipboard"
+set incremental-search true
+set statusbar-basename true
+set statusbar-home-tilde true
+set statusbar-page-percent true
+
+# Command line + statusbar only — no scrollbars, matches the minimal
+# footprint of swayimg/yazi in this stack.
+set guioptions "cs"
+
+# ── Typography ────────────────────────────────────────────────────────────
+
+set font "Inter 10"
+
+# ── Sage palette ──────────────────────────────────────────────────────────
+
+set default-bg "#0d161a"
+set default-fg "#c4ddd2"
+
+set statusbar-bg "#172026"
+set statusbar-fg "#c4ddd2"
+
+set inputbar-bg "#172026"
+set inputbar-fg "#c4ddd2"
+
+set completion-bg "#172026"
+set completion-fg "#c4ddd2"
+set completion-group-bg "#0d161a"
+set completion-group-fg "#8fa79c"
+set completion-highlight-bg "#c4ddd2"
+set completion-highlight-fg "#0d161a"
+
+set index-bg "#0d161a"
+set index-fg "#c4ddd2"
+set index-active-bg "#c4ddd2"
+set index-active-fg "#0d161a"
+
+set highlight-color "rgba(127,184,158,0.35)"
+set highlight-active-color "rgba(127,184,158,0.65)"
+set highlight-fg "#0d161a"
+
+set render-loading-bg "#0d161a"
+set render-loading-fg "#c4ddd2"
+
+# ── Geometry ──────────────────────────────────────────────────────────────
+
+set page-h-padding 8
+set page-v-padding 8
+
+# ── Navigation ────────────────────────────────────────────────────────────
+
+map <C-plus> zoom in
+map <C-minus> zoom out
+map <C-0> zoom original

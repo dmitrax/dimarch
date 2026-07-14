@@ -1,5 +1,6 @@
 [Added Associations]
 application/x-shellscript=org.xfce.mousepad.desktop;
+application/pdf=org.gnome.Papers.desktop;org.pwmt.zathura.desktop;
 image/jpeg=swayimg.desktop;
 image/png=swayimg.desktop;
 text/plain=org.xfce.mousepad.desktop;
@@ -50,6 +51,7 @@ video/x-theora+ogg=mpv.desktop;
 x-scheme-handler/claude=claude-desktop.desktop;
 
 [Default Applications]
+application/pdf=org.gnome.Papers.desktop;
 image/jpeg=swayimg.desktop;
 image/png=swayimg.desktop;
 inode/directory=thunar.desktop;

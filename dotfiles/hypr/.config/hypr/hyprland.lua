@@ -21,6 +21,7 @@ require("modules/animations")
 -- Rules
 require("modules/rules")
 require("modules/window-position-memory")
+require("modules/papers-window-fix")
 
 -- Workspace rules
 -- Temporarily disabled while testing resume behavior.
