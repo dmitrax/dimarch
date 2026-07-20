@@ -42,7 +42,7 @@ setopt HIST_IGNORE_SPACE
 setopt SHARE_HISTORY
 
 # ── PATH ─────────────────────────────────────────────────
-export PATH="/home/dmitry/.local/bin:$PATH"
+export PATH="$HOME/.local/bin:$PATH"
 
 # ── Default editor ───────────────────────────────────────
 # Unset $EDITOR made every tool that falls back to `${EDITOR:-vi}`
