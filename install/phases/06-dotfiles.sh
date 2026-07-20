@@ -29,6 +29,15 @@
 #        cursor theme wrapper — plus papirus-icon-theme + bibata-cursor-theme,
 #        the packages these configs reference by name but that no script
 #        installed anywhere
+#    9.  Telegram .desktop override (DBusActivatable=false) — found 2026-07-20
+#        that rofi's drun launch-frequency counter never increments for
+#        Telegram because its packaged .desktop declares DBusActivatable=true,
+#        so launches go through systemd D-Bus activation instead of a plain
+#        Exec fork, bypassing rofi's history bookkeeping (confirmed via
+#        /proc/<pid>/cgroup showing a dbus-*.service unit). A local override
+#        in ~/.local/share/applications/ (XDG precedence over
+#        /usr/share/applications/) with DBusActivatable=false restores normal
+#        Exec-based launching.
 #
 #  Deploy mechanism: deploy_dotfile_tree() copies an entire dotfiles/<app>/
 #  subtree file-by-file (preserving relative path + permission bits) rather
@@ -52,6 +61,9 @@
 #      enpass-bin) is installed nowhere — password manager choice is a
 #      per-user decision, candidate for install/apps/enpass.sh like zapzap.sh,
 #      not folded into this script silently.
+#    - Telegram itself (the package) is installed nowhere either — same class
+#      of gap as Enpass above, this script only deploys the .desktop override
+#      for whichever install path put the package there.
 # =============================================================================
 
 set -euo pipefail
@@ -207,6 +219,20 @@ deploy_dotfile_tree "xresources"
 deploy_dotfile_tree "icons"
 
 ok "GTK & cursor theming deployed"
+
+# =============================================================================
+#  STEP 9 — Telegram .desktop override (rofi history fix)
+# =============================================================================
+dimarch::section "Telegram .desktop override"
+
+deploy_dotfile_tree "telegram"
+
+if [[ -n "$REALUSER" ]]; then
+    sudo -u "$REALUSER" update-desktop-database "${REALUSER_HOME}/.local/share/applications" 2>/dev/null \
+        || warn "update-desktop-database failed — override may need a manual refresh"
+fi
+
+ok "Telegram .desktop override deployed"
 
 # =============================================================================
 dimarch::done \
