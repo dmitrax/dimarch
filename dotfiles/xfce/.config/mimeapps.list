@@ -1,6 +1,6 @@
 [Added Associations]
-application/x-shellscript=org.xfce.mousepad.desktop;
 application/pdf=org.gnome.Papers.desktop;org.pwmt.zathura.desktop;
+application/x-shellscript=org.xfce.mousepad.desktop;
 image/jpeg=swayimg.desktop;
 image/png=swayimg.desktop;
 text/plain=org.xfce.mousepad.desktop;
@@ -48,7 +48,6 @@ video/x-nsv=mpv.desktop;
 video/x-ogm+ogg=mpv.desktop;
 video/x-theora=mpv.desktop;
 video/x-theora+ogg=mpv.desktop;
-x-scheme-handler/claude=claude-desktop.desktop;
 
 [Default Applications]
 application/pdf=org.gnome.Papers.desktop;
@@ -101,7 +100,7 @@ video/x-nsv=mpv.desktop;
 video/x-ogm+ogg=mpv.desktop;
 video/x-theora=mpv.desktop;
 video/x-theora+ogg=mpv.desktop;
-x-scheme-handler/claude=claude-desktop.desktop
+x-scheme-handler/claude=com.anthropic.Claude.desktop
 x-scheme-handler/claude-cli=claude-code-url-handler.desktop;
 x-scheme-handler/file=thunar.desktop;
 x-scheme-handler/http=link-router.desktop
