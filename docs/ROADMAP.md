@@ -520,26 +520,31 @@ Public-facing README for `dmitrax/dimarch`:
 Phase 0 — Core Stability & Diagnostics
   [✓] BUG-01: GPU crash after resume — FIXED 2026-06-26 (hibernate via systemd target)
   [✓] BUG-04: restore-after-resume.sh IPC fix — FIXED 2026-06-24
+  [✓] BUG-02: XWayland resolution after resume — FIXED 2026-06-26
   [✓] monitor-off: dimarch-monitor wrapper, monitor_off=none for RX 580 — 2026-06-26
   [✓] dimarchctl skeleton: version, health, display status, power status, power apply — 2026-06-26
   [✓] dimarch.conf: power timeout keys + user override (~/.config/dimarch/dimarch.conf) — 2026-06-26
   [✓] hypridle.conf.tmpl: configurable timeouts via dimarchctl power apply — 2026-06-26
-  [ ] BUG-02: XWayland resolution after resume (P0)
-  [ ] dimarch-health-check v0.1 (--core)
-  [ ] 01-btrfs-setup.sh: verify still correct
-  [ ] Current manual setup documented
+  [✓] dimarch-health-check v0.1 (--core): 10 checks, pass/fail output — 2026-06-26
+  [✓] 01-btrfs-setup.sh: verified idempotent — 2026-06-26
+  [ ] Current manual setup documented (docs/install-guide.md still empty)
 
 Phase 1 — Shell Foundation + Installer Base
-  [ ] swaync: install, Sage CSS, systemd service, Waybar integration
+  [✓] swaync: install, Sage CSS, systemd service, Waybar integration — 2026-07-09
+      (brought forward from Phase 1 into the install package)
+  [✓] 02-cachyos.sh
+  [✓] 03-base.sh
+  [✓] 04-snapper.sh
   [ ] dimarchctl: notifications dnd
   [ ] dimarch-taskbar v0.1: window list, launcher button (no tray, no clock)
-  [ ] Sage theme: Ghostty, rofi, hyprlock, bat, delta, lazygit, fzf
   [ ] BUG-03: Thunar "Open Terminal Here" fix (P1)
-  [ ] 02-cachyos.sh
-  [ ] 03-base.sh
-  [ ] 04-snapper.sh
+  Sage theme rollout (1.3):
+    [✓] Ghostty, rofi, hyprlock
+    [ ] bat, delta, lazygit, fzf — packages installed, no theme config yet
 
 Phase 2 — Shell Polish + Installer Mid
+  [✓] 05-hyprland.sh
+  [✓] 06-dotfiles.sh
   [ ] dimarch-taskbar v0.2: socket events, pinned apps, applet API
   [ ] dimarch-preview: quick-look (imv, zathura, mpv, bat)
   [ ] hyprexpo: workspace overview
@@ -549,8 +554,6 @@ Phase 2 — Shell Polish + Installer Mid
   [ ] dimarch-icons: Tela Circle + overlay
   [ ] Full Stow migration
   [ ] dimarchctl: streaming, theme reload
-  [ ] 05-hyprland.sh
-  [ ] 06-dotfiles.sh
 
 Phase 3 — Productivity + Installer Completion
   [ ] dimarch-daycenter v0.1: SQLite, calendar, tasks, quick capture, swaync reminders
