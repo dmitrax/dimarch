@@ -1,6 +1,10 @@
 # DimArch OS — Sage
 
+**DimArch** = *Dimmed Arch* — a quieter, more deliberate Arch Linux desktop.
+Not named after a person, not "Dima's Arch".
+
 Modern system. Old soul.
+Dimmed, not dumbed down.
 
 > ⚠️ **Work in progress** — actively developed, not yet installable end-to-end.
 > See [**ROADMAP.md**](docs/ROADMAP.md) for exactly what's done, what's in
