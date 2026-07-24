@@ -51,6 +51,12 @@ DimArch OS
    Windows apps, creative/pro software — is a separate `install/apps/*.sh`
    script, never invoked by the orchestrator by default (see "Optional Apps"
    below).
+8. **Commits follow [Conventional Commits](https://www.conventionalcommits.org/):**
+   `type(scope): description` — `feat`/`fix`/`docs`/`refactor`/`style`/`chore`
+   etc., scope is the touched component (`waybar`, `install`, `hyprland`,
+   `audio`...). Matches the SemVer release scheme in 4.6 below (`fix`/`feat`
+   map to patch/minor bumps). Already the de-facto pattern across the repo's
+   history — this rule just makes it explicit instead of tribal knowledge.
 
 ---
 
