@@ -1,7 +1,7 @@
 # DimArch OS — Sage
 
-**DimArch** = *Dimmed Arch* — a quieter, more deliberate Arch Linux desktop.
-Not named after a person, not "Dima's Arch".
+**DimArch** = *Dimmed Arch* — muted colors, calm defaults, nothing flashing
+for attention. A desktop that dims itself so the work stays in focus.
 
 Modern system. Old soul.
 Dimmed, not dumbed down.
