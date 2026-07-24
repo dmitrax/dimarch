@@ -584,8 +584,11 @@ install/apps/
 │                      (Vulkan/RADV compute — Ollama/ComfyUI need ROCm+HSA,
 │                      which is dead on gfx803/RX 580; see
 │                      rx580-gpu-compute-stack.md)
+├── enpass.sh          Enpass — password manager (AUR-only)
 ├── mise.sh            Node/Python/Rust via mise
+├── obsidian.sh        Obsidian — install + apply Everforest Enchanted theme
 ├── voicebox.sh        Local TTS/STT (evaluate; optional)
+├── vscode.sh          VS Code
 ├── winapps.sh         WinApps VM (Looking Glass, UHD 630 passthrough)
 └── zapzap.sh          ZapZap — WhatsApp desktop client (chaotic-aur)
 ```
