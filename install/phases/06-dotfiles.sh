@@ -235,6 +235,27 @@ fi
 ok "Telegram .desktop override deployed"
 
 # =============================================================================
+#  STEP 10 — WirePlumber (disable ALSA output auto-suspend)
+# =============================================================================
+dimarch::section "WirePlumber auto-suspend fix"
+
+# session.suspend-timeout-seconds defaults to 5s — WirePlumber releases the
+# ALSA output node after that much silence, and re-opening it (e.g. a browser
+# tab creating an AudioContext just from navigating to a page with video, even
+# before playback starts) triggers an audible pop/click as the codec resumes
+# from snd_hda_intel power-save. Disabling suspend for alsa_output.* nodes
+# fixes it; unrelated to system sleep/hibernate (hypridle only watches input
+# idle time, never audio-stream state). Confirmed live 2026-07-24.
+deploy_dotfile_tree "wireplumber"
+
+if [[ -n "$REALUSER" ]]; then
+    sudo -u "$REALUSER" systemctl --user restart wireplumber 2>/dev/null \
+        || warn "wireplumber restart failed — rule picks up on next login"
+fi
+
+ok "WirePlumber auto-suspend fix deployed"
+
+# =============================================================================
 dimarch::done \
     "Phase 6 complete" \
     "Log out/reboot to pick up the shell change and hypridle service. Add ~/Pictures/wallpapers/hyprland.png manually (personal image, not tracked). 07-theme.sh and 08-browser.sh still need to be written — see taskboard.md."
