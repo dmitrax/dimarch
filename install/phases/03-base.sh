@@ -26,6 +26,10 @@
 #    17. Plymouth — boot splash animation + theme (GRUB + amdgpu early KMS)
 #    18. Dual boot — optional RTC sync + os-prober GRUB detection for Windows
 #        coexistence (dimarch.conf [boot] enable_windows_dualboot, off by default)
+#    19. dimarchctl + companion utils (dimarch-monitor, dimarch-sleep,
+#        dimarch-hypridle-gen) — deployed to /usr/local/bin/
+#    20. WireGuard VPN — optional, invokes setup-wireguard.sh
+#        (dimarch.conf [vpn] enable, off by default)
 # =============================================================================
 
 set -euo pipefail
@@ -456,7 +460,11 @@ fi
 # machine: dimarch.conf [boot] enable_windows_dualboot = true
 
 DIMARCH_CONF="${DIMARCH_CONF:-/etc/dimarch.conf}"
-ENABLE_DUALBOOT="$(dimarch::conf_get boot enable_windows_dualboot "$DIMARCH_CONF")"
+# `|| true`: conf_get returns 1 if $DIMARCH_CONF doesn't exist yet (true on a
+# real fresh install — no phase script deploys /etc/dimarch.conf before this
+# point). Without it, `set -e` aborts the whole script here silently. Found
+# 2026-07-24 wiring the VPN block below, which hits the same pattern.
+ENABLE_DUALBOOT="$(dimarch::conf_get boot enable_windows_dualboot "$DIMARCH_CONF" || true)"
 ENABLE_DUALBOOT="${ENABLE_DUALBOOT:-false}"
 
 if [[ "$ENABLE_DUALBOOT" == "true" ]]; then
@@ -517,6 +525,41 @@ if dimarch::confirm "Fix clock sync for Windows dual boot?"; then
     warn "If you stop dual booting, run: timedatectl set-local-rtc 0"
 else
     info "Skipping dual boot clock fix"
+fi
+
+# =============================================================================
+#  STEP 19 — dimarchctl + companion utils
+# =============================================================================
+dimarch::section "dimarchctl"
+
+# System tooling, not a user dotfile — hence 03-base.sh, not 06-dotfiles.sh.
+# hypridle.conf's regeneration path (dimarchctl power apply) and zsh's
+# vpn/vpnoff/vpnst/wg-ui aliases are dead on a from-scratch install without
+# these on $PATH. Found running live with zero phase-script coverage,
+# 2026-07-20 (adhoc-packages-pending-install-script-wiring).
+install -m 755 -o root -g root "${SCRIPT_DIR}/../utils/dimarchctl" /usr/local/bin/dimarchctl
+install -m 755 -o root -g root "${SCRIPT_DIR}/../utils/dimarch-monitor" /usr/local/bin/dimarch-monitor
+install -m 755 -o root -g root "${SCRIPT_DIR}/../utils/dimarch-sleep" /usr/local/bin/dimarch-sleep
+install -m 755 -o root -g root "${SCRIPT_DIR}/../utils/dimarch-hypridle-gen" /usr/local/bin/dimarch-hypridle-gen
+
+ok "dimarchctl + companion utils installed to /usr/local/bin/"
+
+# =============================================================================
+#  STEP 20 — WireGuard VPN (optional)
+# =============================================================================
+# Off by default. Enable via dimarch.conf [vpn] enable = true — same
+# config-gating pattern as Windows dual-boot above. setup-wireguard.sh is
+# self-contained and idempotent (packages, NetworkManager, config import,
+# autoconnect off), so this just invokes it rather than duplicating its logic.
+
+ENABLE_VPN="$(dimarch::conf_get vpn enable "$DIMARCH_CONF" || true)"
+ENABLE_VPN="${ENABLE_VPN:-false}"
+
+if [[ "$ENABLE_VPN" == "true" ]]; then
+    dimarch::section "WireGuard VPN"
+    "${SCRIPT_DIR}/../utils/setup-wireguard.sh"
+else
+    info "[vpn] enable=false in ${DIMARCH_CONF} — skipping WireGuard setup"
 fi
 
 # =============================================================================
