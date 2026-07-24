@@ -385,6 +385,18 @@ dimarch::pacman_install \
 
 ok "XDG desktop portals installed"
 
+# Qt theming — native Wayland backend + theme engine. dotfiles/hypr's env.lua
+# sets QT_QPA_PLATFORMTHEME=qt6ct, which silently no-ops (Qt apps fall back to
+# unthemed Fusion style) without qt6ct actually installed. Found running live
+# without either pair 2026-07-08 (must-have-hyprland-utilities-audit).
+dimarch::pacman_install \
+    qt5-wayland \
+    qt6-wayland \
+    qt5ct \
+    qt6ct
+
+ok "Qt theming installed"
+
 # =============================================================================
 #  STEP 17 — Plymouth (boot splash)
 # =============================================================================
