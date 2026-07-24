@@ -54,12 +54,6 @@
 #  already-listed app/ directory are picked up automatically on next run.
 #
 #  Known gaps, not fixed here (different scope than "deploy dotfiles/"):
-#    - dimarchctl and its companion utils (dimarch-hypridle-gen,
-#      dimarch-monitor, dimarch-sleep) are not deployed to /usr/local/bin/
-#      by any install script yet — zsh's vpn/vpnoff/vpnst/wg-ui aliases and
-#      hypridle.conf's regeneration path (dimarchctl power apply) won't work
-#      until that's written. Likely belongs in 03-base.sh (system tooling),
-#      not here (user configs).
 #    - ~/Pictures/wallpapers/hyprland.png (hyprpaper.conf's wallpaper path)
 #      is a personal image, intentionally not tracked in the repo — hyprpaper
 #      just won't find a wallpaper until one is added manually.
