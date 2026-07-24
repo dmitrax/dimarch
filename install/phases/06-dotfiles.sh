@@ -38,6 +38,12 @@
 #        in ~/.local/share/applications/ (XDG precedence over
 #        /usr/share/applications/) with DBusActivatable=false restores normal
 #        Exec-based launching.
+#    10. XFCE helpers (xdg-terminals.list, xfce4/helpers.rc, .desktop
+#        overrides) — Thunar's "Open Terminal Here" and default-app plumbing.
+#        Content matched live with zero drift, just never had a deploy path.
+#    11. WirePlumber — disables ALSA output auto-suspend
+#        (session.suspend-timeout-seconds=0), fixes an audible pop/click on
+#        codec resume when a browser tab with video creates an AudioContext.
 #
 #  Deploy mechanism: deploy_dotfile_tree() copies an entire dotfiles/<app>/
 #  subtree file-by-file (preserving relative path + permission bits) rather
@@ -235,7 +241,22 @@ fi
 ok "Telegram .desktop override deployed"
 
 # =============================================================================
-#  STEP 10 — WirePlumber (disable ALSA output auto-suspend)
+#  STEP 10 — XFCE helpers (Thunar "Open Terminal Here", default file manager)
+# =============================================================================
+dimarch::section "XFCE helpers"
+
+# xdg-terminals.list + xfce4/helpers.rc (TerminalEmulator=ghostty) + the two
+# .desktop helper overrides. Content matched live with zero drift when found
+# 2026-07-20 (dotfiles-deploy-script-and-repo-live-drift-found) — just never
+# had a deploy path. mimeapps.list under this same tree is already deployed
+# separately by 05-hyprland.sh's single-file deploy_dotfile — copying it again
+# here is harmless (same content) but not the reason for this step.
+deploy_dotfile_tree "xfce"
+
+ok "XFCE helpers deployed"
+
+# =============================================================================
+#  STEP 11 — WirePlumber (disable ALSA output auto-suspend)
 # =============================================================================
 dimarch::section "WirePlumber auto-suspend fix"
 
