@@ -590,6 +590,8 @@ install/apps/
 ├── enpass.sh          Enpass — password manager (AUR-only)
 ├── mise.sh            Node/Python/Rust via mise
 ├── obsidian.sh        Obsidian — install + apply Everforest Enchanted theme
+├── scribe.sh          dimarch-scribe — local speech-to-text (whisper.cpp,
+│                      Vulkan/RADV), see github.com/dmitrax/dimarch-scribe
 ├── voicebox.sh        Local TTS/STT (evaluate; optional)
 ├── vscode.sh          VS Code
 ├── winapps.sh         WinApps VM (Looking Glass, UHD 630 passthrough)

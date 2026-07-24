@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<actions>
+<action>
+	<icon>utilities-terminal</icon>
+	<name>Open Terminal Here</name>
+	<submenu></submenu>
+	<unique-id>1750939810559559-1</unique-id>
+	<command>exo-open --working-directory %f --launch TerminalEmulator</command>
+	<description>Example for a custom action</description>
+	<range></range>
+	<patterns>*</patterns>
+	<startup-notify/>
+	<directories/>
+</action>
+<action>
+	<icon>edit-copy</icon>
+	<name>Copy Full Path</name>
+	<submenu></submenu>
+	<unique-id>1784888614940-2</unique-id>
+	<command>thunar-copy-path.sh %f</command>
+	<description>Copy the full path of the selected file or folder to the clipboard</description>
+	<range></range>
+	<patterns>*</patterns>
+	<directories/>
+	<audio-files/>
+	<image-files/>
+	<other-files/>
+	<text-files/>
+	<video-files/>
+</action>
+<action>
+	<icon>audio-x-generic</icon>
+	<name>Transcribe with scribe</name>
+	<submenu></submenu>
+	<unique-id>1784888614951-3</unique-id>
+	<command>thunar-scribe.sh %F</command>
+	<description>Transcribe the selected audio/video file(s) with dimarch-scribe (optional component)</description>
+	<range></range>
+	<patterns>*</patterns>
+	<audio-files/>
+	<video-files/>
+</action>
+</actions>

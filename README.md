@@ -98,6 +98,7 @@ see ROADMAP's "Optional Apps" section.
 - [dimarch-theme](https://github.com/dmitrax/dimarch-theme) — Sage GTK/icon/color theme
 - [dimarch-sddm-theme](https://github.com/dmitrax/dimarch-sddm-theme) — SDDM login theme
 - [dimarch-taskbar](https://github.com/dmitrax/dimarch-taskbar) — bottom panel (in development)
+- [dimarch-scribe](https://github.com/dmitrax/dimarch-scribe) — local speech-to-text (whisper.cpp, Vulkan/RADV), optional app
 
 ---
 
