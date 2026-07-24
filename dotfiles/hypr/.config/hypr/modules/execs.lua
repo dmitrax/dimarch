@@ -67,7 +67,11 @@ hl.on("hyprland.start", function()
 
     -- Auto-mount daemon for removable media (USB drives, SD cards).
     -- Replaces automounting that GNOME/KDE handle out of the box.
-    hl.exec_cmd("udiskie --tray")
+    -- --smart-tray (not --tray): icon only appears while a device is
+    -- actually mounted, same behavior as Windows' "Safely Remove Hardware"
+    -- and XFCE/MATE's udisks-based automounters — not a permanent fixture
+    -- in the tray. Confirmed 2026-07-24.
+    hl.exec_cmd("udiskie --smart-tray")
 
     -- Network tray icon. Required for the WireGuard VPN tray toggle
     -- (dimarch.conf [vpn]) — without it Waybar's tray module stays empty.
