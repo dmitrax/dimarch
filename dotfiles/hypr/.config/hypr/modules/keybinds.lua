@@ -98,6 +98,17 @@ hl.bind("ALT + SHIFT + Print", hl.dsp.exec_cmd(
     "~/.config/hypr/scripts/screenshot.sh window-edit"
 ))
 
+-- =========================================================
+-- Color picker
+-- =========================================================
+
+-- Super + P
+-- Pick a pixel color under the cursor, copy its hex value to the
+-- clipboard, and toast the picked value via swaync.
+hl.bind(mod .. " + P", hl.dsp.exec_cmd(
+    "hyprpicker -a && notify-send 'Color copied' \"$(wl-paste)\""
+))
+
 -- Volume
 hl.bind("XF86AudioRaiseVolume", hl.dsp.exec_cmd("swayosd-client --output-volume raise"), { locked = true })
 hl.bind("XF86AudioLowerVolume", hl.dsp.exec_cmd("swayosd-client --output-volume lower"), { locked = true })

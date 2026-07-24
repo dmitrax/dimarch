@@ -27,7 +27,7 @@
 #        zathura (keyboard-driven, not the default handler), papers (default
 #        PDF viewer)
 #    7.  Default app associations — mimeapps.list
-#    8.  Screenshot — grim, slurp, satty, wl-clipboard
+#    8.  Screenshot & color picker — grim, slurp, satty, wl-clipboard, hyprpicker
 #    9.  Terminal & shell — Ghostty, zsh, starship, fonts
 #    10. Terminal tools — eza, bat, fzf, zoxide, git-delta, tealdeer, lazygit
 #    11. System utilities — socat, python, gparted, xhost, gnome-keyring
@@ -280,17 +280,18 @@ deploy_dotfile "xfce/.config/mimeapps.list"
 ok "mimeapps.list deployed"
 
 # =============================================================================
-#  STEP 8 — Screenshot
+#  STEP 8 — Screenshot & color picker
 # =============================================================================
-dimarch::section "Screenshot tools"
+dimarch::section "Screenshot & color picker tools"
 
 dimarch::pacman_install \
     grim \
     slurp \
     satty \
-    wl-clipboard
+    wl-clipboard \
+    hyprpicker
 
-ok "Screenshot tools installed"
+ok "Screenshot & color picker tools installed"
 
 # =============================================================================
 #  STEP 9 — Terminal & shell
