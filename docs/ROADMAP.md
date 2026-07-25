@@ -336,7 +336,8 @@ Quick-look file preview tool, Thunar-only (Yazi has built-in preview).
 ### 2.3 — Desktop & workspace features
 
 - **hyprexpo**: workspace overview (Super+Tab or gesture)
-- **hyprpicker**: color picker, rofi-accessible
+- **hyprpicker**: color picker — done 2026-07-24, bound to `Super+P` (copies hex to
+  clipboard, confirms via a swaync toast). No Waybar button by design.
 - **Snap windows**: keybind-driven quadrant move+resize (floating-only — not tiling;
   snap = move to quadrant + resize to half/quarter, via hyprctl dispatch)
 
@@ -548,7 +549,7 @@ Phase 2 — Shell Polish + Installer Mid
   [ ] dimarch-taskbar v0.2: socket events, pinned apps, applet API
   [ ] dimarch-preview: quick-look (imv, zathura, mpv, bat)
   [ ] hyprexpo: workspace overview
-  [ ] hyprpicker: color picker
+  [✓] hyprpicker: color picker — 2026-07-24 (Super+P, keybind only, no Waybar button)
   [ ] Snap windows: keybind quadrant move+resize
   [ ] Desktop layer prototype: right-click on desktop
   [ ] dimarch-icons: Tela Circle + overlay
