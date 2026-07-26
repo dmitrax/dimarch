@@ -26,11 +26,13 @@ cursor-text = f4f2ec
 # ANSI 16 colors — accents kept close to the dark palette's hue,
 # darkened for contrast against a light background. 0/7/8/15
 # (the grayscale/background-adjacent slots) are inverted.
+# blue (4/12) shifted from blue to sage-green 2026-07-26, same reasoning
+# and darkening ratio as the dark profile's palette 4/12 — see config.ghostty.
 palette = 0=#2a2a30
 palette = 1=#a85a5a
 palette = 2=#3f8a68
 palette = 3=#b8843f
-palette = 4=#4a72a8
+palette = 4=#357e5c
 palette = 5=#7a54a0
 palette = 6=#3f8f8a
 palette = 7=#a8a49c
@@ -38,7 +40,7 @@ palette = 8=#6b6b78
 palette = 9=#c47a7a
 palette = 10=#4fa37c
 palette = 11=#cf9a52
-palette = 12=#5f89c4
+palette = 12=#449667
 palette = 13=#9070b8
 palette = 14=#4fa39e
 palette = 15=#f7f5f0

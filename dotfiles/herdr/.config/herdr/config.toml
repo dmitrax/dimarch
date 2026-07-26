@@ -2,15 +2,57 @@
 # See defaults via `herdr --default-config`
 
 [theme.custom]
-# Sage accent — matches Waybar/swaync/swayosd's current ramp (#c4ddd2,
-# repainted 2026-07-11), not the older flat #7fb89e. Theme itself (catppuccin)
-# stays untouched — herdr is a personal tool, not a DimArch visual-identity
-# component, so only the accent token is pulled into Sage.
-accent = "#c4ddd2"
+# Full Sage repaint (2026-07-26) — supersedes the accent-only note below.
+# Catppuccin's cool blue/teal/mauve read out of place next to Waybar/swaync/
+# swayosd's warm sage ramp, so every accent-bearing token below is pulled from
+# that same established ramp (dotfiles/rofi,swaync,swayosd,waybar,hypr) instead
+# of inventing new colors. Structural neutrals (subtext/overlay/surface/
+# panel_bg) and yellow are left on catppuccin defaults — untouched deliberately,
+# not an oversight, since those are legibility/contrast tokens, not identity
+# colors, and no sage-tinted grey has been vetted for them yet.
+# Only 15 keys are actually accepted by herdr (confirmed empirically via
+# `herdr config check`, docs don't list the full set): panel_bg, accent, red,
+# peach, yellow, green, teal, blue, mauve, text, subtext0, overlay0, overlay1,
+# surface0, surface1.
+accent = "#c4ddd2"   # primary — unchanged, matches Waybar/swaync/swayosd
+green = "#7fb89e"    # secondary sage (was catppuccin #a6e3a1)
+teal = "#5b8f78"     # deeper sage-teal (was catppuccin #94e2d5)
+blue = "#6ba88c"     # vivid sage — the inline-code/link color the user flagged as too blue (was catppuccin #89b4fa)
+mauve = "#4a8b6e"    # rich dark sage, replaces the purple accent2 (was catppuccin #cba6f7)
+red = "#d96c6c"      # project's established red (was catppuccin #f38ba8) — kept red on purpose, errors shouldn't turn green
+peach = "#d97706"    # project's established orange/warning (was catppuccin #ef9f76)
+text = "#edeae4"     # warm off-white (was catppuccin's cooler #cdd6f4)
+# 2026-07-26: side panels + top bar were still flat catppuccin base(#1e1e2e)/
+# mantle(#181825) — those names aren't accepted keys. First guess was
+# surface0/surface1 — confirmed WRONG live (no visible change after a hard
+# restart). Trying panel_bg next: the --default-config comment shows
+# `panel_bg = "reset"` only as an illustrative example inside a commented-out
+# block, not a proven actual default, so it may still be what's rendering
+# catppuccin base/mantle when left unset.
+surface0 = "#1c2320" # side panels guess — confirmed NOT it, kept harmless
+surface1 = "#141917" # top bar guess — confirmed NOT it, kept harmless
+panel_bg = "#171a1b" # CONFIRMED: this is the top bar. Side panels still not it though.
+# Diagnostic pass (loud placeholder colors) confirmed live 2026-07-26:
+# overlay0 = muted section labels (spaces/new/menu/agents/grouped/agent name).
+# yellow = the small status-dot icon next to a workspace/agent row.
+# subtext0/overlay1 — no visible effect found anywhere, kept set anyway for
+# completeness/future-proofing. None of the 15 accepted keys reach the side
+# panel background (#1e1e2e) — all exhausted, confirmed dead end, not
+# something to keep re-guessing at.
+yellow = "#d4a96a"    # warm gold, reused from Ghostty's own ANSI yellow (palette 3)
+overlay0 = "#8a9d93"  # muted sage-grey for secondary section labels
+subtext0 = "#7a8f84"  # muted sage-grey, dimmer tier
+overlay1 = "#94a89d"  # muted sage-grey, brighter tier
 
 [ui]
 accent = "#c4ddd2"
 
+agent_panel_sort = "spaces"
+
+# Alt+right-click passes the gesture through to the pane app (Ghostty/Claude Code)
+# instead of opening herdr's own pane menu — restores right-click-paste under a
+# modifier since mouse_capture=true grabs plain right-click for herdr's UI.
+right_click_passthrough_modifier = "alt"
 [[keys.command]]
 key = "prefix+alt+g"
 type = "popup"

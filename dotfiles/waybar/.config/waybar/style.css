@@ -5,8 +5,13 @@
    ========================================================= */
 
 /* ── CSS Variables ──────────────────────────────────────── */
-@define-color bg_panel        rgba(13, 22, 26, 0.78);
-@define-color bg_panel_bottom rgba(18, 18, 24, 0.75);
+/* 2026-07-26: bg_panel/bg_panel_bottom blue-over-green gap halved (13,22,26→
+   13,23,25 and 18,18,24→19,19,22) to match the same nudge on Ghostty's
+   terminal background — side-by-side against the light Ghostty profile made
+   the leftover blue lean visible on both. Same reasoning, don't re-litigate;
+   a full flip to green-dominant was tried and reverted as overcorrection. */
+@define-color bg_panel        rgba(13, 23, 25, 0.78);
+@define-color bg_panel_bottom rgba(19, 19, 22, 0.75);
 @define-color bg_module       rgba(255, 255, 255, 0.05);
 @define-color bg_hover        rgba(255, 255, 255, 0.08);
 @define-color bg_active       rgba(127, 184, 158, 0.20);

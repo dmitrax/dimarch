@@ -31,10 +31,15 @@ read_only_style   = "bold red"
 # ── Git ──────────────────────────────────────────────────────────
 [git_branch]
 #symbol = " "
-style  = "bold purple"
+style  = "bold sage_dark"
 
 [git_status]
-style    = "bold red"
+# 2026-07-26: was "bold red" (palette red #c47a7a) — read as too harsh
+# against the sage prompt. "warm" (#d4a96a, already used by cmd_duration/
+# python below) fits modified/untracked-file counts as an attention color
+# without clashing; real errors elsewhere in the session kept literal red
+# on purpose, this one didn't need to.
+style    = "bold warm"
 ahead    = "⇡${count}"
 behind   = "⇣${count}"
 diverged = "⇕⇡${ahead_count}⇣${behind_count}"

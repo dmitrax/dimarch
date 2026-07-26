@@ -17,8 +17,18 @@ window-inherit-font-size = false
 # Colors
 # ---------------------------------------------------------
 
-background = 16161c
+# 2026-07-26: tried a full green-leaning near-black (181e1a), reverted as an
+# overcorrection, then split the difference — halved the blue-over-green gap
+# instead of flipping it. Same halved-gap nudge applied to waybar's
+# bg_panel/bg_panel_bottom (style.css) so the two stay in the same family.
+background = 171a1b
 foreground = edeae4
+
+# Bumped from Ghostty's 0.5 default. Turned out NOT to be the fix for
+# Claude Code's near-invisible diff comments (see palette 8 below) — that
+# text is colored, not faint-attributed. Left slightly above default anyway
+# since it's a reasonable value for whatever else does use real SGR faint.
+faint-opacity = 0.75
 
 # Selection
 selection-background = 3f7a63
@@ -30,22 +40,32 @@ cursor-style-blink = false
 cursor-opacity = 0.7
 adjust-cursor-thickness = 7
 cursor-color = 7fb89e
-cursor-text = 16161c
+cursor-text = 171a1b
 
 # ANSI 16 colors — DimArch Sage
-palette = 0=#1e1e26
+# blue (4/12) shifted from a blue-grey to sage-green 2026-07-26 — Claude Code's
+# inline markdown code has no theme token of its own and renders via raw ANSI
+# bright-blue, so this is a global blast-radius change (every app's ANSI blue,
+# not just Claude Code), accepted deliberately. Reuses #6ba88c, the same sage
+# already used for herdr's `blue` theme.custom token, for consistency.
+palette = 0=#1f2224
 palette = 1=#c47a7a
 palette = 2=#7fb89e
 palette = 3=#d4a96a
-palette = 4=#7a9cc4
+palette = 4=#6ba88c
 palette = 5=#a07fb8
 palette = 6=#7fb8b4
 palette = 7=#c8c4be
-palette = 8=#3a3a4a
+# 8 (bright black) brightened from #3a3a4a 2026-07-26 — Claude Code renders
+# comments/secondary diff text in this exact color (confirmed by pixel
+# sampling), and the old value was too close to the terminal background to
+# read. This is the actual fix; the faint-opacity change above was a wrong
+# guess, kept only because it's harmless.
+palette = 8=#75757f
 palette = 9=#d48a8a
 palette = 10=#8fccae
 palette = 11=#e4ba7a
-palette = 12=#8aacd4
+palette = 12=#7bbc9c
 palette = 13=#b08fc8
 palette = 14=#8fccc8
 palette = 15=#edeae4
