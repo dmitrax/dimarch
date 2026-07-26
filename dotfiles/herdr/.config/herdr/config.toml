@@ -2,47 +2,45 @@
 # See defaults via `herdr --default-config`
 
 [theme.custom]
-# Full Sage repaint (2026-07-26) — supersedes the accent-only note below.
-# Catppuccin's cool blue/teal/mauve read out of place next to Waybar/swaync/
-# swayosd's warm sage ramp, so every accent-bearing token below is pulled from
-# that same established ramp (dotfiles/rofi,swaync,swayosd,waybar,hypr) instead
-# of inventing new colors. Structural neutrals (subtext/overlay/surface/
-# panel_bg) and yellow are left on catppuccin defaults — untouched deliberately,
-# not an oversight, since those are legibility/contrast tokens, not identity
-# colors, and no sage-tinted grey has been vetted for them yet.
-# Only 15 keys are actually accepted by herdr (confirmed empirically via
-# `herdr config check`, docs don't list the full set): panel_bg, accent, red,
-# peach, yellow, green, teal, blue, mauve, text, subtext0, overlay0, overlay1,
-# surface0, surface1.
-accent = "#c4ddd2"   # primary — unchanged, matches Waybar/swaync/swayosd
-green = "#7fb89e"    # secondary sage (was catppuccin #a6e3a1)
-teal = "#5b8f78"     # deeper sage-teal (was catppuccin #94e2d5)
-blue = "#6ba88c"     # vivid sage — the inline-code/link color the user flagged as too blue (was catppuccin #89b4fa)
-mauve = "#4a8b6e"    # rich dark sage, replaces the purple accent2 (was catppuccin #cba6f7)
-red = "#d96c6c"      # project's established red (was catppuccin #f38ba8) — kept red on purpose, errors shouldn't turn green
-peach = "#d97706"    # project's established orange/warning (was catppuccin #ef9f76)
-text = "#edeae4"     # warm off-white (was catppuccin's cooler #cdd6f4)
-# 2026-07-26: side panels + top bar were still flat catppuccin base(#1e1e2e)/
-# mantle(#181825) — those names aren't accepted keys. First guess was
-# surface0/surface1 — confirmed WRONG live (no visible change after a hard
-# restart). Trying panel_bg next: the --default-config comment shows
-# `panel_bg = "reset"` only as an illustrative example inside a commented-out
-# block, not a proven actual default, so it may still be what's rendering
-# catppuccin base/mantle when left unset.
-surface0 = "#1c2320" # side panels guess — confirmed NOT it, kept harmless
-surface1 = "#141917" # top bar guess — confirmed NOT it, kept harmless
-panel_bg = "#171a1b" # CONFIRMED: this is the top bar. Side panels still not it though.
-# Diagnostic pass (loud placeholder colors) confirmed live 2026-07-26:
-# overlay0 = muted section labels (spaces/new/menu/agents/grouped/agent name).
-# yellow = the small status-dot icon next to a workspace/agent row.
-# subtext0/overlay1 — no visible effect found anywhere, kept set anyway for
-# completeness/future-proofing. None of the 15 accepted keys reach the side
-# panel background (#1e1e2e) — all exhausted, confirmed dead end, not
-# something to keep re-guessing at.
-yellow = "#d4a96a"    # warm gold, reused from Ghostty's own ANSI yellow (palette 3)
-overlay0 = "#8a9d93"  # muted sage-grey for secondary section labels
-subtext0 = "#7a8f84"  # muted sage-grey, dimmer tier
-overlay1 = "#94a89d"  # muted sage-grey, brighter tier
+# Colours are NOT chosen here. Every value below is resolved from the palette
+# via the component map: dimarch-theme/colors/components.json -> "herdr".
+# Change a colour there, not here — see that file for how roles resolve.
+#
+# What was learned about herdr itself (keep this, it is not in the docs):
+#   · 16 colour keys are accepted, not the catppuccin set the names suggest.
+#     Verified with `herdr config check`; the docs list none of them.
+#   · surface_dim is the 16th, missed at first because it is not a catppuccin
+#     name. It drives the side panel, the inactive-pane scrollbar track and
+#     popup menus — the "exhausted all 15 keys" dead end was simply wrong.
+#   · base/mantle are NOT accepted. An external audit claimed upstream issue
+#     #1710 made `config check` false-flag working keys; tested here and
+#     disproved — both were flagged AND had no runtime effect.
+#   · surface0/surface1 ARE accepted but paint nothing. Removed 2026-07-26
+#     rather than migrated: a key that renders nowhere needs no colour.
+#   · accent appears twice, here and in [ui]. Both must move together.
+#
+# Two roles were created for this component during the migration, because the
+# palette genuinely lacked them rather than because herdr is special:
+#   · ramp.sage.shade — herdr uses five steps of sage depth, the ramp had four.
+#     Taken at 4.59:1 rather than herdr's own #4a8b6e, which sat at 4.31 (under AA).
+#   · ramp.stone.* — neutral with a sage bias, for text that recedes without
+#     going cold. neutral.muted is hue 240; the sage ramp is 3x more saturated.
+accent   = "#c4ddd2"  # role.ui.accent
+green    = "#7fb89e"  # ramp.sage.base
+teal     = "#5b8f78"  # ramp.sage.dim
+blue     = "#6ba88c"  # ramp.sage.icon
+mauve    = "#4d9072"  # ramp.sage.shade — second accent
+red      = "#d96c6c"  # semantic.urgent
+peach    = "#d97706"  # semantic.warning
+yellow   = "#d4a96a"  # ramp.ochre.base — status dot next to a workspace/agent row
+text     = "#edeae4"  # neutral.primary
+
+overlay0 = "#8a9d93"  # ramp.stone.base   — muted section labels (spaces/new/menu/agents)
+subtext0 = "#7a8f84"  # ramp.stone.dim    — no visible effect found, set for completeness
+overlay1 = "#94a89d"  # ramp.stone.bright — no visible effect found, set for completeness
+
+panel_bg    = "#171b1b"  # surface.terminal.bg   — top bar
+surface_dim = "#1d2121"  # surface.terminal.lift — side panel, scrollbar track, popups
 
 [ui]
 accent = "#c4ddd2"
