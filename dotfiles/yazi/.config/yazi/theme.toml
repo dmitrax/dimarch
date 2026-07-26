@@ -144,6 +144,36 @@ rules = [
 	{ url = "*/", fg = "#7fb89e" },
 ]
 
+# ── Icons ───────────────────────────────────────────────────────
+# Yazi ships default icon colours compiled into the binary, and they are
+# Material Design values with no relation to this palette — `dir` is
+# #03a9f4 (the light blue that made folders look un-themed), `exec`
+# #8bc34a, the device/pipe family #cddc39. Only the COLOURS are overridden
+# below; every glyph is the upstream default, so icons look unchanged.
+# Roles follow the same split as everything else: a directory is a place
+# you go (sage, state), an executable is a kind of thing (lichen, category).
+# `dirs`/`exts`/`globs` are deliberately NOT touched — those carry per-name
+# icons (.git, Downloads, tsconfig.json) that are genuinely useful for
+# navigation, and overriding them would mean re-listing hundreds of entries.
+[icon]
+conds = [
+	# Special files
+	{ if = "orphan", text = "", fg = "#d96c6c" },
+	{ if = "link",   text = "", fg = "#7fb8b4" },
+	{ if = "block",  text = "", fg = "#82828c" },
+	{ if = "char",   text = "", fg = "#82828c" },
+	{ if = "fifo",   text = "", fg = "#82828c" },
+	{ if = "sock",   text = "", fg = "#82828c" },
+	{ if = "sticky", text = "", fg = "#82828c" },
+	{ if = "dummy",  text = "", fg = "#d96c6c" },
+
+	# Fallback
+	{ if = "dir & hovered", text = "", fg = "#c4ddd2" },
+	{ if = "dir",           text = "", fg = "#7fb89e" },
+	{ if = "exec",          text = "", fg = "#91b06d" },
+	{ if = "!dir",          text = "", fg = "#c8c4be" },
+]
+
 # git.yazi — status colors, no custom sign glyphs (defaults are fine)
 [git]
 modified  = { fg = "#d4a96a" }
