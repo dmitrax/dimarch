@@ -589,6 +589,10 @@ install/apps/
 │                      which is dead on gfx803/RX 580; see
 │                      rx580-gpu-compute-stack.md)
 ├── enpass.sh          Enpass — password manager (AUR-only)
+├── herdr.sh           herdr — terminal workspace manager for AI coding agents
+│                      (session persistence, multi-agent sidebar, Claude Code
+│                      integration; local recovery only — does not survive a
+│                      power cut on this machine)
 ├── mise.sh            Node/Python/Rust via mise
 ├── obsidian.sh        Obsidian — install + apply Everforest Enchanted theme
 ├── scribe.sh          dimarch-scribe — local speech-to-text (whisper.cpp,

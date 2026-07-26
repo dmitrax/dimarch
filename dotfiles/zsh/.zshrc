@@ -24,6 +24,9 @@ alias reload='source ~/.zshrc'
 eval "$(zoxide init zsh)"
 alias cd='z'
 
+# ── herdr — terminal workspace manager for AI coding agents ──
+alias h='herdr'
+
 # ── yazi — file manager (cd into wherever you exit from) ──
 function y() {
 	local tmp="$(mktemp -t "yazi-cwd.XXXXXX")" cwd

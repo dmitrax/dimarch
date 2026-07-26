@@ -1,0 +1,41 @@
+# herdr configuration — DimArch machine
+# See defaults via `herdr --default-config`
+
+[theme.custom]
+# Sage accent — matches Waybar/swaync/swayosd's current ramp (#c4ddd2,
+# repainted 2026-07-11), not the older flat #7fb89e. Theme itself (catppuccin)
+# stays untouched — herdr is a personal tool, not a DimArch visual-identity
+# component, so only the accent token is pulled into Sage.
+accent = "#c4ddd2"
+
+[ui]
+accent = "#c4ddd2"
+
+[[keys.command]]
+key = "prefix+alt+g"
+type = "popup"
+command = "lazygit"
+width = "80%"
+height = "80%"
+
+[session]
+# Resume Claude Code (and other integrated agents) panes into their native
+# conversation session after a herdr server restart/crash. This is the actual
+# local-recovery mechanism — keep explicit even though it matches upstream default.
+resume_agents_on_restore = true
+
+[experimental]
+# Keep pane scrollback across a full herdr server restart (not just client
+# reattach), so context survives a power-cut-induced restart, not just a
+# detach/reattach.
+pane_history = true
+
+[ui.toast]
+# Route agent state-change notifications (done/blocked/needs-attention) through
+# the OS notification service — lands in swaync like everything else, visible
+# even when not looking at the herdr sidebar.
+delivery = "system"
+delay_seconds = 1
+
+[ui.sound]
+enabled = true
