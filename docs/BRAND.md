@@ -136,7 +136,7 @@ Reserved:
 
 ---
 
-## README / CLAUDE.md Template Text
+## README Template Text
 
 ```markdown
 # DimArch OS

@@ -39,8 +39,7 @@ DimArch OS
 3. **Sage theme ships with each component.** No "we'll theme it later."
 4. **Public-quality standard from day one.** If it only works on Dima's hardware,
    it's not done.
-5. **One Claude Code session per task.** Code → review → commit → update
-   CLAUDE.md/STATUS.md.
+5. **One session per task.** Code → review → commit → update project docs.
 6. **Installer is always reproducible.** At any point in the roadmap, a fresh
    install via install.sh must produce a working system for the phases completed
    so far.
@@ -614,9 +613,9 @@ Each session targets one task from the active phase checklist.
 
 ```
 1. Pick one unchecked task from the lowest numbered open phase
-2. Claude Code session: read CLAUDE.md → implement → review
+2. Read the project docs → implement → review
 3. git commit (conventional: feat/fix/style/chore/docs)
-4. Update STATUS.md and CLAUDE.md phase checklist
+4. Update STATUS.md and the phase checklist
 5. Push
 6. Close session
 ```

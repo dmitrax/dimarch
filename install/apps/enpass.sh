@@ -6,9 +6,9 @@
 # a per-user decision, install on demand.
 #
 # QT_FONT_DPI=134 baked into the .desktop files below is a value calibrated
-# for this machine's specific DP-1/DP-2 fractional-scale setup (see
-# CLAUDE.md's Enpass DPI section) — it may need retuning on different
-# hardware/monitor configurations.
+# for this machine's specific DP-1/DP-2 fractional-scale setup — Enpass is
+# a Qt app and ignores the Wayland scale factor, so the DPI has to be forced
+# per-launcher. It may need retuning on different hardware/monitor setups.
 
 set -euo pipefail
 
