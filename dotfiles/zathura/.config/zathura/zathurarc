@@ -32,16 +32,16 @@ set font "Inter 10"
 set default-bg "#0d1919"
 set default-fg "#c4ddd2"
 
-set statusbar-bg "#172026"
+set statusbar-bg "#172626"
 set statusbar-fg "#c4ddd2"
 
-set inputbar-bg "#172026"
+set inputbar-bg "#172626"
 set inputbar-fg "#c4ddd2"
 
-set completion-bg "#172026"
+set completion-bg "#172626"
 set completion-fg "#c4ddd2"
 set completion-group-bg "#0d1919"
-set completion-group-fg "#8fa79c"
+set completion-group-fg "#7aad96"
 set completion-highlight-bg "#c4ddd2"
 set completion-highlight-fg "#0d1919"
 

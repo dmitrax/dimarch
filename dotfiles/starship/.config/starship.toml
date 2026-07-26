@@ -26,20 +26,20 @@ style             = "bold sage"
 truncation_length = 3
 truncate_to_repo  = true
 read_only         = " 󰌾"
-read_only_style   = "bold red"
+read_only_style   = "bold clay"
 
 # ── Git ──────────────────────────────────────────────────────────
 [git_branch]
 #symbol = " "
-style  = "bold sage_dark"
+style  = "bold sage_soft"
 
 [git_status]
-# 2026-07-26: was "bold red" (palette red #c47a7a) — read as too harsh
-# against the sage prompt. "warm" (#d4a96a, already used by cmd_duration/
-# python below) fits modified/untracked-file counts as an attention color
-# without clashing; real errors elsewhere in the session kept literal red
-# on purpose, this one didn't need to.
-style    = "bold warm"
+# 2026-07-26: was "bold red" (then #c47a7a) — read as too harsh against the
+# sage prompt. Moved to the attention colour: modified/untracked counts are
+# change, not failure, and only real errors should read as red. That is now
+# the palette's own rule rather than a local judgement call — ochre carries
+# change, clay carries failure. Token renamed warm -> ochre to match.
+style    = "bold ochre"
 ahead    = "⇡${count}"
 behind   = "⇣${count}"
 diverged = "⇕⇡${ahead_count}⇣${behind_count}"
@@ -51,21 +51,21 @@ stashed  = "≡"
 # ── Languages ────────────────────────────────────────────────────
 [nodejs]
 symbol = " "
-style  = "bold sage"
+style  = "bold lichen"
 
 [python]
 symbol             = " "
-style              = "bold warm"
+style              = "bold patina"
 pyenv_version_name = true
 
 [rust]
 symbol = " "
-style  = "bold red"
+style  = "bold ochre_br"
 
 # ── Command duration ─────────────────────────────────────────────
 [cmd_duration]
 min_time = 2000
-style    = "bold warm"
+style    = "bold heather"
 format   = "[ $duration]($style) "
 
 # ── Time + arrow prompt (line 2) ─────────────────────────────────
@@ -77,23 +77,32 @@ time_format = "%H:%M"
 
 [character]
 success_symbol = "[──❯](bold sage)"
-error_symbol   = "[──❯](bold red)"
+error_symbol   = "[──❯](bold clay)"
 
 # ════════════════════════════════════════════════════════════════
 #  DimArch Sage Color Palette
 # ════════════════════════════════════════════════════════════════
+# Generated from dimarch-theme/colors/palette.json — every entry below is a
+# role from that file, not a hand-picked colour. Seven tokens used to sit here
+# declared-but-unused (bg_dark/surface/text/subtext/blue/purple/cyan), and all
+# of them were the non-green ones — the audit that found this is why the
+# palette now names colours by role instead of by hue.
 [palettes.dimarch_sage]
-bg_dark   = "#16161c"
-bg        = "#1e1e26"
-surface   = "#252530"
-overlay   = "#3a3a4a"
-text      = "#edeae4"
-subtext   = "#b8bdb7"
-sage      = "#7fb89e"
-sage_dark = "#5e9f82"
-sage_dim  = "#2d4a40"
-warm      = "#d4a96a"
-red       = "#c47a7a"
-blue      = "#7a9cc4"
-purple    = "#a07fb8"
-cyan      = "#7fb8b4"
+# surfaces
+bg        = "#1d2121"   # terminal.lift — chip fill
+overlay   = "#324040"   # terminal.border — the line-2 connector
+# text
+text      = "#edeae4"   # neutral.primary
+subtext   = "#c8c4be"   # neutral.secondary
+muted     = "#82828c"   # neutral.muted
+# sage — brand, marks STATE
+sage      = "#7fb89e"   # ramp.sage.base
+sage_soft = "#98c2af"   # ramp.sage.soft — git branch
+sage_dim  = "#2d4a40"   # low tint behind the clock
+# accents — mark CATEGORY
+clay      = "#d96c6c"   # ramp.clay.base — errors
+ochre     = "#d4a96a"   # ramp.ochre.base — change, attention
+ochre_br  = "#e4ba7a"   # ramp.ochre.bright — rust
+lichen    = "#91b06d"   # ramp.lichen.base — node
+patina    = "#8fccc8"   # ramp.patina.bright — python
+heather   = "#b87a95"   # ramp.heather.base — command duration
