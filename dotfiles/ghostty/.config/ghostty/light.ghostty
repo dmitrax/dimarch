@@ -12,37 +12,42 @@
 # Colors — DimArch Sage, light variant
 # ---------------------------------------------------------
 
-background = f4f2ec
-foreground = 2a2a30
+background = f8f4ea
+foreground = 2d3a2e
 
 # Selection
 selection-background = bfe0d2
-selection-foreground = 2a2a30
+selection-foreground = 2d3a2e
 
 # Cursor
-cursor-color = 2f7d5e
-cursor-text = f4f2ec
+cursor-color = 347658
+cursor-text = f8f4ea
 
-# ANSI 16 colors — accents kept close to the dark palette's hue,
-# darkened for contrast against a light background. 0/7/8/15
-# (the grayscale/background-adjacent slots) are inverted.
+# ANSI 16 colors — same hues as the dark palette, recalculated rather than
+# inverted: at their dark-surface lightness these accents give ~2.7:1 on cream.
+# `bright` tiers are DEEPER than base, not lighter — on a light ground
+# brightness costs legibility, so emphasis is carried by contrast (4.6 -> 6.5).
+# The background-adjacent slot mirrors to 15, not 0: bright-white is what can
+# never be a readable foreground here, while 0 becomes the darkest text.
+# Rebuilt 2026-07-26 from colors/palette.json — the previous set had 11 of 13
+# colour slots below AA (worst 2.23) and blue duplicating green's hue exactly.
 # blue (4/12) shifted from blue to sage-green 2026-07-26, same reasoning
 # and darkening ratio as the dark profile's palette 4/12 — see config.ghostty.
-palette = 0=#2a2a30
-palette = 1=#a85a5a
-palette = 2=#3f8a68
-palette = 3=#b8843f
-palette = 4=#357e5c
-palette = 5=#7a54a0
-palette = 6=#3f8f8a
-palette = 7=#a8a49c
-palette = 8=#6b6b78
-palette = 9=#c47a7a
-palette = 10=#4fa37c
-palette = 11=#cf9a52
-palette = 12=#449667
-palette = 13=#9070b8
-palette = 14=#4fa39e
+palette = 0=#2d3a2e
+palette = 1=#c23838
+palette = 2=#347658
+palette = 3=#8a6228
+palette = 4=#557331
+palette = 5=#ab4773
+palette = 6=#347470
+palette = 7=#5a6b5c
+palette = 8=#716868
+palette = 9=#9f2424
+palette = 10=#245d43
+palette = 11=#6f4d19
+palette = 12=#415b22
+palette = 13=#8e335a
+palette = 14=#245d59
 palette = 15=#f7f5f0
 
 # ---------------------------------------------------------
