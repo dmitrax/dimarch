@@ -12,12 +12,16 @@
    but that exception exists to make a state stand out against a wall of
    OTHER sage text in a busy multi-module bar — a standalone OSD popup
    with nothing else on screen doesn't have that problem, so there's no
-   real reason to diverge from the sage majority-text convention here. */
+   real reason to diverge from the sage majority-text convention here.
+   2026-07-26: base rgb resynced again (13,22,26 → 13,23,25) after Waybar
+   halved its blue-over-green gap — the glass surfaces had been left on the
+   older tone. The 0.85 alpha is unchanged and intentionally differs from
+   rofi's 0.72 and swaync's 0.90; alpha encodes surface depth, not drift. */
 
 window#osd {
     border-radius: 20px;
     border: 1px solid rgba(255, 255, 255, 0.07);
-    background: rgba(13, 22, 26, 0.85);
+    background: rgba(13, 23, 25, 0.85);
 }
 
 window#osd #container {

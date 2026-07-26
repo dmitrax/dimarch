@@ -1,8 +1,13 @@
 # =========================================================
 # DimArch OS — yazi theme.toml (Sage)
-# Same palette as rofi/theme.rasi, swaync/style.css,
-# swayosd/style.css and ghostty's ANSI colors:
-#   bg      #12141a / #16161c   accent (sage) #7fb89e
+# Shares ghostty's ANSI colors — yazi belongs to the terminal surface family,
+# not to the translucent chrome family (rofi/swaync/swayosd), which sits on a
+# different base tone. An earlier header listed both as one palette, and
+# called the two values below "bg" even though this file sets no background
+# at all (see the note further down):
+#   on-accent  #12141a   dark text drawn ON sage/amber fills
+#   fill-alt   #1e1e26   secondary chip fill (inactive tab, mode chips)
+#   accent (sage) #7fb89e
 #   text    #edeae4             text-secondary #c8c4be
 #   text-muted #7a7770          border  #3a3a4a
 #   danger  #d96c6c             warn (yellow) #d4a96a

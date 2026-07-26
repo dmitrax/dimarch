@@ -7,9 +7,15 @@
    file now follows the same convention: --text-color/--bg-selected use
    Waybar's @text_main/@accent (#c4ddd2), and #7fb89e survives only as the
    focus/border tint (Waybar's @bg_active / active-border alpha values).
-   rofi/theme.rasi and swayosd/style.css still use the OLD #7fb89e/#edeae4
-   pairing as of this date — deliberately NOT touched here, out of scope
-   for this pass (ask if those should follow too).
+   rofi/theme.rasi and swayosd/style.css were repainted the same day and now
+   follow this same convention — an earlier version of this comment claimed
+   they were still on the OLD #7fb89e/#edeae4 pairing, which was already
+   untrue when written; corrected 2026-07-26.
+   Base rgb resynced the same day (13,22,26 → 13,23,25) to follow Waybar's
+   halved blue-over-green gap; --noti-bg-darker keeps its original -4/-6/-7
+   offset from the base. The differing alphas across the glass family
+   (rofi 72, waybar 78, swayosd 85, noti 85, cc 90) encode surface depth and
+   are deliberately NOT unified.
    cssPriority=user in config.json means this file fully REPLACES
    /etc/xdg/swaync/style.css rather than layering on top of it — so the
    full structural ruleset below is copied from the shipped default and
@@ -18,11 +24,11 @@
    in sync with upstream structural changes on swaync upgrades. */
 
 :root {
-  --cc-bg: rgba(13, 22, 26, 0.90);
+  --cc-bg: rgba(13, 23, 25, 0.90);
   --noti-border-color: rgba(255, 255, 255, 0.07);
-  --noti-bg: 13, 22, 26;
+  --noti-bg: 13, 23, 25;
   --noti-bg-alpha: 0.85;
-  --noti-bg-darker: rgb(9, 16, 19);
+  --noti-bg-darker: rgb(9, 17, 18);
   /* Pale sage tint (low-alpha @text_main, not neutral white) — considered
      matching Waybar's literal @bg_hover (neutral white-alpha) but that
      convention relies on Waybar's own hover targets already sitting on a
@@ -58,11 +64,11 @@
 }
 
 /* Fallback for older CSS themes */
-@define-color cc-bg rgba(13, 22, 26, 0.90);
+@define-color cc-bg rgba(13, 23, 25, 0.90);
 @define-color noti-border-color rgba(255, 255, 255, 0.07);
-@define-color noti-bg rgba(13, 22, 26, 0.85);
-@define-color noti-bg-opaque rgb(13, 22, 26);
-@define-color noti-bg-darker rgb(9, 16, 19);
+@define-color noti-bg rgba(13, 23, 25, 0.85);
+@define-color noti-bg-opaque rgb(13, 23, 25);
+@define-color noti-bg-darker rgb(9, 17, 18);
 @define-color noti-bg-hover rgba(196, 221, 210, 0.08);
 @define-color noti-bg-hover-opaque rgb(38, 48, 44);
 @define-color noti-bg-focus rgba(127, 184, 158, 0.20);

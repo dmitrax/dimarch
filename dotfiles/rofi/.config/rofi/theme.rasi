@@ -10,13 +10,18 @@
    accent-border), matching Waybar's @bg_active convention. The `element
    selected` tint here was ALREADY a pale sage tint, not neutral white —
    no structural change needed, only the hex values.
+   2026-07-26: base rgb resynced (13,22,26 → 13,23,25) after Waybar halved
+   its blue-over-green gap; the glass surfaces here had been left behind on
+   the older tone. bg-input keeps its original +10/+10/+12 lift over the base.
+   Alpha levels are deliberately NOT unified across the glass family (rofi 72,
+   waybar 78, swayosd 85, swaync 90) — those encode surface depth, not drift.
    ========================================================= */
 
 * {
     font:                       "Inter 12";
 
-    bg:                         rgba ( 13, 22, 26, 72 % );
-    bg-input:                   rgba ( 23, 32, 38, 82 % );
+    bg:                         rgba ( 13, 23, 25, 72 % );
+    bg-input:                   rgba ( 23, 33, 37, 82 % );
 
     text:                       rgba ( 196, 221, 210, 100 % );  /* @text_main #c4ddd2 */
     text-secondary:             rgba ( 152, 194, 175, 100 % );  /* @text_soft #98c2af */
@@ -205,7 +210,7 @@ button selected {
    ───────────────────────────────────────────── */
 
 message {
-    background-color:           rgba ( 23, 32, 38, 46 % );
+    background-color:           rgba ( 23, 33, 37, 46 % );  /* @bg-input tone at a lighter alpha */
     border:                     1px;
     border-color:               @border;
     border-radius:              12px;

@@ -1,14 +1,21 @@
 -- =========================================================
 -- DimArch OS — swayimg (image viewer)
--- Sage palette — matches Waybar/mako. No client-drawn window
--- chrome: Hyprland handles frame/border/rounding (same
--- convention as ghostty's window-decoration=none).
+-- Sage palette. No client-drawn window chrome: Hyprland handles
+-- frame/border/rounding (same convention as ghostty's
+-- window-decoration=none).
 -- =========================================================
 
--- Sage palette (ARGB hex), from dotfiles/waybar/.config/waybar/style.css
-local bg        = 0xff16161c -- bg_panel (solid)
-local bg_card   = 0xff1c1c22 -- bg_module, subtle lift over bg
-local bg_panel  = 0xcc16161c -- translucent text-overlay backdrop (matches mako)
+-- Sage palette (ARGB hex), from the TERMINAL surface family — ghostty's
+-- background + #edeae4 text, shared with yazi/starship/uosc. An earlier
+-- comment here claimed these came from waybar/style.css and "matches mako";
+-- neither held. Waybar is a translucent glass surface on a different base
+-- (13,23,25) with #c4ddd2 text, and mako was replaced by swaync. swayimg
+-- draws opaque panels over arbitrary images, so the opaque terminal family
+-- is the correct parent. Corrected + resynced 2026-07-26 (was #16161c,
+-- ghostty moved to #171a1b).
+local bg        = 0xff171a1b -- terminal bg (solid)
+local bg_card   = 0xff1d2021 -- subtle lift over bg, same +6 step as before
+local bg_panel  = 0xcc171a1b -- translucent text-overlay backdrop
 local text_main = 0xffedeae4
 local accent    = 0xff7fb89e
 local accent_bg = 0x337fb89e -- accent @ ~20% alpha, matches Waybar's bg_active

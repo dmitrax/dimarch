@@ -10,10 +10,10 @@ hl.config({
         -- without making them look heavy.
         border_size = 1,
 
-        col = {
-            active_border = "rgba(00000024)",
-            inactive_border = "rgba(00000010)",
-        },
+        -- Border COLORS live in modules/colors.lua, not here — this module
+        -- owns geometry (size/rounding/shadow shape), that one owns the
+        -- palette. They used to both set general.col, with this file silently
+        -- winning on require order; see the note in colors.lua.
     },
 
     decoration = {

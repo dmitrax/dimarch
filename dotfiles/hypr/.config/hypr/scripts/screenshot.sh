@@ -23,10 +23,14 @@ copy_file_to_clipboard() {
 }
 
 select_region() {
+    # Selection border is the sage brand accent (was #2f7d68 — an orphan dark
+    # green that existed only here and in hyprlock's check_color; both pulled
+    # onto the palette 2026-07-26). Backdrop stays neutral black so it dims
+    # the screen without tinting it.
     slurp \
         -d \
         -b 00000055 \
-        -c 2f7d68ff \
+        -c 7fb89eff \
         -w 2
 }
 
