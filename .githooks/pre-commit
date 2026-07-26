@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+# Verify staged colour changes against the palette before they land.
+#
+# Soft by design: it reports and lets the commit through. Blocking would be
+# wrong while components remain unmigrated (vscode, obsidian) — a hook that
+# makes every commit impossible gets disabled, and then it protects nothing.
+# Switch `exit 0` to `exit 1` at the bottom once ROADMAP step 3 is complete.
+
+command -v palette >/dev/null 2>&1 || exit 0
+
+# Only bother when something colour-bearing is actually staged.
+staged=$(git diff --cached --name-only --diff-filter=ACM | grep '^dotfiles/' || true)
+[ -z "$staged" ] && exit 0
+
+out=$(palette check "$(git rev-parse --show-toplevel)" 2>&1)
+status=$?
+
+if [ $status -ne 0 ]; then
+    echo
+    echo "  palette: staged configs disagree with the palette"
+    echo "$out" | sed 's/^/  /'
+    echo
+    echo "  Source of truth: ~/Projects/dimarch-theme/colors/"
+    echo "  Fix there first, or run: palette component <name>"
+    echo
+fi
+exit 0
