@@ -31,7 +31,7 @@
   --noti-border-color: rgba(255, 255, 255, 0.07);
   --noti-bg: 13, 25, 25;
   --noti-bg-alpha: 0.85;
-  --noti-bg-darker: rgb(9, 18, 18);
+  --noti-bg-darker: rgb(9, 19, 19);
   /* Pale sage tint (low-alpha @text_main, not neutral white) — considered
      matching Waybar's literal @bg_hover (neutral white-alpha) but that
      convention relies on Waybar's own hover targets already sitting on a
@@ -71,7 +71,7 @@
 @define-color noti-border-color rgba(255, 255, 255, 0.07);
 @define-color noti-bg rgba(13, 25, 25, 0.85);
 @define-color noti-bg-opaque rgb(13, 25, 25);
-@define-color noti-bg-darker rgb(9, 18, 18);
+@define-color noti-bg-darker rgb(9, 19, 19);
 @define-color noti-bg-hover rgba(196, 221, 210, 0.08);
 @define-color noti-bg-hover-opaque rgb(38, 48, 44);
 @define-color noti-bg-focus rgba(127, 184, 158, 0.20);

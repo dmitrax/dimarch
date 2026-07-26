@@ -226,7 +226,7 @@ textbox {
 }
 
 error-message {
-    background-color:           rgba ( 44, 24, 28, 78 % );
+    background-color:           rgba ( 44, 24, 24, 78 % );
     border:                     1px;
     border-color:               rgba ( 217, 108, 108, 42 % );
     border-radius:              12px;
