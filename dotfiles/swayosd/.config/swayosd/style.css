@@ -16,12 +16,15 @@
    2026-07-26: base rgb resynced again (13,22,26 → 13,23,25) after Waybar
    halved its blue-over-green gap — the glass surfaces had been left on the
    older tone. The 0.85 alpha is unchanged and intentionally differs from
-   rofi's 0.72 and swaync's 0.90; alpha encodes surface depth, not drift. */
+   rofi's 0.72 and swaync's 0.90; alpha encodes surface depth, not drift.
+   Later the same day: hue 180 (G == B), 13,23,25 → 13,25,25, together with the
+   rest of the glass family. Invisible side by side, taken for one canonical
+   value and the project's G>=B rule. */
 
 window#osd {
     border-radius: 20px;
     border: 1px solid rgba(255, 255, 255, 0.07);
-    background: rgba(13, 23, 25, 0.85);
+    background: rgba(13, 25, 25, 0.85);
 }
 
 window#osd #container {

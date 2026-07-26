@@ -4,7 +4,7 @@
 # than Poppler for ordinary documents; switch to zathura-pdf-poppler only if
 # a specific PDF renders wrong, the two backends conflict and can't coexist).
 # Same "dark glass" Sage palette as rofi/theme.rasi, swaync/style.css,
-# swayosd/style.css — base rgb(13,23,25) / #0d1719, accent+text #c4ddd2,
+# swayosd/style.css — base rgb(13,25,25) / #0d1919, accent+text #c4ddd2,
 # active/selected tint rgba(127,184,158,0.35) (Waybar's own "active state"
 # convention). See decision-zathura-instead-of-browser-pdf-because-native-
 # wayland-minimal-viewer.md.
@@ -29,7 +29,7 @@ set font "Inter 10"
 
 # ── Sage palette ──────────────────────────────────────────────────────────
 
-set default-bg "#0d1719"
+set default-bg "#0d1919"
 set default-fg "#c4ddd2"
 
 set statusbar-bg "#172026"
@@ -40,21 +40,21 @@ set inputbar-fg "#c4ddd2"
 
 set completion-bg "#172026"
 set completion-fg "#c4ddd2"
-set completion-group-bg "#0d1719"
+set completion-group-bg "#0d1919"
 set completion-group-fg "#8fa79c"
 set completion-highlight-bg "#c4ddd2"
-set completion-highlight-fg "#0d1719"
+set completion-highlight-fg "#0d1919"
 
-set index-bg "#0d1719"
+set index-bg "#0d1919"
 set index-fg "#c4ddd2"
 set index-active-bg "#c4ddd2"
-set index-active-fg "#0d1719"
+set index-active-fg "#0d1919"
 
 set highlight-color "rgba(127,184,158,0.35)"
 set highlight-active-color "rgba(127,184,158,0.65)"
-set highlight-fg "#0d1719"
+set highlight-fg "#0d1919"
 
-set render-loading-bg "#0d1719"
+set render-loading-bg "#0d1919"
 set render-loading-fg "#c4ddd2"
 
 # ── Geometry ──────────────────────────────────────────────────────────────

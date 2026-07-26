@@ -21,7 +21,10 @@ window-inherit-font-size = false
 # overcorrection, then split the difference — halved the blue-over-green gap
 # instead of flipping it. Same halved-gap nudge applied to waybar's
 # bg_panel/bg_panel_bottom (style.css) so the two stay in the same family.
-background = 171a1b
+# Later the same day both went the rest of the way to hue 180 (G == B):
+# terminal 171a1b -> 171b1b, panel 13,23,25 -> 13,25,25. Not visible side by
+# side at this saturation — taken so one hue governs every surface.
+background = 171b1b
 foreground = edeae4
 
 # Bumped from Ghostty's 0.5 default. Turned out NOT to be the fix for
@@ -40,7 +43,7 @@ cursor-style-blink = false
 cursor-opacity = 0.7
 adjust-cursor-thickness = 7
 cursor-color = 7fb89e
-cursor-text = 171a1b
+cursor-text = 171b1b
 
 # ANSI 16 colors — DimArch Sage
 # blue (4/12) shifted from a blue-grey to sage-green 2026-07-26 — Claude Code's

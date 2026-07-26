@@ -15,13 +15,16 @@
    the older tone. bg-input keeps its original +10/+10/+12 lift over the base.
    Alpha levels are deliberately NOT unified across the glass family (rofi 72,
    waybar 78, swayosd 85, swaync 90) — those encode surface depth, not drift.
+   Later the same day the whole glass family went to hue 180 (G == B): 13,23,25
+   → 13,25,25. Invisible side by side at this lightness — taken for one canonical
+   value and to satisfy the project's G>=B rule, not for looks.
    ========================================================= */
 
 * {
     font:                       "Inter 12";
 
-    bg:                         rgba ( 13, 23, 25, 72 % );
-    bg-input:                   rgba ( 23, 33, 37, 82 % );
+    bg:                         rgba ( 13, 25, 25, 72 % );
+    bg-input:                   rgba ( 23, 37, 37, 82 % );
 
     text:                       rgba ( 196, 221, 210, 100 % );  /* @text_main #c4ddd2 */
     text-secondary:             rgba ( 152, 194, 175, 100 % );  /* @text_soft #98c2af */
@@ -210,7 +213,7 @@ button selected {
    ───────────────────────────────────────────── */
 
 message {
-    background-color:           rgba ( 23, 33, 37, 46 % );  /* @bg-input tone at a lighter alpha */
+    background-color:           rgba ( 23, 37, 37, 46 % );  /* @bg-input tone at a lighter alpha */
     border:                     1px;
     border-color:               @border;
     border-radius:              12px;

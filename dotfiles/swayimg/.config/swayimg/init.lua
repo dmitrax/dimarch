@@ -12,10 +12,10 @@
 -- (13,23,25) with #c4ddd2 text, and mako was replaced by swaync. swayimg
 -- draws opaque panels over arbitrary images, so the opaque terminal family
 -- is the correct parent. Corrected + resynced 2026-07-26 (was #16161c,
--- ghostty moved to #171a1b).
-local bg        = 0xff171a1b -- terminal bg (solid)
-local bg_card   = 0xff1d2021 -- subtle lift over bg, same +6 step as before
-local bg_panel  = 0xcc171a1b -- translucent text-overlay backdrop
+-- ghostty moved to #171b1b).
+local bg        = 0xff171b1b -- terminal bg (solid)
+local bg_card   = 0xff1d2121 -- subtle lift over bg, same +6 step as before
+local bg_panel  = 0xcc171b1b -- translucent text-overlay backdrop
 local text_main = 0xffedeae4
 local accent    = 0xff7fb89e
 local accent_bg = 0x337fb89e -- accent @ ~20% alpha, matches Waybar's bg_active
