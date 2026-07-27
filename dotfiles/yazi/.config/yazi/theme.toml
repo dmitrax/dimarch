@@ -18,8 +18,9 @@
 # (file type, git status). That is why directories moved off blue onto sage
 # and executables onto lichen — a directory is somewhere you go, an
 # executable is a kind of thing.
-# Media split in two: video -> heather.bright, audio -> ochre.bright. They had
+# Media split in two: image/video -> cinnamon, audio -> ochre.bright. They had
 # shared one colour, so an album folder and a film folder looked identical.
+# Cinnamon (hue 19) replaced heather in v3 — see palette.json _geometry.
 # Borders left the cold band: #3a3a4a was hue 240, replaced by #324040 at the
 # same visibility (contrast to the terminal ground 1.56 -> 1.61).
 # Deliberately does not set a background anywhere — Ghostty's
@@ -38,11 +39,11 @@ cwd = { fg = "#7fb89e" }
 find_keyword  = { fg = "#e4ba7a", bold = true, italic = true, underline = true }
 find_position = { fg = "#c4ddd2", bg = "reset", bold = true, italic = true }
 
-symlink_target = { fg = "#7fb8b4", italic = true }
+symlink_target = { fg = "#3f8d88", italic = true }
 
-marker_copied   = { fg = "#8fccc8", bg = "#8fccc8" }
+marker_copied   = { fg = "#40c9c0", bg = "#40c9c0" }
 marker_cut      = { fg = "#e49393", bg = "#e49393" }
-marker_marked   = { fg = "#cd98af", bg = "#cd98af" }
+marker_marked   = { fg = "#de895e", bg = "#de895e" }
 marker_selected = { fg = "#e4ba7a", bg = "#e4ba7a" }
 marker_symbol   = "│"
 
@@ -86,7 +87,7 @@ progress_error  = { fg = "#edeae4", bg = "#d96c6c" }
 
 [which]
 mask            = { bg = "#12141a" }
-cand            = { fg = "#8fccc8" }
+cand            = { fg = "#40c9c0" }
 rest            = { fg = "#82828c" }
 desc            = { fg = "#98c2af" }
 separator_style = { fg = "#82828c" }
@@ -100,7 +101,7 @@ btn_no  = { fg = "#82828c" }
 [spot]
 border   = { fg = "#7fb89e" }
 title    = { fg = "#7fb89e" }
-tbl_col  = { fg = "#7fb8b4" }
+tbl_col  = { fg = "#3f8d88" }
 tbl_cell = { fg = "#12141a", bg = "#e4ba7a" }
 
 [notify]
@@ -124,15 +125,15 @@ hovered = { fg = "#c4ddd2", bold = true }
 
 [help]
 border = { fg = "#7fb89e" }
-chord  = { fg = "#8fccc8" }
+chord  = { fg = "#40c9c0" }
 
 [filetype]
 rules = [
-	{ mime = "image/*", fg = "#b87a95" },
-	{ mime = "video/*", fg = "#cd98af" },
+	{ mime = "image/*", fg = "#c46b45" },
+	{ mime = "video/*", fg = "#de895e" },
 	{ mime = "audio/*", fg = "#e4ba7a" },
 	{ mime = "application/{zip,rar,7z*,tar,gzip,xz,zstd,bzip*,lzma,compress,archive,cpio,arj,xar,ms-cab*}", fg = "#d4a96a" },
-	{ mime = "application/{pdf,doc,rtf}", fg = "#8fccc8" },
+	{ mime = "application/{pdf,doc,rtf}", fg = "#40c9c0" },
 	{ mime = "vfs/{absent,stale}", fg = "#82828c" },
 
 	{ url = "*", is = "orphan", bg = "#d96c6c" },
@@ -159,7 +160,7 @@ rules = [
 conds = [
 	# Special files
 	{ if = "orphan", text = "", fg = "#d96c6c" },
-	{ if = "link",   text = "", fg = "#7fb8b4" },
+	{ if = "link",   text = "", fg = "#3f8d88" },
 	{ if = "block",  text = "", fg = "#82828c" },
 	{ if = "char",   text = "", fg = "#82828c" },
 	{ if = "fifo",   text = "", fg = "#82828c" },
@@ -178,7 +179,7 @@ conds = [
 [git]
 modified  = { fg = "#d4a96a" }
 added     = { fg = "#7fb89e" }
-untracked = { fg = "#b87a95" }
+untracked = { fg = "#bc5b2f" }
 ignored   = { fg = "#82828c" }
 deleted   = { fg = "#d96c6c", bold = true }
-updated   = { fg = "#8fccc8" }
+updated   = { fg = "#40c9c0" }

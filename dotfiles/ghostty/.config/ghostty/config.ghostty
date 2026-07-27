@@ -62,8 +62,8 @@ palette = 1=#d96c6c
 palette = 2=#7fb89e
 palette = 3=#d4a96a
 palette = 4=#91b06d
-palette = 5=#b87a95
-palette = 6=#7fb8b4
+palette = 5=#c46b45
+palette = 6=#3f8d88
 palette = 7=#c8c4be
 # 8 (bright black) brightened from #3a3a4a 2026-07-26 — Claude Code renders
 # comments/secondary diff text in this exact color (confirmed by pixel
@@ -77,8 +77,8 @@ palette = 9=#e49393
 palette = 10=#c4ddd2
 palette = 11=#e4ba7a
 palette = 12=#afc992
-palette = 13=#cd98af
-palette = 14=#8fccc8
+palette = 13=#de895e
+palette = 14=#40c9c0
 palette = 15=#edeae4
 
 # ---------------------------------------------------------

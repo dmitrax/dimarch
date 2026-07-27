@@ -31,7 +31,7 @@ read_only_style   = "bold clay"
 # ── Git ──────────────────────────────────────────────────────────
 [git_branch]
 #symbol = " "
-style  = "bold sage_soft"
+style  = "bold sage_br"
 
 [git_status]
 # 2026-07-26: was "bold red" (then #c47a7a) — read as too harsh against the
@@ -65,7 +65,7 @@ style  = "bold ochre_br"
 # ── Command duration ─────────────────────────────────────────────
 [cmd_duration]
 min_time = 2000
-style    = "bold heather"
+style    = "bold recede"
 format   = "[ $duration]($style) "
 
 # ── Time + arrow prompt (line 2) ─────────────────────────────────
@@ -97,12 +97,14 @@ subtext   = "#c8c4be"   # neutral.secondary
 muted     = "#82828c"   # neutral.muted
 # sage — brand, marks STATE
 sage      = "#7fb89e"   # ramp.sage.base
-sage_soft = "#98c2af"   # ramp.sage.soft — git branch
+sage_br   = "#c4ddd2"   # ramp.sage.bright — git branch. Was sage.soft, one
+                        # tier from the directory beside it and unreadable as
+                        # a distinct element (CIE76 8.2 / dE00 5.1).
 sage_dim  = "#2d4a40"   # low tint behind the clock
 # accents — mark CATEGORY
 clay      = "#d96c6c"   # ramp.clay.base — errors
 ochre     = "#d4a96a"   # ramp.ochre.base — change, attention
 ochre_br  = "#e4ba7a"   # ramp.ochre.bright — rust
 lichen    = "#91b06d"   # ramp.lichen.base — node
-patina    = "#8fccc8"   # ramp.patina.bright — python
-heather   = "#b87a95"   # ramp.heather.base — command duration
+patina    = "#40c9c0"   # ramp.patina.bright — python
+recede    = "#8a9d93"   # neutral.recede — command duration
