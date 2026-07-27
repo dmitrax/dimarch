@@ -17,10 +17,14 @@ body.theme-light.mod-linux {
   --tab-container-background:        #f3edd8;
   --tab-background-active:           #f8f4ea;
 
-  /* Links — saturated sage green */
-  --link-color:                      #35a77c;
-  --link-color-hover:                #2a9068;
-  --link-unresolved-color:           #8da101;
+  /* Links — sage hue, but at a depth a light ground can carry.
+     All three used to fail AA on cream: 2.74, 3.62 and 2.64 against a 4.5
+     threshold, the only accessibility bug the palette audit found.
+     Unresolved is ochre rather than clay on purpose — a link with no note
+     behind it is an ordinary state in Obsidian, not a failure. */
+  --link-color:                      #1f7957;  /* 4.86 / 4.56 */
+  --link-color-hover:                #1c6f50;  /* 5.56 / 5.21 */
+  --link-unresolved-color:           #8a6228;  /* 4.96 / 4.64 */
   --link-unresolved-opacity:         0.8;
 }
 
