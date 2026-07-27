@@ -52,6 +52,11 @@
 @define-color accent_dark     #89bca5;
 @define-color urgent          #d96c6c;
 @define-color warning         #d97706;
+/* Weather carries a CATEGORY (what the weather is), so it takes an accent and
+   not the brand — it used to sit on @text_soft, which is sage. Patina is the
+   palette's cool end; cold/hot variants need the script to emit JSON with a
+   class before they can be wired, see ROADMAP 3.2. */
+@define-color weather         #3f8d88;
 
 @define-color border_soft     rgba(255, 255, 255, 0.07);
 @define-color border_module   rgba(255, 255, 255, 0.05);
@@ -316,7 +321,7 @@ tooltip {
     border-radius: 5px;
     padding: 0 10px;
     margin: 2px 2px;
-    color: @text_soft;
+    color: @weather;
 }
 
 /* ── Volume + Microphone ────────────────────────────────── */

@@ -60,14 +60,28 @@ motion, and the aesthetic tone of every component.
 
 ### Sage palette
 
-| Token       | Hex       | Usage                          |
-|-------------|-----------|--------------------------------|
-| accent      | `#7fb89e` | Sage green — highlights, focus |
-| panel-bg    | `#16161c` | Panel / bar background         |
-| window-bg   | `#f0ede4` | App window background          |
-| text        | `#2a2a35` | Primary text                   |
-| text-muted  | `#6b6b7a` | Secondary text                 |
-| border      | `#3a3a4a` | Subtle borders                 |
+**This table is a summary, not the source.** Colour values live in
+[dimarch-theme](https://github.com/dmitrax/dimarch-theme) — `colors/palette.json`
+is the source of truth and `colors/sage-dark.css` mirrors it as CSS tokens.
+Anything below that disagrees with those files is stale; fix it there, not here.
+
+| Token     | Hex       | Palette path         | Usage                              |
+|-----------|-----------|----------------------|------------------------------------|
+| brand     | `#7fb89e` | `ramp.sage.base`     | the accent — highlights, focus      |
+| text      | `#c4ddd2` | `ramp.sage.bright`   | primary text on chrome and terminal |
+| panel-bg  | `#0d1919` | `surface.chrome.panel` | panel / bar background, 78% alpha |
+| terminal  | `#171b1b` | `surface.terminal.bg` | opaque terminal ground             |
+| text-muted| `#82828c` | `neutral.muted`      | comments, inactive                  |
+| border    | `#324040` | `surface.terminal.border` | separators and table rules     |
+
+Five hue families sit on a warm arc 0°–176°: cinnamon 19° (media), ochre 36°
+(change, archives), lichen 88° (executables), sage 153° (the brand), patina 176°
+(links, documents). Clay 0° sits outside the arc on purpose — red for failure is a
+convention, and a signal that blends into the harmony stops reading as a signal.
+
+The previous version of this table listed `#16161c`, `#f0ede4`, `#2a2a35`,
+`#6b6b7a` and `#3a3a4a` — a fourth parallel palette that appeared in no component
+and had drifted from the real theme entirely. Replaced 2026-07-27.
 
 ### Sage tagline
 
