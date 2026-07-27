@@ -52,11 +52,14 @@
 @define-color accent_dark     #89bca5;
 @define-color urgent          #d96c6c;
 @define-color warning         #d97706;
-/* Weather carries a CATEGORY (what the weather is), so it takes an accent and
-   not the brand — it used to sit on @text_soft, which is sage. Patina is the
-   palette's cool end; cold/hot variants need the script to emit JSON with a
-   class before they can be wired, see ROADMAP 3.2. */
-@define-color weather         #3f8d88;
+/* Normal weather is the RESTING state, not an event, so it stays on sage like
+   the rest of the bar at rest. The category surfaces only on a deviation:
+   cold -> patina.bright, hot -> ochre, dangerous -> warning. Those need the
+   script to emit JSON with a class before they can be wired — ROADMAP 3.2.
+   Briefly moved to patina.base 2026-07-27 and moved back: it read as washed
+   out (contrast 4.59 against 9.12) and would have collided with weather_cold,
+   which already owns patina's only light tier. */
+@define-color weather         #98c2af;
 
 @define-color border_soft     rgba(255, 255, 255, 0.07);
 @define-color border_module   rgba(255, 255, 255, 0.05);
