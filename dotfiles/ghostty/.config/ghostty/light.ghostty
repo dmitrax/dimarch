@@ -33,21 +33,24 @@ cursor-text = f8f4ea
 # colour slots below AA (worst 2.23) and blue duplicating green's hue exactly.
 # blue (4/12) shifted from blue to sage-green 2026-07-26, same reasoning
 # and darkening ratio as the dark profile's palette 4/12 — see config.ghostty.
+# 2026-07-27: 5/13 moved off heather (removed in v3) onto cinnamon, and 6/14
+# onto the recut patina. This file was NOT in components.json until then, so
+# `palette check` could not see it and the stale values passed unnoticed.
 palette = 0=#2d3a2e
 palette = 1=#c23838
 palette = 2=#347658
 palette = 3=#8a6228
 palette = 4=#557331
-palette = 5=#ab4773
-palette = 6=#347470
+palette = 5=#a95028
+palette = 6=#297570
 palette = 7=#5a6b5c
 palette = 8=#716868
 palette = 9=#9f2424
 palette = 10=#245d43
 palette = 11=#6f4d19
 palette = 12=#415b22
-palette = 13=#8e335a
-palette = 14=#245d59
+palette = 13=#85401f
+palette = 14=#205c58
 palette = 15=#f7f5f0
 
 # ---------------------------------------------------------

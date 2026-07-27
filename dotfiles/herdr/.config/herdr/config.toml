@@ -16,6 +16,8 @@
 #     #1710 made `config check` false-flag working keys; tested here and
 #     disproved — both were flagged AND had no runtime effect.
 #   · surface0/surface1 ARE accepted but paint nothing. Removed 2026-07-26
+#   · subtext0/overlay1 likewise. Removed 2026-07-27 with ramp.stone, which
+#     existed largely to fill them; overlay0 is now neutral.recede
 #     rather than migrated: a key that renders nowhere needs no colour.
 #   · accent appears twice, here and in [ui]. Both must move together.
 #
@@ -35,9 +37,7 @@ peach    = "#d97706"  # semantic.warning
 yellow   = "#d4a96a"  # ramp.ochre.base — status dot next to a workspace/agent row
 text     = "#edeae4"  # neutral.primary
 
-overlay0 = "#8a9d93"  # ramp.stone.base   — muted section labels (spaces/new/menu/agents)
-subtext0 = "#7a8f84"  # ramp.stone.dim    — no visible effect found, set for completeness
-overlay1 = "#94a89d"  # ramp.stone.bright — no visible effect found, set for completeness
+overlay0 = "#8a9d93"  # neutral.recede    — muted section labels (spaces/new/menu/agents)
 
 panel_bg    = "#171b1b"  # surface.terminal.bg   — top bar
 surface_dim = "#1d2121"  # surface.terminal.lift — side panel, scrollbar track, popups
