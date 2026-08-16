@@ -17,7 +17,7 @@
 #    8.  Codecs — gstreamer plugins, ffmpegthumbnailer
 #    9.  Filesystems — ntfs-3g, exfatprogs, fuse-exfat
 #    10. Network utils — wget, aria2, openssh
-#    11. Monitoring — btop, nvtop, lm_sensors, smartmontools
+#    11. Monitoring — btop, nvtop, lm_sensors, smartmontools, lsof
 #    12. File utils — tree, fd, ripgrep, fzf, eza, zoxide
 #    13. Documentation — man-db, man-pages
 #    14. Audio — pipewire, pipewire-pulse, wireplumber, pavucontrol
@@ -275,7 +275,8 @@ dimarch::pacman_install \
     btop \
     nvtop \
     lm_sensors \
-    smartmontools
+    smartmontools \
+    lsof
 
 # Run sensors-detect non-interactively to load sensor modules
 info "Detecting hardware sensors..."
