@@ -99,3 +99,49 @@ link into a direct app launch, skipping the browser hop entirely.
 
 **Not a fix:** joining via the browser tab instead of the native app "works" but isn't a
 real solution — it defeats the point of having a native client.
+
+
+
+## Desktop freezes for minutes right after an app crashes
+
+**Symptom:** an application (typically Electron-based — Obsidian, Slack, VS Code) dies,
+and for the next one to three minutes the whole desktop is unusable: input lags, other
+apps may be closed by the system, disk thrashes. Nothing in the journal points at OOM,
+the GPU, or the compositor.
+
+**Root cause:** `systemd-coredump`, not the crash itself. Each dump is handled by a
+transient `systemd-coredump@*.service`, which writes the core out and parses it to build
+a backtrace. For a process with a large address space that is enormous. Measured here:
+
+```
+journalctl -u 'systemd-coredump@*' | grep 'memory peak'
+electron (Obsidian), 2026-07-27:  22.4 GB / 2min 31s,  22.7 GB / 2min 35s
+Telegram, same evening:           2.4-3.6 GB / 4-7s
+```
+
+`Storage=none` — set on this machine since 2026-06-25 — does **not** prevent this. Per
+`coredump.conf(5)` the core has to be written out before a trace can be extracted, so it
+is written regardless; `Storage=` only controls whether it is kept afterwards. The knob
+that bounds the work is `ProcessSizeMax=`, which defaults to **32G** on 64-bit systems.
+
+**Fix:** ship a drop-in capping it — `install/utils/dimarch-coredump.conf`, deployed to
+`/etc/systemd/coredump.conf.d/dimarch.conf` by `install/phases/03-base.sh` (STEP 3):
+
+```ini
+[Coredump]
+Storage=none
+ProcessSizeMax=2G
+```
+
+Applies to the next crash — no `daemon-reload`, no reboot. Verify with
+`systemd-analyze cat-config systemd/coredump.conf`.
+
+**Not a fix:** `ExternalSizeMax=`/`JournalSizeMax=` — they bound dumps being *saved*,
+which `Storage=none` already rules out. Adding them changes nothing.
+
+**Deliberately not done:** `ProcessSizeMax=0`, which together with `Storage=none` turns
+coredump handling off entirely except for a log line. Traces from ordinary processes are
+worth keeping — a Zoom crash on 2026-08-14 produced a readable Qt backtrace in six
+seconds, and Hyprland's own process sits well under the 2G ceiling. Electron traces are
+the useless ones (`#0 0x... n/a` without debug symbols) — and Electron is precisely what
+the ceiling drops.

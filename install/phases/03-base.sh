@@ -7,7 +7,7 @@
 #  What this script does:
 #    1.  Localization — locale.gen, localectl, vconsole.conf
 #    2.  Bluetooth — bluez, blueman, bluez-utils
-#    3.  OOM killer — systemd-oomd
+#    3.  OOM killer — systemd-oomd; coredump limits — /etc/systemd/coredump.conf.d
 #    4.  Firewall — ufw with sensible defaults
 #    5.  Hardware auto-detection — chwd (GPU/network/power-management drivers,
 #        any vendor: AMD/NVIDIA/Intel — required for a public repo that must
@@ -126,13 +126,25 @@ dimarch::enable_service bluetooth
 ok "Bluetooth ready"
 
 # =============================================================================
-#  STEP 3 — OOM killer
+#  STEP 3 — OOM killer + coredump limits
 # =============================================================================
-dimarch::section "OOM killer"
+dimarch::section "OOM killer and coredump limits"
 
 info "Enabling systemd-oomd (Out-Of-Memory daemon)..."
 dimarch::enable_service systemd-oomd
 ok "systemd-oomd active"
+
+# Unbounded coredump processing is the other way this machine runs out of
+# memory, and systemd-oomd does not cover it: systemd-coredump runs as its own
+# transient service and can peak in the tens of gigabytes writing out and
+# parsing a large Electron dump (measured: 22.4 GB / ~2.5 min, twice, freezing
+# the desktop). The drop-in caps that. See the file's own header for the
+# numbers and for why ProcessSizeMax is the only knob that helps here.
+install -d -m 755 -o root -g root /etc/systemd/coredump.conf.d
+install -m 644 -o root -g root \
+    "${SCRIPT_DIR}/../utils/dimarch-coredump.conf" \
+    /etc/systemd/coredump.conf.d/dimarch.conf
+ok "coredump limits installed (Storage=none, ProcessSizeMax=2G)"
 
 # =============================================================================
 #  STEP 4 — Firewall (ufw)
