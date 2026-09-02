@@ -4,11 +4,21 @@ early-exit = false
 corner-roundness = 12
 initial-tool = "arrow"
 copy-command = "wl-copy"
+
+# Needed by the "save-to-file" action on Enter below — without it saving to file is
+# disabled outright. Same directory and name format as screenshot.sh writes, so
+# annotated and plain shots land together. Tilde is supported since satty 0.20.0.
+output-filename = "~/Pictures/Screenshots/Screenshot_%Y-%m-%d_%H-%M-%S.png"
 annotation-size-factor = 1.25
 save-after-copy = false
 default-hide-toolbars = false
 disable-notifications = false
 
-actions-on-enter = ["save-to-clipboard"]
+# Enter saves the annotated shot and puts its PATH on the clipboard, not the image.
+# That is the route into an agent running inside a herdr pane: ctrl+v is dead there
+# under a non-latin layout (herdr#1079), but a path is plain text and pastes via
+# alt+right-click. The toolbar copy button is untouched and still puts the IMAGE on
+# the clipboard, which is what Telegram and the like need.
+actions-on-enter = ["save-to-file", "copy-filepath-to-clipboard", "exit"]
 actions-on-escape = ["exit"]
 actions-on-right-click = []
