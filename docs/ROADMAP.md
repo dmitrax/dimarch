@@ -260,7 +260,7 @@ Scope — strictly MVP:
 - Pinned apps
 - Workspace indicator
 - Socket-based events
-- AUR packaging
+- Packaging (ships from `[dimarch]` once the repository exists)
 
 Note on tray: StatusNotifierItem/D-Bus tray is a significant feature with
 edge cases (Steam, Telegram, Nextcloud icons, menus). Waybar tray covers
@@ -462,7 +462,7 @@ install.sh requirements:
 v0.1 scope: tested on AMD desktop systems. Not guaranteed on Nvidia/laptop/HiDPI edge cases.
 
 **Entry:** Phase 3 complete. install.sh fully functional.
-**Exit criteria:** v0.1.0 tagged. README with screenshots. AUR packages published.
+**Exit criteria:** v0.1.0 tagged. README with screenshots. `[dimarch]` repository published (keyring, mirrorlist, theme).
 
 ### 4.1 — Documentation
 
@@ -485,12 +485,21 @@ Pre-install check:
 ```
 Validates: UEFI mode, NVMe present, GPU vendor detected, internet, disk space, Arch base.
 
-### 4.3 — AUR packages
+### 4.3 — Own signed package repository
 
-- `dimarch-taskbar` — PKGBUILD in dimarch-taskbar repo (v0.2+ minimum)
-- `dimarch-theme` — PKGBUILD in dimarch-theme repo
+DimArch's own components ship from `[dimarch]`, a signed pacman repository — not
+from the AUR (decided 2026-08-14). Distribution is two mirrors, GitHub Pages and a
+VPS, selected through `dimarch-mirrorlist`.
 
-Publish to AUR only when components are stable and self-contained.
+- `dimarch-keyring`, `dimarch-mirrorlist` — companion packages, built first;
+  nothing else can be enabled without them
+- `dimarch-theme` — PKGBUILD in the dimarch-theme repo
+- `dimarch-taskbar` — PKGBUILD in the dimarch-taskbar repo (v0.2+ minimum)
+
+Packages are built in a clean chroot and signed with `makepkg --sign`; the
+repository database is signed separately with `repo-add -s` — these are two
+different operations, not one. Building and signing happen on a maintainer
+machine, never on the mirror host.
 
 ### 4.4 — SDDM theme fix
 
@@ -568,7 +577,7 @@ Phase 3 — Productivity + Installer Completion
 Phase 4 — Public Release Readiness
   [ ] Documentation: all docs/ files
   [ ] dimarchctl health --pre-install check
-  [ ] AUR: dimarch-taskbar, dimarch-theme (when stable)
+  [ ] [dimarch] repo: keyring, mirrorlist, theme (taskbar when stable)
   [ ] SDDM theme: remove sed hack
   [ ] README with screenshots
   [ ] CHANGELOG.md
