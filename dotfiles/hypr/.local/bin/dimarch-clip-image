@@ -1,0 +1,38 @@
+#!/usr/bin/env bash
+# Take the image sitting in the Wayland clipboard, drop it into a file, and put the
+# FILE PATH back on the clipboard as text.
+#
+# Why this exists: inside a herdr pane, Ctrl+V (and every other ctrl+<letter>) is dead
+# while a non-latin keyboard layout is active — herdr reports the Cyrillic codepoint in
+# the kitty keyboard protocol and omits the base latin key. See herdr#1079. A path is
+# plain text, so it pastes through the working route (alt+right-click), and Claude Code
+# reads the file itself.
+set -euo pipefail
+
+dir="${DIMARCH_CLIP_DIR:-$HOME/Pictures/clipboard}"
+mkdir -p "$dir"
+
+types=$(wl-paste --list-types 2>/dev/null || true)
+mime=$(printf '%s\n' "$types" | grep -m1 -E '^image/(png|jpeg|webp|gif|bmp)$' || true)
+
+if [[ -z $mime ]]; then
+    notify-send -a DimArch -u low "Буфер без картинки" "В буфере нет изображения — там ${types%%$'\n'*:-пусто}"
+    exit 1
+fi
+
+case $mime in
+    image/jpeg) ext=jpg ;;
+    *)          ext=${mime#image/} ;;
+esac
+
+file="$dir/$(date +%Y-%m-%d_%H-%M-%S).$ext"
+wl-paste --type "$mime" > "$file"
+
+if [[ ! -s $file ]]; then
+    rm -f "$file"
+    notify-send -a DimArch -u critical "Не удалось сохранить" "wl-paste вернул пустой файл ($mime)"
+    exit 1
+fi
+
+printf '%s' "$file" | wl-copy --type text/plain
+notify-send -a DimArch -u low "Путь в буфере" "$(basename "$file") — вставляй alt+ПКМ"

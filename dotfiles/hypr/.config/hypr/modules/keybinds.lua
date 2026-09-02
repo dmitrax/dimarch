@@ -160,3 +160,15 @@ hl.bind("SUPER + ALT + Space", hl.dsp.exec_cmd(
 hl.define_submap("kblayoutpicker", function()
     hl.bind("Escape", hl.dsp.submap("reset"))
 end)
+
+-- Super + Shift + V  (bound by CODE, not by keysym)
+-- Pull the image out of the clipboard into a file and put the file PATH back on the
+-- clipboard as text. Needed because inside a herdr pane Ctrl+V — and every other
+-- ctrl+<letter> — is dead while a non-latin layout is active: herdr reports the
+-- Cyrillic codepoint in the kitty keyboard protocol and drops the base latin key
+-- (herdr#1079). A path is plain text, so it pastes through alt+right-click, which
+-- works, and Claude Code opens the file itself.
+-- Plain keysym: the Lua bind API does not parse "code:55" (hyprctl binds shows the
+-- literal string with keycode 0, i.e. a dead bind). Hyprland resolves binds by
+-- keycode anyway, so a non-latin layout does not break this one.
+hl.bind("SUPER + SHIFT + V", hl.dsp.exec_cmd("dimarch-clip-image"))
