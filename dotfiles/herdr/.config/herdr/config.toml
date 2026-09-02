@@ -1,3 +1,10 @@
+# TOP-LEVEL key — TOML requires it before the first [section], so it has to sit
+# above the header; herdr wrote it here itself on first run of 0.8.2. Moving it
+# under the header puts it inside [theme.custom], where reload-config answers
+# "unknown config key theme.custom.onboarding; ignoring key" (tried 2026-09-02).
+# false = do not show the first-run notification setup again.
+onboarding = false
+
 # herdr configuration — DimArch machine
 # See defaults via `herdr --default-config`
 
@@ -7,8 +14,16 @@
 # Change a colour there, not here — see that file for how roles resolve.
 #
 # What was learned about herdr itself (keep this, it is not in the docs):
-#   · 16 colour keys are accepted, not the catppuccin set the names suggest.
-#     Verified with `herdr config check`; the docs list none of them.
+#   · 19 colour keys are accepted as of 0.8.2 (16 before it), not the catppuccin
+#     set the names suggest. The docs list none of them; the list comes out of
+#     the binary. Rust packs field names into blocks by LENGTH, so a single
+#     grep for CustomThemeColors returns a PARTIAL list — the 8-character
+#     names and the short ones sit in separate blocks. Re-read after every
+#     upgrade: an upgrade can take colour away with nothing logged.
+#   · Validate with `herdr server reload-config`, not `config check` — reload
+#     says what happened to the running server. `status: "partial"` means a
+#     section was REJECTED and its old settings kept, printed as plain JSON
+#     with exit 0. Only "applied" with empty diagnostics is clean.
 #   · surface_dim is the 16th, missed at first because it is not a catppuccin
 #     name. It drives the side panel, the inactive-pane scrollbar track and
 #     popup menus — the "exhausted all 15 keys" dead end was simply wrong.
@@ -38,19 +53,99 @@ yellow   = "#d4a96a"  # ramp.ochre.base — status dot next to a workspace/agent
 text     = "#edeae4"  # neutral.primary
 
 overlay0 = "#8a9d93"  # neutral.recede    — muted section labels (spaces/new/menu/agents)
+subtext0 = "#c8c4be"  # neutral.secondary — the NAME of an inactive space/agent row.
+                      # Another token 0.8.2 started using that this file left unset:
+                      # it defaulted to catppuccin's #a6adc8 and the project names in
+                      # the sidebar went cold violet. Measured on the rendered window
+                      # 2026-09-02, not guessed. Same role ghostty gives palette.7 and
+                      # starship gives `subtext` — the terminal family's secondary text.
 
 panel_bg    = "#171b1b"  # surface.terminal.bg   — top bar
-surface_dim = "#1d2121"  # surface.terminal.lift — side panel, scrollbar track, popups
+surface_dim = "#1d2121"  # surface.terminal.lift — scrollbar track and popup menus.
+                         # NOT the sidebar background, despite what this comment said
+                         # until 2026-09-02: sampling the rendered window on 0.7.5 gave
+                         # a gradient (#1a2b2f, #1c2d2f, #192a2e), never a constant —
+                         # i.e. wallpaper through ghostty's 0.85 opacity, not a fill.
+
+# ── Added by 0.8.2 ──────────────────────────────────────────────────────────
+# 0.8.2 split these three out of surfaces this file already set. An unset key is
+# a default, not a mistake, so NOTHING reports it: `config check` answered
+# "config: ok" with all three missing. This file sets no [theme] name, so the
+# base is catppuccin and they would have defaulted to #181825 / #1e1e2e /
+# #313244 — cold violet, straight through the Sage repaint.
+sidebar_bg = "reset"     # The one key here that is NOT a palette role, on purpose.
+                         # ghostty runs background-opacity 0.85 with Hyprland blur
+                         # behind it, and a terminal keeps a cell translucent only
+                         # while nothing names its background — name one and the cell
+                         # turns opaque and falls out of the blur. So this is not a
+                         # choice of shade but of fill-vs-glass, and the sidebar was
+                         # ALREADY glass before the upgrade (measured, see above).
+                         # "reset" keeps it that way. panel_bg stays a fill
+                         # deliberately: the top bar has no borders and dissolves
+                         # into the terminal without one; the sidebar has borders.
+active_row_bg = "#2c3a35"  # surface.terminal.active_row — the active Space/Agent row.
+                           # STATE, so sage: the palette forbids an accent here. It is
+                           # surface.chrome.active (sage @20%) flattened over the
+                           # terminal ground #171b1b, because herdr takes hex only.
+                           # Give sidebar_bg a fill and this must be recomputed.
+selection_bg  = "#3f7a63"  # surface.terminal.selection — navigate-mode cursor, the
+                           # same value ghostty carries as selection-background.
+                           # Deeper than the active row on purpose: 0.8.2 gave the
+                           # cursor its own token precisely so the two stop being
+                           # confused with each other.
 
 [ui]
 accent = "#c4ddd2"
 
+# Equals herdr's own default, and the deviations-only habit would drop it. Kept
+# anyway: a key this file does not set is a default, and a default can move
+# under an upgrade with nothing logged — which is exactly what 0.8.2 just did
+# to three surface tokens above. Pinning costs one line and removes that mode.
 agent_panel_sort = "spaces"
+
+# Equals herdr's own default, pinned on purpose (same reasoning as agent_panel_sort
+# above). The five states render as: blocked red ●, working yellow ●, done green ●,
+# idle hollow ○, unknown ·. The alternative, "symbols", swaps colour for shape
+# (× ◐ ✓ ○ ·) and is NOT what this machine wants — the colour ramp is the point.
+#
+# What 0.8.2 actually took away here is the animation, and neither value brings it
+# back. 0.7.5 drew working as an animated ochre braille spinner (a frame out of
+# ⠋⠙⠹⠸⠼⠴⠦⠧⠇⠏); 0.8.2 has one static mark per state. Measured, not assumed: 12 grim
+# frames over 2.2s with the agent in `working` gave ONE distinct frame in both
+# modes, and the docs say it outright for symbols — "The symbols are static, so
+# this option does not enable spinner animation." Feeding `terminal_title` into the
+# agent row does not help either: herdr strips the agent's own leading spinner
+# glyph (its table of them is in the binary: ·✢✳✶✻✽◐◓◑◒). Upstream change, nothing
+# to configure. Do not spend another session looking for the switch.
+status_indicators = "dots"
 
 # Alt+right-click passes the gesture through to the pane app (Ghostty/Claude Code)
 # instead of opening herdr's own pane menu — restores right-click-paste under a
 # modifier since mouse_capture=true grabs plain right-click for herdr's UI.
 right_click_passthrough_modifier = "alt"
+# NOTE — Ctrl+V here is NOT a herdr keybinding problem. `remote_image_paste = ""`
+# used to sit in this section as a "fix"; it never did anything and was removed
+# 2026-09-02. That key is a LOCAL-CLIENT shortcut for `herdr --remote` only (docs:
+# "Local-client shortcut that sends a clipboard image to a remote Herdr session"),
+# so in a local session herdr does not grab Ctrl+V at all — proved by feeding a raw
+# `cat -v` in a herdr pane, which received 0x16 intact.
+#
+# The real cause is the kitty keyboard protocol plus a non-latin layout. With a
+# Russian layout active the V key is У+043C "м", and herdr reports it as
+# `ESC[1084;5u` — the Cyrillic codepoint, never the latin one. Claude Code binds
+# `ctrl+v` (`X = H ? "alt+v" : "ctrl+v"` in its bundle, alt+v only on Windows/WSL),
+# sees ctrl+м, and silently ignores it. Same for every other Ctrl binding: Ctrl+G,
+# Ctrl+O, Ctrl+T are all dead under a Russian layout, while Shift+Tab works because
+# Tab does not depend on layout. Ghostty on its own does NOT have this problem — the
+# same keys work in both layouts outside herdr.
+#
+# It is a herdr bug, and specifically a false claim of support: asked for flags 5
+# (disambiguate | report alternate keys) herdr answers `ESC[?5u`, accepting, and then
+# still sends `ESC[1084;5u`. Per the protocol flag 4 obliges it to send the base
+# layout key too, i.e. `ESC[1084::118;5u` with 118 = latin "v". herdr's docs never
+# mention the keyboard protocol at all.
+# Workaround until upstream fixes it: switch to the English layout for Ctrl+shortcuts.
+
 [[keys.command]]
 key = "prefix+alt+g"
 type = "popup"
