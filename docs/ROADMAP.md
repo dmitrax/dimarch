@@ -115,12 +115,42 @@ Fix target: wrapper ensuring correct XDG env regardless of launch source.
 Every phase includes installer work. At any point, install.sh must produce
 a working system for all completed phases.
 
+*Target decided 2026-09-03: a DimArch TUI on the official Arch ISO, owning the
+disk layout end to end.* Bash + `gum`, five screens (Preflight → Disk → Account →
+Locale → Final plan), write pipeline `DISCOVER → PLAN → VALIDATE → SHOW USER →
+CONFIRM → REVALIDATE → COMMIT`. A wrapper generating archinstall config is
+skipped — a disposable layer that still needs a release on every archinstall
+major. Calamares is not a development goal; the only trigger for it is an
+audience for which the TUI measurably becomes the reason to walk away.
+
+v1 supported set, deliberately narrow: UEFI only · whole disk or unallocated
+space · Windows partitions never touched (no NTFS shrink) · GPT · fixed DimArch
+filesystem policy. Everything else — BIOS/CSM, software RAID, pre-existing LVM,
+arbitrary encrypted layouts, a manual partition editor — is refused by design,
+not half-supported.
+
+Boundary that governs the code: **one disk planner, one executor, one `fstab`.**
+`install/phases/01-btrfs-setup.sh` is currently a second owner of that state and
+is absorbed by the disk engine rather than patched.
+
 **Track B — Sage theme**
 Every new component gets Sage-themed before the task is closed.
 "We'll theme it later" is not accepted.
 
 **Track C — Documentation**
 Written as components ship. Not accumulated at the end.
+
+**Track D — Lifecycle (updates and migrations)**
+Model decided 2026-09-03, not yet built. `dimarchctl update` is the only blessed
+full-upgrade path; a direct `pacman -Syu` is stopped by an ALPM `PreTransaction`
+hook (a guardrail, not a security boundary — root can always disable it). It is a
+state machine with commit points, not an atomic transaction: the ALPM transaction
+ends inside pacman and `$HOME` changes cannot join it. Migrations are forward-only
+with a preimage taken before every change; a migration marker means *applied and
+verified*, never *the script exited zero*. State lives in
+`~/.local/state/dimarch/`. Filesystem snapshots are an optional second recovery
+layer — the update record carries `system_snapshot: null` from day one, so the
+layer drops in later without rework.
 
 ---
 
@@ -442,9 +472,15 @@ Full `--json` coverage on all subcommands.
 ### Installer work (Track A — Phase 3)
 
 Scripts to write and test:
-- `07-theme.sh` — GTK theme (Colloid), Qt/Kvantum, Sage icons from the
-  `dimarch-theme` repo; also runs `sddm/apply.sh` (deploys the `dimarch-sddm-theme`
-  repo's config) — this script applies both theme repos, it does not build them
+- `07-theme.sh` — GTK theme (Colloid), Qt/Kvantum, and the Sage colour source.
+  **Scope needs rewriting:** `dimarch-theme` holds 12 files (`colors/palette.json`,
+  `colors/components.json`, the generated CSS and the `palette` tool) — the
+  `gtk/`, `icons/`, `rofi/`, `waybar/` and `swaync/` directories this line used to
+  promise do not exist, and the repo's own README calls itself "a source of truth
+  and the tools to work with it — not something you install". The colour source
+  ships as a package (`colors/*` → `/usr/share/dimarch/colors/`, `tools/palette` →
+  `/usr/bin/palette`); this script deploys the GTK/Qt side and runs
+  `sddm/apply.sh` (which deploys the `dimarch-sddm-theme` repo's config)
 - `08-browser.sh` — Firefox + optional Chromium/Thorium
 - `install.sh` — orchestrator for phases 01–08, reads dimarch.conf
 
