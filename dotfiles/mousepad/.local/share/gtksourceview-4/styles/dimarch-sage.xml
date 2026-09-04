@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  DimArch Sage — GtkSourceView colour scheme (Mousepad, and anything else on
+  GtkSourceView 4).
+
+  Every value below is resolved from dimarch-theme/colors/palette.json through
+  the component map (`palette component mousepad`). Nothing here is picked by
+  eye: the syntax colours mirror the ANSI slots, so a file reads the same in
+  Mousepad as it does through bat or yazi in the terminal.
+-->
+<style-scheme id="dimarch-sage" _name="DimArch Sage" version="1.0">
+  <author>DimArch OS</author>
+  <_description>Sage — the DimArch OS palette</_description>
+
+  <!-- surfaces -->
+  <color name="bg"           value="#171b1b"/>  <!-- surface.editor.dark.editor -->
+  <color name="bg_lift"      value="#1d2121"/>  <!-- surface.terminal.lift -->
+  <color name="current_line" value="#2c3a35"/>  <!-- surface.terminal.active_row -->
+  <color name="selection"    value="#3f7a63"/>  <!-- surface.terminal.selection -->
+  <color name="border"       value="#324040"/>  <!-- surface.terminal.border -->
+  <color name="cursor"       value="#7fb89e"/>  <!-- surface.terminal.cursor -->
+
+  <!-- text -->
+  <color name="fg"           value="#edeae4"/>  <!-- neutral.primary -->
+  <color name="fg_recede"    value="#8a9d93"/>  <!-- neutral.recede -->
+
+  <!-- syntax — mirrors the ANSI slots, see role.code._note in palette.json -->
+  <color name="comment"      value="#82828c"/>  <!-- role.code.comment -->
+  <color name="keyword"      value="#c46b45"/>  <!-- role.code.keyword -->
+  <color name="string"       value="#7fb89e"/>  <!-- role.code.string -->
+  <color name="number"       value="#40c9c0"/>  <!-- role.code.number -->
+  <color name="type"         value="#d4a96a"/>  <!-- role.code.type -->
+  <color name="function"     value="#91b06d"/>  <!-- role.code.function -->
+  <color name="constant"     value="#3f8d88"/>  <!-- role.code.constant -->
+  <color name="preprocessor" value="#de895e"/>  <!-- role.code.preprocessor -->
+  <color name="operator"     value="#c8c4be"/>  <!-- role.code.operator -->
+  <color name="error"        value="#d96c6c"/>  <!-- role.code.error -->
+
+  <!-- editor chrome -->
+  <style name="text"                background="bg"           foreground="fg"/>
+  <style name="selection"           background="selection"    foreground="fg"/>
+  <style name="cursor"              foreground="cursor"/>
+  <style name="secondary-cursor"    foreground="fg_recede"/>
+  <style name="current-line"        background="current_line"/>
+  <style name="line-numbers"        background="bg_lift"      foreground="fg_recede"/>
+  <style name="current-line-number" background="bg_lift"      foreground="cursor"   bold="true"/>
+  <style name="right-margin"        background="border"       foreground="border"/>
+  <style name="draw-spaces"         foreground="border"/>
+  <style name="background-pattern"  background="bg_lift"/>
+  <style name="bracket-match"       background="selection"    foreground="fg"       bold="true"/>
+  <style name="bracket-mismatch"    background="error"        foreground="bg"       bold="true"/>
+  <style name="search-match"        background="selection"    foreground="fg"/>
+
+  <!-- syntax -->
+  <style name="def:comment"         foreground="comment"      italic="true"/>
+  <style name="def:shebang"         foreground="comment"      bold="true"/>
+  <style name="def:doc-comment-element" foreground="comment"  italic="true"/>
+  <style name="def:constant"        foreground="constant"/>
+  <style name="def:string"          foreground="string"/>
+  <style name="def:special-char"    foreground="preprocessor"/>
+  <style name="def:number"          foreground="number"/>
+  <style name="def:floating-point"  foreground="number"/>
+  <style name="def:decimal"         foreground="number"/>
+  <style name="def:base-n-integer"  foreground="number"/>
+  <style name="def:boolean"         foreground="number"/>
+  <style name="def:identifier"      foreground="fg"/>
+  <style name="def:function"        foreground="function"/>
+  <style name="def:builtin"         foreground="function"/>
+  <style name="def:keyword"         foreground="keyword"      bold="true"/>
+  <style name="def:statement"       foreground="keyword"/>
+  <style name="def:operator"        foreground="operator"/>
+  <style name="def:type"            foreground="type"/>
+  <style name="def:preprocessor"    foreground="preprocessor"/>
+  <style name="def:error"           foreground="error"        bold="true"/>
+  <style name="def:warning"         foreground="type"/>
+  <style name="def:note"            background="type"         foreground="bg"       bold="true"/>
+  <style name="def:net-address"     foreground="constant"     underline="single"/>
+  <style name="def:link-text"       foreground="constant"/>
+  <style name="def:link-symbol"     foreground="comment"/>
+  <style name="def:link-destination" foreground="constant"    underline="single"/>
+  <style name="def:emphasis"        italic="true"/>
+  <style name="def:strong-emphasis" foreground="fg"           bold="true"/>
+  <style name="def:inline-code"     foreground="string"/>
+  <style name="def:insertion"       foreground="string"/>
+  <style name="def:deletion"        foreground="error"/>
+  <style name="def:heading"         foreground="type"         bold="true"/>
+  <style name="def:list-marker"     foreground="keyword"/>
+  <style name="def:preformatted-section" foreground="string"/>
+  <style name="def:thematic-break"  foreground="border"/>
+
+  <!-- language-specific -->
+  <style name="c:preprocessor"      foreground="preprocessor"/>
+  <style name="c:type-keyword"      foreground="type"/>
+  <style name="diff:added-line"     foreground="string"/>
+  <style name="diff:removed-line"   foreground="error"/>
+  <style name="diff:location"       foreground="constant"/>
+  <style name="diff:diff-file"      foreground="type"         bold="true"/>
+  <style name="xml:tag"             foreground="keyword"/>
+  <style name="xml:attribute-name"  foreground="type"/>
+  <style name="json:keyname"        foreground="type"/>
+</style-scheme>

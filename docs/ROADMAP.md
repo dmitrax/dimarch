@@ -588,6 +588,12 @@ Phase 1 — Shell Foundation + Installer Base
     [✓] Claude Code — 2026-09-04 (theme was live-only since July; brought into
         the repo and the component map, which caught seven values that had
         drifted outside the palette)
+    [✓] Mousepad — 2026-09-04 (GtkSourceView scheme; first consumer of the new
+        role.code.* syntax roles, which mirror the ANSI slots so code reads the
+        same in the editor as in the terminal)
+    [ ] GTK theme — none exists. The desktop currently runs Nordic-bluish-accent
+        from dconf, so every GTK app's chrome is someone else's. Own Dark/Light/
+        Combo variants are the next piece of this rollout.
     [ ] bat, delta, lazygit, fzf — packages installed, no theme config yet
 
 Phase 2 — Shell Polish + Installer Mid

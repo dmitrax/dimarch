@@ -47,6 +47,8 @@
 #    12. Claude Code — Sage theme (its base falls through to terminal ANSI
 #        slots, so an unset token is not a neutral default) + the DimArch
 #        agent skill
+#    13. Mousepad — Sage GtkSourceView scheme + GSettings (not xfconf); new
+#        files open as windows, not tabs
 #
 #  Deploy mechanism: deploy_dotfile_tree() copies an entire dotfiles/<app>/
 #  subtree file-by-file (preserving relative path + permission bits) rather
@@ -295,6 +297,49 @@ dimarch::section "Claude Code (theme + agent skill)"
 deploy_dotfile_tree "claude"
 
 ok "Claude Code theme + agent skill deployed"
+
+# =============================================================================
+#  STEP 13 — Mousepad: Sage syntax scheme + behaviour
+# =============================================================================
+dimarch::section "Mousepad (Sage scheme)"
+
+# Mousepad is the default text editor (mimeapps.list). Two halves here:
+#
+# 1. The scheme file — a GtkSourceView 4 style scheme. Mousepad links against
+#    libgtksourceview-4, so it is read from ~/.local/share/gtksourceview-4/
+#    styles/. Its colours resolve from dimarch-theme (`palette component
+#    mousepad`); the syntax roles mirror the ANSI slots so a file reads the same
+#    here as through bat or yazi.
+#
+# 2. The settings — GSettings, NOT xfconf. Mousepad moved years ago, and the
+#    trap is that `xfconf-query --create` will happily write an invented key and
+#    report success, so a wrong guess is indistinguishable from a correct one.
+#    `color-scheme` is read at STARTUP: a running Mousepad keeps the old one.
+#
+# Only the text area is themed by this. Toolbar, tabs and titlebar come from the
+# GTK theme, which is not ours yet.
+deploy_dotfile_tree "mousepad"
+
+if [[ -n "$REALUSER" ]]; then
+    # gsettings writes through dconf, which needs a session bus. This script runs
+    # as root before any graphical session exists, so one is created for the
+    # duration — all five writes share it rather than paying for a bus each.
+    #
+    # opening-mode=window: a second file opens its OWN window instead of a tab in
+    # whichever window already exists — which, with one window per workspace, put
+    # the file on a different workspace than the one it was opened from.
+    sudo -u "$REALUSER" dbus-run-session -- bash -euc '
+        v=org.xfce.mousepad.preferences.view
+        w=org.xfce.mousepad.preferences.window
+        gsettings set "$v" color-scheme "dimarch-sage"
+        gsettings set "$v" show-line-numbers true
+        gsettings set "$v" highlight-current-line true
+        gsettings set "$v" match-braces true
+        gsettings set "$w" opening-mode "window"
+    ' 2>/dev/null || warn "gsettings for mousepad failed — set the scheme from its preferences after first login"
+fi
+
+ok "Mousepad scheme deployed and selected"
 
 # =============================================================================
 dimarch::done \
