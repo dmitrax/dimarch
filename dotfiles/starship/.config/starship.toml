@@ -3,108 +3,99 @@
 # ════════════════════════════════════════════════════════════════
 #  DimArch OS — Starship Prompt Config
 #  Theme: DimArch Sage
+#
+#  Формат зеркалит mac-setup (рамка ╭─/╰────, блок времени без
+#  стрелки), символ os — арчевый. Языковые модули настроены, но
+#  намеренно НЕ выводятся: они единственные, кому нужен скан
+#  содержимого каталога, из-за которого первый промпт после
+#  ребута ловил scan_timeout на холодном dentry-кэше.
 # ════════════════════════════════════════════════════════════════
 
 format = """
-$os$directory$git_branch$git_status$nodejs$python$rust$cmd_duration
-$time$character"""
+[╭─](frame) $os$directory$git_branch$git_status$cmd_duration
+[╰────](frame)$time$character"""
 
 palette = "dimarch_sage"
 
-# ── OS icon ──────────────────────────────────────────────────────
 [os]
 disabled = false
-style    = "bold sage"
+style = "bold sage"
 
 [os.symbols]
 Linux = "󰌽 "
-Arch  = "󰣇 "
+Arch = "󰣇 "
 
-# ── Directory ────────────────────────────────────────────────────
 [directory]
-style             = "bold sage"
+# role.file.directory — sage отмечает каталог как состояние, а не категорию.
+style = "bold sage"
 truncation_length = 3
-truncate_to_repo  = true
-read_only         = " 󰌾"
-read_only_style   = "bold clay"
+truncate_to_repo = true
+read_only = " 󰌾"
+read_only_style = "bold clay"
 
-# ── Git ──────────────────────────────────────────────────────────
 [git_branch]
-#symbol = " "
-style  = "bold sage_br"
+# role.git.branch — sage_br, самое светлое в промпте: рядом с каталогом
+# более тёмный тир от него физически неотличим.
+style = "bold sage_br"
 
 [git_status]
-# 2026-07-26: was "bold red" (then #c47a7a) — read as too harsh against the
-# sage prompt. Moved to the attention colour: modified/untracked counts are
-# change, not failure, and only real errors should read as red. That is now
-# the palette's own rule rather than a local judgement call — ochre carries
-# change, clay carries failure. Token renamed warm -> ochre to match.
-style    = "bold ochre"
-ahead    = "⇡${count}"
-behind   = "⇣${count}"
-diverged = "⇕⇡${ahead_count}⇣${behind_count}"
-modified = "!${count}"
-untracked = "?${count}"
-staged   = "+${count}"
-stashed  = "≡"
+# role.git.modified — ochre: «изменение, внимание без тревоги». Красный
+# здесь был бы clay, а он зарезервирован под реальный отказ.
+style = "bold ochre"
+untracked = '?${count}'
+modified = '!${count}'
+staged = '+${count}'
+deleted = '✘${count}'
+renamed = '»${count}'
+conflicted = '=${count}'
+stashed = '$${count}'
+ahead = '⇡${count}'
+behind = '⇣${count}'
+diverged = '⇕⇡${ahead_count}⇣${behind_count}'
 
-# ── Languages ────────────────────────────────────────────────────
+[cmd_duration]
+min_time = 2000
+style = "bold recede"
+format = '[ $duration]($style) '
+
+[time]
+disabled = false
+format = '[ $time ](bold bg:sage_dim fg:sage_br)[](fg:sage_dim)'
+time_format = "%H:%M"
+
+[character]
+success_symbol = ""
+error_symbol = " [✗](bold clay)"
+
+# ── Языковые модули: стили заданы, в format не выводятся ──────────────────────
 [nodejs]
 symbol = " "
-style  = "bold lichen"
+style = "bold lichen"
 
 [python]
-symbol             = " "
-style              = "bold patina"
+symbol = " "
+style = "bold patina"
 pyenv_version_name = true
 
 [rust]
 symbol = " "
-style  = "bold ochre_br"
+style = "bold ochre_br"
 
-# ── Command duration ─────────────────────────────────────────────
-[cmd_duration]
-min_time = 2000
-style    = "bold recede"
-format   = "[ $duration]($style) "
-
-# ── Time + arrow prompt (line 2) ─────────────────────────────────
-# Renders as:  ╰─[ 15:42 ]──❯
-[time]
-disabled    = false
-format      = "[╰─](overlay)[ $time ](bold fg:sage bg:sage_dim)[](fg:sage_dim)"
-time_format = "%H:%M"
-
-[character]
-success_symbol = "[──❯](bold sage)"
-error_symbol   = "[──❯](bold clay)"
-
-# ════════════════════════════════════════════════════════════════
-#  DimArch Sage Color Palette
-# ════════════════════════════════════════════════════════════════
-# Generated from dimarch-theme/colors/palette.json — every entry below is a
-# role from that file, not a hand-picked colour. Seven tokens used to sit here
-# declared-but-unused (bg_dark/surface/text/subtext/blue/purple/cyan), and all
-# of them were the non-green ones — the audit that found this is why the
-# palette now names colours by role instead of by hue.
 [palettes.dimarch_sage]
-# surfaces
-bg        = "#1d2121"   # terminal.lift — chip fill
-overlay   = "#324040"   # terminal.border — the line-2 connector
-# text
-text      = "#edeae4"   # neutral.primary
-subtext   = "#c8c4be"   # neutral.secondary
-muted     = "#82828c"   # neutral.muted
-# sage — brand, marks STATE
-sage      = "#7fb89e"   # ramp.sage.base
-sage_br   = "#c4ddd2"   # ramp.sage.bright — git branch. Was sage.soft, one
-                        # tier from the directory beside it and unreadable as
-                        # a distinct element (CIE76 8.2 / dE00 5.1).
-sage_dim  = "#2d4a40"   # low tint behind the clock
-# accents — mark CATEGORY
-clay      = "#d96c6c"   # ramp.clay.base — errors
-ochre     = "#d4a96a"   # ramp.ochre.base — change, attention
-ochre_br  = "#e4ba7a"   # ramp.ochre.bright — rust
-lichen    = "#91b06d"   # ramp.lichen.base — node
-patina    = "#40c9c0"   # ramp.patina.bright — python
-recede    = "#8a9d93"   # neutral.recede — command duration
+# Значения резолвятся из dimarch-theme/colors/palette.json v3.0.0 через карту
+# компонентов (`palette component starship`). Ни один цвет здесь не изобретается.
+bg        = "#1d2121"  # surface.terminal.lift
+overlay   = "#324040"  # surface.terminal.border
+frame     = "#5b8f78"  # ramp.sage.dim — рамка промпта
+text      = "#edeae4"  # neutral.primary
+subtext   = "#c8c4be"  # neutral.secondary
+muted     = "#82828c"  # neutral.muted
+recede    = "#8a9d93"  # neutral.recede
+sage      = "#7fb89e"  # ramp.sage.base
+sage_br   = "#c4ddd2"  # role.git.branch
+sage_dim  = "#2d4a40"  # ramp.sage_deep.tint
+clay      = "#d96c6c"  # ramp.clay.base
+ochre     = "#d4a96a"  # ramp.ochre.base
+ochre_br  = "#e4ba7a"  # ramp.ochre.bright
+lichen    = "#91b06d"  # ramp.lichen.base
+patina    = "#40c9c0"  # ramp.patina.bright
