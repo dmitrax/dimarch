@@ -44,6 +44,9 @@
 #    11. WirePlumber — disables ALSA output auto-suspend
 #        (session.suspend-timeout-seconds=0), fixes an audible pop/click on
 #        codec resume when a browser tab with video creates an AudioContext.
+#    12. Claude Code — Sage theme (its base falls through to terminal ANSI
+#        slots, so an unset token is not a neutral default) + the DimArch
+#        agent skill
 #
 #  Deploy mechanism: deploy_dotfile_tree() copies an entire dotfiles/<app>/
 #  subtree file-by-file (preserving relative path + permission bits) rather
@@ -269,6 +272,29 @@ if [[ -n "$REALUSER" ]]; then
 fi
 
 ok "WirePlumber auto-suspend fix deployed"
+
+# =============================================================================
+#  STEP 12 — Claude Code: Sage theme + the DimArch agent skill
+# =============================================================================
+dimarch::section "Claude Code (theme + agent skill)"
+
+# The theme is not decoration here. Its base is "dark-ansi", where every token
+# the file does not override falls through to an ANSI SLOT OF THE TERMINAL —
+# so Claude Code's own brand colours land on whatever config.ghostty assigned
+# to that slot. Before 2026-09-04 the startup logo rendered pink for exactly
+# that reason (claude -> ansi:redBright -> our clay.bright). Values are owned
+# by dimarch-theme's component map; verify with `palette check`.
+#
+# The skill teaches an agent this system's boundaries: edit ~/.config, never
+# assume a repo edit reached the live system, resolve colour through `palette`.
+# Deployed as a copy today; it becomes a symlink into /usr/share/dimarch/ when
+# dimarch_repo lands, and only this step changes then, not the skill text.
+#
+# Claude Code itself is NOT installed here — it is optional software, and a
+# system that never runs it simply carries two unused files.
+deploy_dotfile_tree "claude"
+
+ok "Claude Code theme + agent skill deployed"
 
 # =============================================================================
 dimarch::done \

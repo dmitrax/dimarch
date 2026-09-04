@@ -1,0 +1,23 @@
+{
+  "name": "dimarch-sage",
+  "base": "dark-ansi",
+  "overrides": {
+    "claude": "#d77757",
+    "claudeShimmer": "#f59575",
+    "clawd_body": "#d77757",
+    "briefLabelClaude": "#c4ddd2",
+    "success": "#7fb89e",
+    "suggestion": "#98c2af",
+    "remember": "#c4ddd2",
+    "permission": "#7fb89e",
+    "promptBorder": "#7fb89e",
+    "bashBorder": "#7fb89e",
+    "ide": "#98c2af",
+    "fastMode": "#c4ddd2",
+    "selectionBg": "#3f7a63",
+    "userMessageBackground": "#2c3a35",
+    "userMessageBackgroundHover": "#344740",
+    "bashMessageBackgroundColor": "#293631",
+    "memoryBackgroundColor": "#26312d"
+  }
+}
