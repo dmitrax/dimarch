@@ -23,7 +23,7 @@ style = "bold sage"
 
 [os.symbols]
 Linux = "󰌽 "
-Arch = "󰣇 "
+Arch = " "
 
 [directory]
 # role.file.directory — sage отмечает каталог как состояние, а не категорию.
