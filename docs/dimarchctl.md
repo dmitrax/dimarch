@@ -16,8 +16,37 @@ Deployed to `/usr/local/bin/dimarchctl` by the installer.
 | `dimarchctl vpn up` / `down` / `toggle` | Connect / disconnect the VPN |
 | `dimarchctl vpn ui` | Open the WireGuard admin UI (tunnel or direct) |
 | `dimarchctl version` | Print version |
+| `dimarchctl commands` | List every command, its arguments and what it does |
 
 All commands support `--json` for machine-readable output.
+
+---
+
+## dimarchctl commands — discovery
+
+The command table inside `dimarchctl` is the single source of truth: `usage`,
+group help and this listing all read it, so the help text cannot drift away from
+what the CLI actually dispatches.
+
+```bash
+dimarchctl commands              # human listing
+dimarchctl commands --json       # one object per command
+dimarchctl commands --check      # every table entry has a dispatch branch
+dimarchctl power --help          # just one group
+```
+
+`--json` gives an agent (or any script) the route, group, name, arguments,
+summary and whether the command needs root — so it can ask the system what
+exists instead of remembering a syntax that may have moved:
+
+```json
+{"route": "power apply", "group": "power", "name": "apply", "args": "",
+ "summary": "Regenerate ~/.config/hypr/hypridle.conf from the template, restart hypridle",
+ "requires_root": false}
+```
+
+`--check` exists because a table can describe a command nobody wired up. It
+exits non-zero and names the offender; run it after adding a command.
 
 ---
 

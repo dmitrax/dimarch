@@ -371,30 +371,157 @@ cmd_vpn_ui() {
 }
 
 # ─────────────────────────────────────────────────────────────────────────────
+#  Command table — the single source of truth for help, discovery and dispatch
+# ─────────────────────────────────────────────────────────────────────────────
+#
+# One record per command: route | args | summary | requires_root
+# No field may itself contain a `|` — it is the delimiter, and an args string
+# like `[--json|--check]` silently swallows the summary. Write `[--json] [--check]`.
+#
+# `usage`, `commands` and `commands --json` all read THIS array, so the help a
+# human sees and the listing an agent parses cannot drift apart — before
+# 2026-09-04 the usage text was hand-written prose maintained independently of
+# the dispatch below, which is the classic way a CLI starts lying about itself.
+# Adding a command means adding a line here AND a branch in the dispatch;
+# `dimarchctl commands --check` reports any record without a matching branch.
+#
+# Borrowed from Omarchy's `omarchy commands --json` (see the vault note
+# omarchy-ships-the-os-skill-as-a-package-...); their version derives routes
+# from filenames because every command is its own file. Ours is one script, so
+# a table costs less than splitting it and buys the same self-description.
+
+COMMANDS=(
+    "version||Print the DimArch OS version and phase|no"
+    "commands|[--json] [--check]|List every command, its arguments and what it does|no"
+    "health|[--core]|Run the core system health checks (exit 1 on failure)|no"
+    "display status||Monitor layout status (Phase 0 stub)|no"
+    "power status||Show idle timeouts and whether each comes from user or system config|no"
+    "power apply||Regenerate ~/.config/hypr/hypridle.conf from the template, restart hypridle|no"
+    "vpn status||WireGuard connection status, plus the public IP when the tunnel is up|no"
+    "vpn up||Bring the WireGuard tunnel up|no"
+    "vpn down||Take the WireGuard tunnel down|no"
+    "vpn toggle||Toggle the WireGuard tunnel|no"
+    "vpn ui||Open the WireGuard admin UI (SSH tunnel or direct, per dimarch.conf)|no"
+)
+
+# Every command accepts --json unless it only performs an action.
+_cmd_field() { printf '%s' "$1" | cut -d'|' -f"$2"; }
+
+_commands_for_group() {
+    local group="$1" rec route
+    for rec in "${COMMANDS[@]}"; do
+        route=$(_cmd_field "$rec" 1)
+        if [[ "$route" == "$group" || "$route" == "$group "* ]]; then
+            printf '%s\n' "$rec"
+        fi
+    done
+    # Explicit: the loop's last test is false whenever the final record belongs
+    # to another group, and under `set -e` with pipefail that killed the caller
+    # AFTER it had already printed its help — a zero-output-looking failure.
+    return 0
+}
+
+_print_command_lines() {
+    local rec route args summary
+    while IFS= read -r rec; do
+        [[ -z "$rec" ]] && continue
+        route=$(_cmd_field "$rec" 1)
+        args=$(_cmd_field "$rec" 2)
+        summary=$(_cmd_field "$rec" 3)
+        printf '  %-28s %s\n' "$route${args:+ $args}" "$summary"
+    done
+}
+
+# ─────────────────────────────────────────────────────────────────────────────
+#  commands — discovery for humans and for agents
+# ─────────────────────────────────────────────────────────────────────────────
+
+cmd_commands() {
+    local mode="${1:-}"
+
+    if [[ "$mode" == "--json" ]]; then
+        local rec route args summary root first=true
+        printf '[\n'
+        for rec in "${COMMANDS[@]}"; do
+            route=$(_cmd_field "$rec" 1)
+            args=$(_cmd_field "$rec" 2)
+            summary=$(_cmd_field "$rec" 3)
+            root=$(_cmd_field "$rec" 4)
+            $first || printf ',\n'
+            first=false
+            # A single-segment route is the root command of its own group, so its
+            # name is empty rather than a copy of the group — same convention the
+            # route table itself uses.
+            local name=""
+            [[ "$route" == *" "* ]] && name="${route#* }"
+            printf '  {"route": "%s", "group": "%s", "name": "%s", "args": "%s", "summary": "%s", "requires_root": %s}' \
+                "$route" "${route%% *}" "$name" "$args" "$summary" \
+                "$([[ "$root" == "yes" ]] && echo true || echo false)"
+        done
+        printf '\n]\n'
+        return 0
+    fi
+
+    # --check: every record must have a dispatch branch, and vice versa. Cheap
+    # insurance against the table describing a command that no longer runs.
+    if [[ "$mode" == "--check" ]]; then
+        local rec route group missing=0
+        for rec in "${COMMANDS[@]}"; do
+            route=$(_cmd_field "$rec" 1)
+            group="${route%% *}"
+            if ! grep -qE "^ *${group}\)" "$0"; then
+                echo "no dispatch branch for: $route" >&2
+                missing=$((missing + 1))
+            fi
+        done
+        if (( missing )); then
+            echo "$missing command(s) in the table with nowhere to go" >&2
+            return 1
+        fi
+        echo "${#COMMANDS[@]} commands, every one dispatchable"
+        return 0
+    fi
+
+    printf 'Commands:\n'
+    printf '%s\n' "${COMMANDS[@]}" | _print_command_lines
+}
+
+# ─────────────────────────────────────────────────────────────────────────────
 #  Usage
 # ─────────────────────────────────────────────────────────────────────────────
 
 usage() {
-    cat <<EOF
-Usage: dimarchctl <command> [subcommand] [--json]
-
-Commands:
-  version               DimArch OS version
-  health [--core]       System health check (10 core checks, --core is default)
-  display status        Monitor layout status (Phase 0 — stub)
-  power status          Current power/idle timeout settings
-  power apply           Regenerate hypridle.conf from template + config
-  vpn status            WireGuard connection status (+ public IP when on)
-  vpn up|down|toggle    Connect/disconnect the VPN
-  vpn ui                Open the WireGuard admin UI (tunnel or direct, see dimarch.conf)
+    echo "Usage: dimarchctl <command> [subcommand] [--json]"
+    echo
+    cmd_commands
+    cat <<'EOF'
 
 To change idle timeouts:
   1. Edit ~/.config/dimarch/dimarch.conf  (or /etc/dimarch.conf)
   2. Run: dimarchctl power apply
 
 VPN setup: sudo install/utils/setup-wireguard.sh (reads dimarch.conf [vpn])
-
 EOF
+}
+
+# Group help: `dimarchctl power --help` lists just that group.
+group_usage() {
+    local group="$1"
+    printf 'Usage: dimarchctl %s <subcommand> [--json]\n\n' "$group"
+    printf 'Commands:\n'
+    _commands_for_group "$group" | _print_command_lines
+}
+
+# A group invoked with --help, or with a subcommand it does not have, gets the
+# same listing; the difference is only where it goes and what we exit with.
+_group_dispatch_fail() {
+    local group="$1" wanted="${2:-}"
+    if [[ "$wanted" == "--help" || "$wanted" == "-h" ]]; then
+        group_usage "$group"
+        exit 0
+    fi
+    group_usage "$group" >&2
+    exit 1
 }
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -402,19 +529,20 @@ EOF
 # ─────────────────────────────────────────────────────────────────────────────
 
 case "${1:-}" in
-    version) cmd_version "${@:2}" ;;
-    health)  cmd_health  "${@:2}" ;;
+    version)  cmd_version "${@:2}" ;;
+    commands) cmd_commands "${@:2}" ;;
+    health)   cmd_health  "${@:2}" ;;
     display)
         case "${2:-}" in
             status) cmd_display_status "${@:3}" ;;
-            *) echo "Usage: dimarchctl display status [--json]" >&2; exit 1 ;;
+            *) _group_dispatch_fail display "${2:-}" ;;
         esac
         ;;
     power)
         case "${2:-}" in
             status) cmd_power_status "${@:3}" ;;
             apply)  cmd_power_apply ;;
-            *) echo "Usage: dimarchctl power <status|apply> [--json]" >&2; exit 1 ;;
+            *) _group_dispatch_fail power "${2:-}" ;;
         esac
         ;;
     vpn)
@@ -424,8 +552,9 @@ case "${1:-}" in
             down)   cmd_vpn_down ;;
             toggle) cmd_vpn_toggle ;;
             ui)     cmd_vpn_ui ;;
-            *) echo "Usage: dimarchctl vpn <status|up|down|toggle|ui> [--json]" >&2; exit 1 ;;
+            *) _group_dispatch_fail vpn "${2:-}" ;;
         esac
         ;;
+    --help|-h) usage ;;
     *) usage; exit ${1:+1} ;;
 esac
