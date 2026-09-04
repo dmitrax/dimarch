@@ -45,6 +45,26 @@ This is not just a rice. It's a classic desktop experience rebuilt on a modern s
 
 ---
 
+## Agents
+
+DimArch treats coding agents as users of the system, and ships them the rules
+this system actually runs on — the split between `~/.config` and the repository,
+where colour comes from, why `sudo` fails from an agent session and `pkexec`
+does not. Without that an agent works from general knowledge and edits the wrong
+copy of a file with complete confidence.
+
+The skill installs into `~/.claude/skills/dimarch/` (and is read by anything else
+using that convention). `dimarchctl commands --json` complements it: the CLI
+describes itself, so an agent asks the system what exists instead of recalling a
+syntax that may have moved.
+
+It covers **using** a DimArch machine, not developing DimArch, and it never runs
+agents with confirmations disabled.
+
+**→ [docs/agent-skill.md](docs/agent-skill.md)**
+
+---
+
 ## Stack
 
 | Component | Choice |
@@ -95,7 +115,7 @@ see ROADMAP's "Optional Apps" section.
 
 ## Related repos
 
-- [dimarch-theme](https://github.com/dmitrax/dimarch-theme) — Sage GTK/icon/color theme
+- [dimarch-theme](https://github.com/dmitrax/dimarch-theme) — the Sage colour system: palette, role map and the tool that verifies every config against it (a GTK theme of our own is still to come — see ROADMAP)
 - [dimarch-sddm-theme](https://github.com/dmitrax/dimarch-sddm-theme) — SDDM login theme
 - [dimarch-taskbar](https://github.com/dmitrax/dimarch-taskbar) — bottom panel (in development)
 - [dimarch-scribe](https://github.com/dmitrax/dimarch-scribe) — local speech-to-text (whisper.cpp, Vulkan/RADV), optional app
