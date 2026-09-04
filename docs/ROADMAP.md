@@ -585,6 +585,9 @@ Phase 1 — Shell Foundation + Installer Base
   [ ] BUG-03: Thunar "Open Terminal Here" fix (P1)
   Sage theme rollout (1.3):
     [✓] Ghostty, rofi, hyprlock
+    [✓] Claude Code — 2026-09-04 (theme was live-only since July; brought into
+        the repo and the component map, which caught seven values that had
+        drifted outside the palette)
     [ ] bat, delta, lazygit, fzf — packages installed, no theme config yet
 
 Phase 2 — Shell Polish + Installer Mid
@@ -599,6 +602,10 @@ Phase 2 — Shell Polish + Installer Mid
   [ ] dimarch-icons: Tela Circle + overlay
   [ ] Full Stow migration
   [ ] dimarchctl: streaming, theme reload
+  [✓] dimarchctl: commands --json — one table backs usage, group help and the
+      machine-readable listing, so help cannot drift from dispatch — 2026-09-04
+  [✓] Agent skill (dotfiles/claude/.claude/skills/dimarch): teaches an agent the
+      repo-vs-live boundary, the palette rule and pkexec — 2026-09-04
 
 Phase 3 — Productivity + Installer Completion
   [ ] dimarch-daycenter v0.1: SQLite, calendar, tasks, quick capture, swaync reminders
