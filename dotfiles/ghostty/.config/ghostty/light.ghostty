@@ -9,6 +9,18 @@
 # =========================================================
 
 # ---------------------------------------------------------
+# Font weight — one step heavier than the dark profile
+# ---------------------------------------------------------
+
+# Dark text on a light ground reads thinner than light-on-dark at the
+# same stroke (irradiation), and FreeType with light hinting draws a
+# lighter stem than macOS CoreText, where this palette is also used.
+# font-thicken would be the direct fix but is macOS-only, so the regular
+# style steps up to Medium here; bold stays Bold and keeps its contrast.
+# font-family itself is inherited from config.ghostty.
+font-style = Medium
+
+# ---------------------------------------------------------
 # Colors — DimArch Sage, light variant
 # ---------------------------------------------------------
 
