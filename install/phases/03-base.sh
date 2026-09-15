@@ -288,13 +288,18 @@ ok "Monitoring tools installed"
 # =============================================================================
 dimarch::section "File utilities"
 
+# jq is not optional: dimarchctl pipes every --json through it, and
+# 06-dotfiles.sh merges keys into Claude Code's settings.json with it. It was
+# only ever installed as a side effect of install/apps/obsidian.sh until
+# 2026-09-15.
 dimarch::pacman_install \
     tree \
     fd \
     ripgrep \
     fzf \
     eza \
-    zoxide
+    zoxide \
+    jq
 
 ok "File utilities installed"
 
