@@ -584,7 +584,10 @@ Phase 1 — Shell Foundation + Installer Base
   [ ] dimarch-taskbar v0.1: window list, launcher button (no tray, no clock)
   [ ] BUG-03: Thunar "Open Terminal Here" fix (P1)
   Sage theme rollout (1.3):
-    [✓] Ghostty, rofi, hyprlock
+    [✓] Ghostty
+    [ ] rofi — only the token block is mapped; ten literal rgba values in the
+        rules below it still bypass the palette
+    [ ] hyprlock — partially mapped onto the palette
     [✓] Claude Code — 2026-09-04 (theme was live-only since July; brought into
         the repo and the component map, which caught seven values that had
         drifted outside the palette)
