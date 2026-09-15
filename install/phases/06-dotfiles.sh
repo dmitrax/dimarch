@@ -46,7 +46,8 @@
 #        codec resume when a browser tab with video creates an AudioContext.
 #    12. Claude Code — Sage theme (its base falls through to terminal ANSI
 #        slots, so an unset token is not a neutral default) + the DimArch
-#        agent skill
+#        agent skill + the status line; theme and statusLine are merged into
+#        settings.json with jq, never copied over it
 #    13. Mousepad — Sage GtkSourceView scheme + GSettings (not xfconf); new
 #        files open as windows, not tabs
 #
@@ -276,9 +277,9 @@ fi
 ok "WirePlumber auto-suspend fix deployed"
 
 # =============================================================================
-#  STEP 12 — Claude Code: Sage theme + the DimArch agent skill
+#  STEP 12 — Claude Code: Sage theme + the DimArch agent skill + status line
 # =============================================================================
-dimarch::section "Claude Code (theme + agent skill)"
+dimarch::section "Claude Code (theme + agent skill + status line)"
 
 # The theme is not decoration here. Its base is "dark-ansi", where every token
 # the file does not override falls through to an ANSI SLOT OF THE TERMINAL —
@@ -292,11 +293,38 @@ dimarch::section "Claude Code (theme + agent skill)"
 # Deployed as a copy today; it becomes a symlink into /usr/share/dimarch/ when
 # dimarch_repo lands, and only this step changes then, not the skill text.
 #
+# The status line (~/.claude/statusline.sh) is the same script as on the Mac
+# (dmitrax/mac-setup), header aside: model · effort │ context │ 5h / 7d limits
+# with a forecast │ prompt-cache state, coloured by ANSI slot so it inherits
+# the terminal palette. Its header documents the input schema and why the limit
+# numbers can be minutes old.
+#
 # Claude Code itself is NOT installed here — it is optional software, and a
-# system that never runs it simply carries two unused files.
+# system that never runs it simply carries a few unused files.
 deploy_dotfile_tree "claude"
 
-ok "Claude Code theme + agent skill deployed"
+# settings.json is NOT deployed as a file: Claude Code rewrites it (theme
+# picker, /config, permission answers), so a copy would be overwritten on first
+# use — and a re-run of this step would wipe the user's own settings. Exactly two
+# keys are merged in with jq; everything else in the file is left alone.
+# refreshInterval is in seconds, on top of event-driven redraws: it keeps the
+# cache state and the limit forecast from going stale while the session idles.
+if [[ -n "$REALUSER" ]]; then
+    cc_settings="${REALUSER_HOME}/.claude/settings.json"
+    cc_statusline='{"type":"command","command":"~/.claude/statusline.sh","refreshInterval":60}'
+    if sudo -u "$REALUSER" bash -c '
+        f=$1
+        [[ -f $f ]] || echo "{}" > "$f"
+        jq --argjson s "$2" ".theme = \"custom:dimarch-sage\" | .statusLine = \$s" "$f" \
+            > "$f.tmp" && mv "$f.tmp" "$f"
+    ' _ "$cc_settings" "$cc_statusline"; then
+        ok "Claude Code settings: theme + statusLine merged"
+    else
+        warn "Could not merge into ${cc_settings} — set theme and statusLine by hand"
+    fi
+fi
+
+ok "Claude Code theme + agent skill + status line deployed"
 
 # =============================================================================
 #  STEP 13 — Mousepad: Sage syntax scheme + behaviour
