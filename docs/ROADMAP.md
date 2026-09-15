@@ -615,6 +615,9 @@ Phase 2 — Shell Polish + Installer Mid
       machine-readable listing, so help cannot drift from dispatch — 2026-09-04
   [✓] Agent skill (dotfiles/claude/.claude/skills/dimarch): teaches an agent the
       repo-vs-live boundary, the palette rule and pkexec — 2026-09-04
+  [✓] Claude Code status line (dotfiles/claude/.claude/statusline.sh): model,
+      context, 5h / 7d limits with a forecast, prompt-cache state; coloured by
+      ANSI slot, same script as on the Mac — 2026-09-15
 
 Phase 3 — Productivity + Installer Completion
   [ ] dimarch-daycenter v0.1: SQLite, calendar, tasks, quick capture, swaync reminders
