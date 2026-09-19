@@ -29,6 +29,12 @@ local env_vars = {
     {"MOZ_ENABLE_WAYLAND", "1"},
 }
 
-hl.config({ env = env_vars })
+-- hl.env(), not hl.config({ env = ... }): the latter is accepted without any
+-- error or configerrors entry and sets nothing (probed via `hyprctl repl` +
+-- os.getenv on 0.56.2, 2026-09-19) — every var below was silently missing from
+-- every process, so uwsm finalize in execs.lua had nothing to export either.
+for _, pair in ipairs(env_vars) do
+    hl.env(pair[1], pair[2])
+end
 
 return env_vars
