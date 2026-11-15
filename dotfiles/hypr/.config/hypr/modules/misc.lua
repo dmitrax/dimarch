@@ -13,6 +13,17 @@ hl.config({
     },
 })
 
+-- Never switch a monitor into HDR on its own. Hyprland's default
+-- (cm_auto_hdr = 1) flips the output to HDR whenever a fullscreen app
+-- presents HDR content — e.g. an HDR video going fullscreen — and HDR
+-- output looks wrong on this setup. 0 keeps every output in SDR; the
+-- app's HDR content is tone-mapped instead.
+hl.config({
+    render = {
+        cm_auto_hdr = 0,
+    },
+})
+
 -- Blur for Waybar panels
 hl.layer_rule({ match = { namespace = "waybar" }, blur = true })
 hl.layer_rule({ match = { namespace = "waybar" }, ignore_alpha = 0.3 })
