@@ -5,6 +5,11 @@ hl.config({
         disable_splash_rendering = true,
         allow_session_lock_restore = true,
         animate_manual_resizes   = false,
+        -- Floating-only desktop: a window dragged entirely off its monitor
+        -- is brought back half-visible (1). Not 2: that pins a window fully
+        -- inside the monitor it is assigned to, which yanks windows placed
+        -- across the DP-2/DP-1 seam back onto their own monitor.
+        float_force_onscreen     = 1,
     },
 })
 
