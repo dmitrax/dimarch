@@ -4,7 +4,11 @@
 # Reads sleep_mode from /etc/dimarch.conf and calls the appropriate
 # systemd sleep command. Defaults to 'suspend' if config is missing.
 #
-# Called by hypridle on idle timeout. Deploy via setup-hibernate.sh
+# Never sleeps unlocked: starting hibernate.target directly bypasses logind, so
+# hypridle's before_sleep_cmd does not run and the lock has to be taken here.
+# If the lock cannot be verified, the machine stays awake.
+#
+# Called by hypridle and the power menu. Deploy via setup-hibernate.sh
 # or manually: install -m 755 dimarch-sleep /usr/local/bin/dimarch-sleep
 
 set -euo pipefail
@@ -22,9 +26,55 @@ _conf_get() {
     ' "$file"
 }
 
+_abort() {
+    echo "dimarch-sleep: $1, not sleeping" >&2
+    logger -t dimarch-sleep -p user.err -- "$1, not sleeping" || true
+    timeout 3 notify-send -u critical "Sleep cancelled" "$1" || true
+    exit 1
+}
+
+_locked() {
+    [[ "$(timeout 2 hyprctl locked 2>/dev/null)" == "true" ]]
+}
+
+# `hyprctl locked` alone is not enough: it turns true when the lock is requested,
+# while the desktop may still be drawn for up to misc:lockdead_screen_delay (1 s).
+# With inhibit_sleep = 3 hypridle drops its sleep inhibitor only on the compositor's
+# "locked" event, sent once every output has a lock frame (or after a 5 s fallback).
+# jq -e fails on empty input, so an unreadable inhibitor list never counts as locked.
+_lock_shown() {
+    _locked || return 1
+    pidof hypridle >/dev/null || return 1
+    timeout 2 systemd-inhibit --list --json=short --no-pager 2>/dev/null |
+        jq -e --argjson uid "$UID" \
+            'any(.[]; .who == "hypridle" and .uid == $uid and .what == "sleep") | not' \
+            >/dev/null
+}
+
+_lock_or_abort() {
+    timeout 2 hyprctl locked >/dev/null 2>&1 || _abort "cannot reach Hyprland"
+
+    if ! _locked; then
+        timeout 3 loginctl lock-session || _abort "lock request failed"
+    fi
+
+    local deadline=$((SECONDS + 15))
+    until _lock_shown; do
+        ((SECONDS < deadline)) || _abort "screen lock was not confirmed"
+        sleep 0.2
+    done
+
+    # Outlast lockdead_screen_delay and let the lock frame reach the outputs: the
+    # last frame before sleep is the one visible first on resume.
+    sleep 1.5
+    _lock_shown || _abort "screen lock was lost"
+}
+
 DIMARCH_CONF="${DIMARCH_CONF:-/etc/dimarch.conf}"
 SLEEP_MODE=$(_conf_get power sleep_mode "$DIMARCH_CONF" 2>/dev/null || true)
 SLEEP_MODE="${SLEEP_MODE:-suspend}"
+
+_lock_or_abort
 
 case "$SLEEP_MODE" in
     # systemctl hibernate goes through logind CanHibernate() which returns ENOENT in

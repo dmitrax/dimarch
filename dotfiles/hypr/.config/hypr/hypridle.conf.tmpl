@@ -30,6 +30,8 @@ general {
     # Note: before_sleep_cmd fires on any PrepareForSleep signal
     # from systemd-logind — it is NOT subject to idle inhibitors.
     # This is intentional: the screen should always lock before sleep.
+    # dimarch-sleep in hibernate mode bypasses logind, so this never fires there:
+    # the script locks by itself and relies on inhibit_sleep = 3 below to verify it.
     before_sleep_cmd = sh -c '~/.config/hypr/scripts/save-before-sleep.sh; loginctl lock-session'
 
     # After real resume from suspend:

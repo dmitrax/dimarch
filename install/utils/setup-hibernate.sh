@@ -230,7 +230,7 @@ fi
 
 dimarch::done \
     "Hibernate configured" \
-    "Test: sudo systemctl start hibernate.target   |   Via idle: set sleep_mode=hibernate in dimarch.conf"
+    "Test (as desktop user): dimarch-sleep   |   Via idle: set sleep_mode=hibernate in dimarch.conf"
 
 echo ""
 info "Swapfile:    ${SWAPFILE}  (${SWAP_GB}G, ${FS_TYPE})"

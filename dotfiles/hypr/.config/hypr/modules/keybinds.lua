@@ -18,7 +18,6 @@ hl.bind(mod .. " + Space",  hl.dsp.exec_cmd("rofi -show drun"))
 -- Window management
 hl.bind(mod .. " + Q",      hl.dsp.window.close())
 hl.bind(mod .. " + F",      hl.dsp.window.fullscreen({ fullscreen = true }))
-hl.bind(mod .. " + L",      hl.dsp.exec_cmd("hyprlock"))
 
 -- Window switcher via hyprswitch
 -- hl.bind("ALT + Tab", hl.dsp.exec_cmd(
@@ -122,8 +121,9 @@ hl.bind("XF86AudioMicMute",     hl.dsp.exec_cmd("swayosd-client --input-volume m
 -- Trigger a system lock event.
 -- hypridle receives it and runs lock_cmd:
 -- switch layout to EN, then start hyprlock.
+-- Without hypridle nobody handles that event, so start hyprlock directly.
 hl.bind("SUPER + L", hl.dsp.exec_cmd(
-    "loginctl lock-session"
+    "if pidof hypridle >/dev/null; then loginctl lock-session; else hyprlock; fi"
 ))
 
 -- Super + V

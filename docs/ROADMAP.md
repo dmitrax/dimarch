@@ -93,6 +93,16 @@ Symptom: uses `hl.dsp.window.move` — does not exist in Hyprland 0.55 Lua.
 Fix: replace with `movetoworkspace`, `resizewindowpixel`, `movewindowpixel`
      via `hyprctl eval`.
 
+**BUG-06: manual sleep hibernates without locking the screen**
+
+Symptom: Sleep from the power menu or a terminal hibernates with the desktop unlocked.
+Cause: `dimarch-sleep` starts `hibernate.target` directly, bypassing logind, so
+hypridle's `before_sleep_cmd` never runs.
+Fix: `dimarch-sleep` locks first and sleeps only once the lock is confirmed drawn on
+every output (`hyprctl locked`, plus hypridle releasing its `inhibit_sleep = 3` inhibitor,
+plus a 1.5 s settle); otherwise it stays awake and says so.
+Still open: idle lock and the hibernate timer untested; routing sleep back through logind.
+
 ### P1 — Important (tracked, not blocking shell)
 
 **BUG-03: Thunar "Open Terminal Here" broken via keybind/Rofi**
@@ -566,6 +576,7 @@ Phase 0 — Core Stability & Diagnostics
   [✓] BUG-01: GPU crash after resume — FIXED 2026-06-26 (hibernate via systemd target)
   [✓] BUG-04: restore-after-resume.sh IPC fix — FIXED 2026-06-24
   [✓] BUG-02: XWayland resolution after resume — FIXED 2026-06-26
+  [ ] BUG-06: sleep without screen lock — manual sleep fixed 2026-11-23, idle lock and timer pending
   [✓] monitor-off: dimarch-monitor wrapper, monitor_off=none for RX 580 — 2026-06-26
   [✓] dimarchctl skeleton: version, health, display status, power status, power apply — 2026-06-26
   [✓] dimarch.conf: power timeout keys + user override (~/.config/dimarch/dimarch.conf) — 2026-06-26
