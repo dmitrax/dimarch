@@ -144,11 +144,16 @@ hl.window_rule({
 -- both, so the panel sat in a frosted halo and the chat list showed through it.
 -- no_blur alone leaves the body see-through; opaque fixes the body; no_shadow
 -- drops a second shadow on top of GTK's own.
+-- Telegram also draws the panel shifted right/down by that margin without telling
+-- the compositor (tdesktop#31562), so the window edge floats away from the panel on
+-- the left and top; border_size = 0 removes the outline drawn along that edge.
+-- The same shift is why the shell's close button reacts a little right of and below it.
 hl.window_rule({
     match = { class = "^(Telegram)$" },
     no_blur = true,
     no_shadow = true,
     opaque = true,
+    border_size = 0,
 })
 
 -- ---------------------------------------------------------
