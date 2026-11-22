@@ -134,6 +134,24 @@ hl.window_rule({
 })
 
 -- ---------------------------------------------------------
+-- Telegram mini apps
+-- ---------------------------------------------------------
+
+-- A mini app is not part of Telegram's main window (class org.telegram.desktop):
+-- it is a separate WebKitGTK window of the `Telegram -webviewhelper` process,
+-- class "Telegram". GTK leaves a translucent margin around the panel for its own
+-- shadow, and the panel body is translucent too. Hyprland blurred what lay under
+-- both, so the panel sat in a frosted halo and the chat list showed through it.
+-- no_blur alone leaves the body see-through; opaque fixes the body; no_shadow
+-- drops a second shadow on top of GTK's own.
+hl.window_rule({
+    match = { class = "^(Telegram)$" },
+    no_blur = true,
+    no_shadow = true,
+    opaque = true,
+})
+
+-- ---------------------------------------------------------
 -- Image viewer
 -- ---------------------------------------------------------
 
